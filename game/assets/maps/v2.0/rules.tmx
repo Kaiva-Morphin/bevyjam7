@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="5" nextobjectid="1">
+ <properties>
+  <property name="AutomappingRadius" type="int" value="1"/>
+ </properties>
+ <tileset firstgid="1" source=":/automap-tiles.tsx"/>
+ <tileset firstgid="6" source="main.tsx"/>
+ <layer id="1" name="input_collider" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="-16" width="16" height="16">
+   eJxjYBgFo2AUDCfAQgIfAAVQAA0=
+  </chunk>
+   <chunk x="16" y="-16" width="16" height="16">
+   eJxjYBgFo2AUDGXAgsbnwSKGCwAAB6AAFQ==
+  </chunk>
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjZYAAFiSaB4oZkNjofJh6bIAHjc+ExkaXpzbAZz82eWQA8z9MDxMShvEp8T8h+6kBqOF/SuIfXY4Qn9qAEvuHg/9JAQBV1AHW
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYWBg4AFiFgYIYILyeRiIB+hqmUjQSw1Aif0sDNT3P7J59ADI9rMwkOZ2dP/D/E5qGCIDesc/JfZT2/+khv9AAwDQfgEt
+  </chunk>
+  </data>
+ </layer>
+ <layer id="4" name="output_layer_1" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjZIAAFgYEYGNABexofA6G4Q3U0PgsaHwNejlkgIAbGt8dje9BL4cMEEhD46ej8TPo5RA6AADoqQJ3
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYGBg4GRABVwMIwtoovG1BsQVAwc80fheA+KKgQOZaPysAXHFwAAALH0BzQ==
+  </chunk>
+  </data>
+ </layer>
+</map>

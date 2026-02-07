@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="isometric" renderorder="right-down" width="10" height="10" tilewidth="232" tileheight="110" infinite="0" nextlayerid="5" nextobjectid="17">
+ <tileset firstgid="1" source="../../tiles/kenney-sketch-desert.tsx"/>
+ <imagelayer id="4" name="Image Layer 1" offsetx="1397.47" offsety="0" repeatx="1">
+  <image source="../../bevy_icon.png" width="257" height="247"/>
+ </imagelayer>
+ <layer id="1" name="Tile Layer 1" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,2,2,2,2,2,2,2,0,0,
+0,2,2,2,2,2,2,2,0,2,
+0,2,2,2,0,0,0,0,0,2,
+0,3,3,3,0,2,2,2,2,2,
+0,2,2,2,0,0,3,3,3,2,
+0,2,2,2,0,2,2,2,3,2,
+0,2,2,2,0,2,2,2,3,2,
+0,0,0,0,0,2,2,2,3,2
+</data>
+ </layer>
+ <layer id="2" name="Tile Layer 2" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,1,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,1,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,4,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,1,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="3" name="Object Layer 1">
+  <object id="1" x="449.502" y="537.754">
+   <point/>
+  </object>
+  <object id="2" x="823.52" y="924.729">
+   <point/>
+  </object>
+  <object id="3" x="55.4547" y="481.446">
+   <point/>
+  </object>
+  <object id="4" x="819.805" y="640.049" width="264.002" height="166.301" rotation="126.192"/>
+  <object id="7" gid="5" x="337.828" y="331.506" width="256" height="352"/>
+  <object id="13" gid="5" x="564.931" y="331.069" width="256" height="352"/>
+  <object id="14" gid="5" x="897.19" y="561.81" width="256" height="352"/>
+  <object id="15" gid="5" x="226.983" y="765.017" width="256" height="352"/>
+  <object id="16" x="848.327" y="652.522" width="264.002" height="166.301"/>
+ </objectgroup>
+</map>

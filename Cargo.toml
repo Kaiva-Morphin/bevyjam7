@@ -1,0 +1,43 @@
+[workspace]
+members = [
+    "game",
+    "libs/utils", 
+    "libs/properties", 
+    "libs/.dynamic/camera", 
+    "libs/.dynamic/room", 
+    "libs/.static/bevy_ecs_tiled",
+    "libs/.static/debug_utils",
+]
+resolver = "2"
+
+[workspace.dependencies]
+bevy_animation =  { version = "0.18.0" }
+bevy_dylib = { version = "0.18.0" }
+bevy_rapier2d = { version = "0.32.0", features = ["serde-serialize", "debug-render-2d", "simd-stable"] }
+bevy-inspector-egui = "0.36.0"
+bevy = {version = "0.18.0"}
+kaiv_utils = { git = "https://github.com/kaiv-dev/kaiv_utils.git", rev ="fdaf82e" }
+
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.dev.package.wgpu-types]
+debug-assertions = false
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+
+# Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
+[profile.wasm-release]
+# Default to release profile values.
+inherits = "release"
+# Optimize with size in mind (also try "z", sometimes it is better).
+# Slightly slows compile times, great improvements to file size and runtime performance.
+opt-level = "s"
+# Strip all debugging information from the binary to slightly reduce file size.
+strip = "debuginfo"

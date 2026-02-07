@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <!-- <link data-trunk rel="inline" type="module" href="restart-audio-context.js" /> -->
+    <!-- <link data-trunk rel="rust" data-cargo-no-default-features data-wasm-opt="s" href="../" data-bin="game" /> -->
+    <title>bevyjam 7</title>
+    <link data-trunk rel="copy-dir" href="../assets" />
+    <link data-trunk rel="inline" href="style.css" />
+    <link data-trunk rel="rust" data-cargo-no-default-features data-wasm-opt="s"  href="../" data-bin="game"/>
+    <!-- <link rel="stylesheet" href="style.css"></link> -->
+</head>
+
+<body>
+    <div id="game" class="center">
+        <div id="loading-screen" class="center">
+            <div class="bg"></div>
+            <div>
+                <img style="--i:2.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAtUlEQVR4nGNkgAIzfZv/MPapi0cYkcVgfLBAbnrF/4f3nv//+uX7fxAfWQzEZoHpePvi4//HDx4wOLu4Mew/upvB0dqVAcTftHY72DAmBiQgq6DAoKWlxRAdnMiwev1qsBiIj6EQBp69eMKQn1nIMHF6P1wMRSHIKhB4++IjWHFP50RMhcIS/GD62rVrKBphfLBCkK+kJGTAHoEBkKnIABI+DAwMyuK68HC8+/IyWBwmBuMTBQCwhljgTHH0YQAAAABJRU5ErkJggg==
+                ">
+                <img style="--i:3.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAn0lEQVR4nGNkQAJm+jb/kfmnLh5hRObDFeWmV/z/+uX7/71bT4CxGZpGBmVxXbiih/ee/w9wj/g/uXseWDFIDqSGBVnDiYMXGdKSUuF8LS0tOJsJWeG1a9fAtLAEPwofReHjBw9QFKEDFBNv3bnF0N7WwyAlIcOQm1cA5sMA3PsgR+saaDPIKijAJbdt2Mpw9+VlsBqUcIL5EAZgikgCAGkfR9n2AbBSAAAAAElFTkSuQmCC
+                ">
+                <img style="--i:4.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAApklEQVR4nGM007f5zwAFpy4eYYTxkdkgwAQizC1sGPYf3c0AksDGBgGmty8+Mjx+8IDhzasPDPjYTGDlDAwMd64/ZMDHZoIJXLt2DS6JzIYBlrsvLzMKv+AHO3rWvNlgRVpaWgy6BtoMzi5uDJVVJQwgNSwwHXv37ALTIEUgxSBFIDYMMMIYyuK6/0GmXL5wFWyarIICw7YNW8GmoSiEKUbmwxSRBACn1mEPZ8gw3wAAAABJRU5ErkJggg==
+                ">
+            </div>
+            <div>
+                <img style="--i:0.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAkElEQVR4nGNkQAJm+jb/YexTF48wIsuhKMpNr/j/9cv3/w/vPf+PrAkEWJBNePvi4//HDx4wOLu4Mbx98RHFICZ0k2UVFBj8gj0xbGTC5oxNa7cTpxAbQFEoLMHPAHKjlpYWmA/yEMxTcM8gAxVNeYZ9x3eB2XeuP2SorCr5jxFWyuK6KMECAndfXsYeptgAADHGMxpSOvnjAAAAAElFTkSuQmCC
+                ">
+                <img style="--i:1.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAnUlEQVR4nGNkQANm+jb/kfmnLh5hZMCmKDe94v/XL9//7916AozRNTIoi+vCFT289/x/gHvE/8nd88CKQXIs6KaeOHiRIS0pFc7X0tIC00zoCq9duwamhSX4UfgoCh8/eICiCBlgmHjrzi2G9rYeBikJGYbcvAIwHwRQvA5ytK6BNoOsggJcbNuGrQx3X15mxAgjkGJkPkgRhjvwAQBJ5EfZpMFt3gAAAABJRU5ErkJggg==
+                ">
+                <img style="--i:2.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAkUlEQVR4nGNkwALM9G3+w9inLh5hZMCl6OuX7/8f3nv+f+/WE/+RNcGBsrju/wD3iP+Tu+f9h7FBGkCKmdAVO7u4MWhpaTEIS/AzyCooMNy5/hAszoLNehVNeYbV61fDFYEAhol79+wCK3CydGOYPGkCboUgcO3aNQw2htW5eQVYQwMjjEC+RRe7+/Iy9rDEBgDPczu9j5fQxgAAAABJRU5ErkJggg==
+                ">
+                <img style="--i:3.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAApklEQVR4nGNkQAJm+jb/GdDAqYtHGBnQFU3unvf/65fv/x/ee/5/79YTYIxNM4OyuO7/3PQKsIIA9wiwRhAbJM6CrlhNRY1BRVOe4fKFq2C+lpYWmGbCMBYKhCX4wfS1a9ewK7x15xbDnesPMTSiKEQ2RUpChiE3rwCsESQO9zrId+YWNgwl5flgfk/nRDC9bcNWhrsvLzOihBHId+hWghTh8gdWAABYBEkCl8RrdwAAAABJRU5ErkJggg==
+                ">
+                <img style="--i:4.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAhUlEQVR4nGNkQAJm+jb/kfmnLh5hRObDFU3unvf/65fv/x/eew7GZmga4UBZXPd/bnrF/71bT/wHsZHlmNAVq6moMahoymMYwoTVaCwAQ+GtO7cY7lx/iF+hsAQ/mL527RqGQhYYA+RDcwsbhpLyfLjk4iXz/sOCCCWc0H169+VlzHAkBADMGjMoG3G8CwAAAABJRU5ErkJggg==
+                ">
+                <img style="--i:5.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAuElEQVR4nGNkYGBgMNO3+c8ABacuHmFEFjsF5YMFctMr/j+89/z/1y/f/4P4yGJmUA0sIB1vX3z8//jBAwZnFzeG/Ud3MzhauzKA+JvWbodZxMAEY8gqKDBoaWkxRAcnMqxevxospqWlhakQBp69eMKQn1nIMHF6P4o4XCHIKhB4++IjWHFP50RMhcIS/GDOtWvX4BIgjch8JpCvpCRkwB6BAZCp6AAcRsriuvBwvPvyMooYjE80AAAT4FjgT9b85wAAAABJRU5ErkJggg==
+                ">
+                <img style="--i:6.0" class="char" src="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAuklEQVR4nGNkgAIzfZv/DEjg1MUjjMh8uKLc9Ir/X798/7936wkwRtfIoCyuC1f08N7z/wHuEf8nd88DK1YW14UrZoExThy8yJCWlApmX75wFUzffXkZbj1c4bVr18C0roE2g7OLG4OWlhZI43+YYrDCxw8eMKipqDEIS/AzPHvxhGHvnl0Y/mCCMW7ducXQ3tbDICUhw5CbVwDmgzTCANhYkKNBVsoqKMAltm3YiuJGOAPZh+geIQkAAG08Vd0+jTeiAAAAAElFTkSuQmCC
+                ">
+            </div>
+            <div class="particles">
+                <div class="gradient"></div>
+            </div> 
+        </div>
+        <canvas id="bevy">
+            Javascript and canvas support is required
+        </canvas>
+        <script>
+            const loading_screen = document.getElementById('loading-screen');
+            const bevy = document.getElementById('bevy');
+            const observer = new MutationObserver(() => {
+                if (bevy.height > 1) {
+                    console.log("[ABOBA] Hide loading screen");
+                    // load
+                    loading_screen.classList.add("hide");
+                    observer.disconnect();
+                    setTimeout(() => {
+                        loading_screen.style.display = 'none';
+                    }, 500);
+                }
+            });
+            observer.observe(bevy, { attributeFilter: ['height'] });
+        </script>
+    </div>
+</body>
+
+</html>

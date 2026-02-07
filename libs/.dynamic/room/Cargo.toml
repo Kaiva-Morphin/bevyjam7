@@ -1,0 +1,10 @@
+[package]
+name = "room"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = {version = "*", default-features = false}
+avian2d = {version = "*", default-features = false}
+properties = { version = "0.1.0", path = "../../properties" }
+bevy_ecs_tiled = { version = "0.11.2", path = "../../.static/bevy_ecs_tiled", default-features = false }

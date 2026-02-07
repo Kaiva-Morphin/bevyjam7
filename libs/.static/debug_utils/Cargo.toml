@@ -1,0 +1,9 @@
+[package]
+name = "debug_utils"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = {version = "*", default-features = false}
+bevy-inspector-egui.workspace = true
+avian2d = "*"

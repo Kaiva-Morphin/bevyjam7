@@ -1,0 +1,17 @@
+[target.x86_64-pc-windows-msvc]
+# ```
+# cargo install -f cargo-binutils
+# rustup component add llvm-tools
+# ```
+linker = "rust-lld.exe"
+rustdocflags = ["-Clinker=rust-lld.exe"]
+rustflags = [
+    "-Zshare-generics=n", # This needs to be off if you use dynamic linking on Windows.
+  # "-Zthreads=0",
+]
+
+# [target.wasm32-unknown-unknown]
+# rustflags = ["-C", "target-feature=+atomics,+bulk-memory,+mutable-globals"]
+
+[target.wasm32-unknown-unknown]
+rustflags = ['--cfg', 'getrandom_backend="wasm_js"']

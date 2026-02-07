@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="1" nextlayerid="8" nextobjectid="1">
+ <properties>
+  <property name="NoOverlappingOutput" type="bool" value="false"/>
+ </properties>
+ <tileset firstgid="1" source="tilemap.tsx"/>
+ <tileset firstgid="257" source=":/automap-tiles.tsx"/>
+ <layer id="3" name="output_autowall" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYMANWBhRaVzACAeNbs4oGAWjYHABAGhfAKY=
+  </chunk>
+  </data>
+ </layer>
+ <layer id="2" name="input_walls" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYGBgUGKAAGUorQilmRkhNAuUHgWjYBQMLwAAuikAcA==
+  </chunk>
+  </data>
+ </layer>
+ <layer id="7" name="input_autowall" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYKA9MKKDHaNgFIwC0gEAuHgAMw==
+  </chunk>
+  </data>
+ </layer>
+</map>

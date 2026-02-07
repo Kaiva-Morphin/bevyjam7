@@ -1,0 +1,125 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map.tmx",
+    "automapping.whileDrawing": true,
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "Все файлы (*)",
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/kaiv/Downloads/infinite.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -0.6666666666667425,
+                "y": -189.33333333333337
+            }
+        },
+        "C:/Users/tiles/orthogonal_1.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 9,
+            "viewCenter": {
+                "x": 255.66666666666663,
+                "y": -383.99999999999994
+            }
+        },
+        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_flat_top_odd.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": -7.666666666666686,
+                "y": -102.66666666666663
+            }
+        },
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_pointy_top_odd.tmx": {
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 11,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 31.13636363636364,
+                "y": 38.09090909090909
+            }
+        },
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/tiles/drjamgo_hex_16x16.tsx": {
+            "scaleInDock": 5.5
+        },
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/tiles/simple hex flat top.tsx": {
+            "scaleInDock": 1
+        },
+        "map.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 0.75,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": -338,
+                "y": 329.33333333333337
+            }
+        },
+        "rules.tmx": {
+            "scale": 11,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 64.04545454545455,
+                "y": 64
+            }
+        },
+        "tilemap.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 4,
+            "scaleInEditor": 11
+        }
+    },
+    "last.imagePath": "R:/prog/bevyjam7/game/assets/maps/v0.1",
+    "last.objectTypesPath": "R:/prog/bevyjam7/game/tiled_types_export.json",
+    "map.fixedSize": false,
+    "map.height": 16,
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": "3",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 16,
+    "openFiles": [
+        "map.tmx",
+        "tilemap.tsx",
+        "rules.tmx",
+        "C:/Users/kaiv/Downloads/infinite.tmx",
+        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tmx"
+    ],
+    "project": "map.tiled-project",
+    "property.type": "room::MapRoom",
+    "recentFiles": [
+        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tmx",
+        "C:/Users/kaiv/Downloads/infinite.tmx",
+        "rules.tmx",
+        "tilemap.tsx",
+        "map.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_pointy_top_odd.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_flat_top_odd.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}

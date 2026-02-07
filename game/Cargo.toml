@@ -1,0 +1,60 @@
+[package]
+name = "game"
+version = "0.0.0-template"
+edition = "2024"
+
+[dependencies]
+bevy = { workspace = true, features = ["mp3", "wav", "dynamic_linking", "jpeg"]  }
+getrandom = { version = "0.2.17", features = ["js"] }
+bevy_animation.workspace = true
+log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
+bevy-inspector-egui.workspace = true
+thiserror = "2.0.18"
+tiled = "0.15.0"
+avian2d = "0.5.0"
+use = "0.0.1-pre.0"
+kaiv_utils = { workspace = true, features = ["bevy_support"] }
+properties = { version = "0.1.0", path = "../libs/properties" }
+utils = { version = "0.1.0", path = "../libs/utils" }
+room = { version = "0.1.0", path = "../libs/.dynamic/room" }
+camera = { version = "0.1.0", path = "../libs/.dynamic/camera" }
+debug_utils = { version = "0.1.0", path = "../libs/.static/debug_utils" }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+bevy = { workspace = true, features = ["file_watcher", "embedded_watcher"]}
+bevy_ecs_tiled = { version = "0.11.2", path = "../libs/.static/bevy_ecs_tiled", features = ["user_properties", "avian"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+bevy = { workspace = true, features = ["web"] }
+bevy_ecs_tiled = { version = "0.11.2", path = "../libs/.static/bevy_ecs_tiled", features = ["user_properties", "wasm", "avian"] }
+
+[profile.web-release]
+inherits = "release"
+opt-level = "s"
+strip = "debuginfo"
+
+[profile.dev.package.wgpu-types]
+debug-assertions = false
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+# Compile the entire crate as one unit.
+# Slows compile times, marginal improvements.
+codegen-units = 1
+# Do a second optimization pass over the entire program, including dependencies.
+# Slows compile times, marginal improvements.
+lto = "thin"
+
+
+[[bin]]
+name = "game"
+path = "src/main.rs"
+
+[[bin]]
+name = "test"
+path = "src/test.rs"

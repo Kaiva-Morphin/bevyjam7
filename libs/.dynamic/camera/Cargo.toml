@@ -1,0 +1,10 @@
+[package]
+name = "camera"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = {version = "*", default-features = false}
+kaiv_utils = { workspace = true, features = ["bevy_support"] }
+properties = { version = "0.1.0", path = "../../properties" }
+room = { version = "0.1.0", path = "../room" }

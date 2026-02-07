@@ -1,0 +1,101 @@
+:root {
+    /* --loading-screen-bg-color: #000000; */
+    /* --loading-screen-bg-color: #FF0000; */
+    --gradient-color: #FF0000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+.center {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: width 0.3s ease-in-out, height 0.3s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.hide {
+    /* opacity: 0; */
+    width: 100%;
+    height: 100%;
+}
+
+#loading-screen {
+    position: absolute;
+    /* background-color: var(--loading-screen-bg-color); */
+}
+
+.char {
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    animation: jump 0.5s cubic-bezier(0.636, 0.111, 0.853, 0.395) infinite alternate;
+    animation-delay: calc(var(--i) * -0.1s);
+    transition: transform 0.3s ease-out;
+    transform: scale(1) translate(0px, 0px);
+}
+
+.hide > * > .char {
+    transform: scale(0) translate(0px, -200px);
+}
+
+.bg {
+    background-color: rgba(0, 0, 0, 1.0);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.hide > .bg {
+    opacity: 0;
+    height: 0%;
+}
+
+@keyframes jump {
+    0% {
+        translate: 0px 0px;
+    }
+    24% {
+        translate: 0px 0px;
+    }
+    25% {
+        translate: 0px 8px;
+    }
+    49% {
+        translate: 0px 8px;
+    }
+    50% {
+        translate: 0px 16px;
+    }
+    74% {
+        translate: 0px 16px;
+    }
+    75% {
+        translate: 0px 24px;
+    }
+    100% {
+        translate: 0px 24px;
+    }
+}
+
+#bevy {
+    /* Hide Bevy app before it loads */
+    height: 0;
+    width: 100%;
+    height: 100%;
+}
+    

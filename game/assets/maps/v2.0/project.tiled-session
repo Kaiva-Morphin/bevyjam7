@@ -1,0 +1,106 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "main.tmx",
+    "automapping.whileDrawing": false,
+    "expandedProjectPaths": [
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/demo_platformer",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/isometric",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/orthogonal",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/demo_platformer/tilesets",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps",
+        ".",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/tiles",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal"
+    ],
+    "file.lastUsedOpenFilter": "Все файлы (*)",
+    "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "R:/prog/pre_jam/game/assets/tilemaps/v1.0/map.tmx": {
+            "scale": 0.49772949218749996,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -611.7780938833571,
+                "y": 120.54740766174518
+            }
+        },
+        "R:/prog/pre_jam/game/assets/tilemaps/v1.0/map.tmx#tilemap": {
+            "scaleInDock": 1
+        },
+        "R:/prog/pre_jam/game/assets/tilemaps/v1.0/rules.tmx": {
+            "scale": 3.9818359374999996,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 127.95605042429,
+                "y": 128.0816206406043
+            }
+        },
+        "autobg.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 111.36363636363637,
+                "y": 47.45454545454545
+            }
+        },
+        "main.tmx": {
+            "scale": 3,
+            "selectedLayer": 11,
+            "viewCenter": {
+                "x": 697.8333333333333,
+                "y": -482
+            }
+        },
+        "main.tsx": {
+            "scaleInDock": 0.75,
+            "scaleInEditor": 8
+        },
+        "rules.tmx": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 204.49999999999997,
+                "y": 64.33333333333334
+            }
+        }
+    },
+    "last.imagePath": "R:/prog/pre_jam/game/assets/tilemaps/v2.0",
+    "last.objectTypesPath": "R:/prog/bevyjam7/libs/bevy_ecs_tiled/examples/properties_basic.json",
+    "loadedWorlds": [
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/worlds/orthogonal.world"
+    ],
+    "map.fixedSize": false,
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": "3",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "main.tmx"
+    ],
+    "project": "project.tiled-project",
+    "property.type": "properties_basic::SpawnPoint",
+    "recentFiles": [
+        "main.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/worlds/orthogonal/world_map001.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/finite_flat_top_even.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_pointy_top_odd.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/tiles/drjamgo_hex_16x16.tsx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/finite_flat_top_odd.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/orthogonal/multiple_tilesets.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/orthogonal/multiple_layers_with_colliders.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/orthogonal/infinite_embedded.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/orthogonal/infinite.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/orthogonal/finite_parallax.tmx",
+        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/orthogonal/finite.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

@@ -1,0 +1,96 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "pad_test.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "R:/prog/pre_jam/game/assets/tilemaps/test/rule4.tmx": {
+            "scale": 4.6460937499999995,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 128.06457037161596,
+                "y": -128.06457037161596
+            }
+        },
+        "R:/prog/pre_jam/game/assets/tilemaps/test/test16tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "R:/prog/pre_jam/game/assets/tilemaps/test/tilemap2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
+        "map.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -1041.6666666666665,
+                "y": 90
+            }
+        },
+        "map.tmx#tilemap": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "pad_test.tmx": {
+            "scale": 2.681770833333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 246.66537191687706,
+                "y": 165.18935715672947
+            }
+        },
+        "rules.tmx": {
+            "scale": 8,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 49.3125,
+                "y": 27
+            }
+        },
+        "tilemap.tsx": {
+            "scaleInDock": 5.5,
+            "scaleInEditor": 11
+        },
+        "tilemap2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 11
+        }
+    },
+    "last.imagePath": "R:/prog/pre_jam/game/assets/tilemaps/v1.0",
+    "map.fixedSize": true,
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": "3",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "map.tmx",
+        "rules.tmx",
+        "tilemap.tsx",
+        "pad_test.tmx"
+    ],
+    "project": "project.tiled-project",
+    "recentFiles": [
+        "map.tmx",
+        "rules.tmx",
+        "tilemap.tsx",
+        "pad_test.tmx",
+        "R:/prog/pre_jam/game/assets/tilemaps/test/rule4.tmx",
+        "tilemap2.tsx",
+        "R:/prog/pre_jam/game/assets/tilemaps/test/tilemap2.tsx"
+    ],
+    "tileset.embedInMap": false,
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.margin": 4,
+    "tileset.spacing": 4,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

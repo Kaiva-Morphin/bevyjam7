@@ -1,0 +1,8 @@
+[build]
+target = "web/index.html"
+dist = "../target/trunk"
+public_url = ""
+
+[serve]
+no_spa = true
+port = 8080

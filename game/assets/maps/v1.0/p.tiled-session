@@ -1,0 +1,101 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "test.tsx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "map.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -779.5,
+                "y": 93
+            }
+        },
+        "map.tmx#tilemap": {
+            "scaleInDock": 1
+        },
+        "pad_test.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 128,
+                "y": -0.5
+            }
+        },
+        "pad_test.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 16
+        },
+        "rules.tmx": {
+            "scale": 4.6460937499999995,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 140.11770640659157,
+                "y": 107.83252059862119
+            }
+        },
+        "test.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 247.75,
+                "y": -91
+            }
+        },
+        "test.tsx": {
+            "scaleInDock": 4,
+            "scaleInEditor": 8
+        },
+        "tilemap.tsx": {
+            "scaleInDock": 5.5,
+            "scaleInEditor": 1
+        },
+        "tilemap_old.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "R:/prog/pre_jam/game/assets/tilemaps/v1.0",
+    "last.objectTypesPath": "R:/prog/pre_jam/game/assets_raw/objects.json",
+    "map.fixedSize": false,
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": "3",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "test.tmx",
+        "test.tsx",
+        "tilemap_old.tsx",
+        "tilemap.tsx"
+    ],
+    "project": "p.tiled-project",
+    "property.type": "bevy_render::view::visibility::ViewVisibility",
+    "recentFiles": [
+        "tilemap.tsx",
+        "tilemap_old.tsx",
+        "test.tsx",
+        "test.tmx",
+        "rules.tmx",
+        "pad_test.tmx",
+        "pad_test.tsx",
+        "map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.margin": 0,
+    "tileset.spacing": 4,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
