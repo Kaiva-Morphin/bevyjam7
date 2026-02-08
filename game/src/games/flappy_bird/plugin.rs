@@ -7,7 +7,7 @@ pub struct FlappyBirdPlugin;
 // TODO!: TRANSITION EASINGS
 
 const STATE: AppState = AppState::FlappyBird;
-const NEXT_STATE: AppState = AppState::PacmanEnter;
+const NEXT_STATE: AppState = AppState::Geometry;
 
 
 const WIDTH : f32 = 576.0;
