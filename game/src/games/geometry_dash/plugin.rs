@@ -139,13 +139,13 @@ fn camera_handler(
 
 fn controller(
     mut cmd: Commands,
-    mut cube_vel_q: Query<&mut LinearVelocity, With<Cube>>,
+    // mut cube_vel_q: Query<&mut LinearVelocity, With<Cube>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
     let mut velocity = Vec2::X * MS;
     if keyboard_input.pressed(KeyCode::Space) { velocity.y += 10.0; };
-    let mut vel = cube_vel_q.single_mut().expect("no cube(");
-    *vel = LinearVelocity(velocity);
+    // let mut vel = cube_vel_q.single_mut().expect("no cube(");
+    // *vel = LinearVelocity(velocity);
 }
 
 fn cleanup(

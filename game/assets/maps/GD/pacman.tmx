@@ -24,13 +24,13 @@
  <objectgroup id="4" name="spawners">
   <object id="1" x="-247.5" y="24.5">
    <properties>
-    <property name="SpawnPoint" type="class" propertytype="yaro::games::geometry_dash::plugin::SpawnPoint"/>
+    <property name="SpawnPoint" type="class" propertytype="game::games::geometry_dash::plugin::SpawnPoint"/>
    </properties>
    <point/>
   </object>
   <object id="3" x="0.5" y="126">
    <properties>
-    <property name="CameraCenter" type="class" propertytype="yaro::games::geometry_dash::plugin::CameraCenter"/>
+    <property name="CameraCenter" type="class" propertytype="game::games::geometry_dash::plugin::CameraCenter"/>
    </properties>
    <point/>
   </object>

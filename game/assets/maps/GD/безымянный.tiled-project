@@ -9580,12 +9580,9 @@
                     "type": "class",
                     "value": {
                         "matrix3": {
-                            "x_axis": {
-                            },
-                            "y_axis": {
-                            },
-                            "z_axis": {
-                            }
+                            "x_axis": null,
+                            "y_axis": null,
+                            "z_axis": null
                         },
                         "translation": {
                             "x": 0,
@@ -10666,10 +10663,8 @@
                     "type": "class",
                     "value": {
                         "matrix2": {
-                            "x_axis": {
-                            },
-                            "y_axis": {
-                            }
+                            "x_axis": null,
+                            "y_axis": null
                         },
                         "translation": {
                             "x": 0,
@@ -13926,6 +13921,95 @@
         {
             "id": 657,
             "name": "yaro::tilemap::plugin::SpawnPoint:::Variant",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Unknown",
+                "Player"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 658,
+            "members": [
+            ],
+            "name": "game::games::geometry_dash::plugin::CameraCenter",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 659,
+            "members": [
+            ],
+            "name": "game::games::geometry_dash::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 660,
+            "members": [
+            ],
+            "name": "game::games::platformer::plugin::NextTrigger",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 661,
+            "members": [
+            ],
+            "name": "game::games::platformer::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 662,
+            "members": [
+            ],
+            "name": "game::games::platformer::plugin::StopTrigger",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 663,
+            "members": [
+                {
+                    "name": ":variant",
+                    "propertyType": "game::tilemap::plugin::SpawnPoint:::Variant",
+                    "type": "string",
+                    "value": "Unknown"
+                }
+            ],
+            "name": "game::tilemap::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "id": 664,
+            "name": "game::tilemap::plugin::SpawnPoint:::Variant",
             "storageType": "string",
             "type": "enum",
             "values": [

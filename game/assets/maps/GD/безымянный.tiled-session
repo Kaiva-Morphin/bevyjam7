@@ -88,7 +88,7 @@
         "pacman.tmx"
     ],
     "project": "безымянный.tiled-project",
-    "property.type": "yaro::games::geometry_dash::plugin::SpawnPoint",
+    "property.type": "game::games::geometry_dash::plugin::CameraCenter",
     "recentFiles": [
         "rules.tmx",
         "GD tiles.tsx",
