@@ -1710,6 +1710,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_tweening"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af8511c4208a4eb3fdec028088a2ff63f2a4ae4a7079eeb56a0cffae19fe064f"
+dependencies = [
+ "bevy",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "bevy_ui"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2960,6 +2970,7 @@ dependencies = [
  "bevy_asset_loader",
  "bevy_easy_gif",
  "bevy_ecs_tiled",
+ "bevy_tweening",
  "camera",
  "debug_utils",
  "getrandom 0.2.17",

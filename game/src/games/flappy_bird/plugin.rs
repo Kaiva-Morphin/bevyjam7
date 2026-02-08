@@ -118,6 +118,7 @@ fn setup(
         CollisionEventsEnabled,
         Transform::from_translation(Vec3::new(0.0, -HALF_HEIGHT, 0.0)),
     ));
+
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Top"),
@@ -300,7 +301,6 @@ fn tick_game(
             e
         };
         let r = rng.random_range(-PIPE_SPREAD..=PIPE_SPREAD);
-        info!("{r}");
         cmd.entity(e).insert(
             // Transform::from_translation(vec3(WIDTH, rng.random_range(-PIPE_SPREAD..=PIPE_SPREAD), 0.0))
             Transform::from_translation(vec3(WIDTH, r, 0.0))

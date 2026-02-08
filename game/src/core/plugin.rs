@@ -1,6 +1,7 @@
 use avian2d::PhysicsPlugins;
 use bevy::prelude::*;
 use bevy_easy_gif::GifPlugin;
+use bevy_ecs_tiled::prelude::TilemapPlugin;
 use bevy_inspector_egui::bevy_egui::{EguiPlugin, EguiPreUpdateSet};
 use camera::CameraPlugin;
 use debug_utils::{
@@ -9,7 +10,7 @@ use debug_utils::{
 };
 use room::RoomPlugin;
 
-use crate::{character::plugin::CharacterPlugin};
+use crate::{character::plugin::CharacterPlugin, tilemap::plugin::MapPlugin};
 
 #[derive(Default)]
 pub struct CorePlugin;
@@ -39,12 +40,13 @@ impl Plugin for CorePlugin {
                 PhysicsPlugins::default(),
                 EguiPlugin::default(),
                 CameraPlugin::default(),
-                RoomPlugin,
+                RoomPlugin::uninited(),
                 CharacterPlugin,
                 SwitchableEguiInspectorPlugin::default(),
                 DebugOverlayPlugin::default(),
                 SwitchableAvianDebugPlugin::enabled(),
                 GifPlugin,
+                MapPlugin,
                 // GameStatesPlugin,
                 // PixelCameraPlugin,
                 // CameraControllerPlugin,

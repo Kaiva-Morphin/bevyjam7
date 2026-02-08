@@ -3,6 +3,8 @@ use std::{
     path::Path,
 };
 
+use bevy::log::info;
+
 macro_rules! maps {
     ($path:ident => $($map_path:expr)*$(;)?) => {
         match $path {
@@ -17,9 +19,12 @@ macro_rules! maps {
 pub fn map_matcher(path: &Path) -> Box<dyn Read + 'static> {
     let path = path.to_str().expect("Invalid path").replace("\\", "/");
     let p = path.as_str();
+    info!("Loading map: {}", p);
     maps!(
         p =>
         "maps/v0.1/map.tmx"
         "maps/v0.1/tilemap.tsx"
+        "maps/platformer/map.tmx"
+        "maps/platformer/tilemap.tsx"
     )
 }

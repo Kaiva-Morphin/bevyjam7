@@ -19,12 +19,12 @@ impl Plugin for MapPlugin {
                 TiledPlugin(conf),
                 TiledPhysicsPlugin::<TiledPhysicsAvianBackend>::default(),
             ))
-            .register_type::<SpawnPoint>()
-            .add_systems(Startup, spawn_map)
-            .add_observer(on_map_created)
-            .add_observer(on_collider_spawned)
-            .add_observer(on_spawnpoint)
-            .add_observer(on_room_spawned)
+            // .register_type::<SpawnPoint>()
+            // .add_systems(Startup, spawn_map)
+            // .add_observer(on_map_created)
+            // .add_observer(on_collider_spawned)
+            // .add_observer(on_spawnpoint)
+            // .add_observer(on_room_spawned)
             ;
     }
 }
@@ -81,34 +81,34 @@ fn on_spawnpoint(
 }
 
 
-// fn on_layer_spawned(
-//     layer_created: On<TiledEvent<LayerCreated>>,
-//     assets: Res<Assets<TiledMapAsset>>,
-//     tiled_objects: Query<(&TiledObject, &Transform)>,
-//     children: Query<&Children>,
-//     mut cmd: Commands
-// ) {
-//     let Some(layer) = layer_created.event().get_layer(&assets) else {
-//         return;
-//     };
-//     if layer.name == "Occluders" {
-//         let Ok(lc) = children.get(layer_created.event().origin) else {return;};
-//         for child in lc.iter() {
-//             let Ok(tiled_object) = tiled_objects.get(child) else {continue;};
-//             let (TiledObject::Rectangle { width, height }, t) = tiled_object else {continue;};
-//             cmd.spawn((
-//                 Name::new("Occluder"),
-//                 Transform::from_translation(t.translation + vec3(*width / 2.0, -*height / 2.0, 0.0)),
-//             ));
-//             // cmd.entity(child).despawn();
-//             if let Ok(c) = children.get(child) {
-//                 for c in c.iter() {
-//                     cmd.entity(c).despawn();
-//                 }
-//             }
-//         }
-//     }
-// }
+fn on_layer_spawned(
+    layer_created: On<TiledEvent<LayerCreated>>,
+    assets: Res<Assets<TiledMapAsset>>,
+    tiled_objects: Query<(&TiledObject, &Transform)>,
+    children: Query<&Children>,
+    mut cmd: Commands
+) {
+    let Some(layer) = layer_created.event().get_layer(&assets) else {
+        return;
+    };
+    if layer.name == "Occluders" {
+        let Ok(lc) = children.get(layer_created.event().origin) else {return;};
+        for child in lc.iter() {
+            let Ok(tiled_object) = tiled_objects.get(child) else {continue;};
+            let (TiledObject::Rectangle { width, height }, t) = tiled_object else {continue;};
+            cmd.spawn((
+                Name::new("Occluder"),
+                Transform::from_translation(t.translation + vec3(*width / 2.0, -*height / 2.0, 0.0)),
+            ));
+            // cmd.entity(child).despawn();
+            if let Ok(c) = children.get(child) {
+                for c in c.iter() {
+                    cmd.entity(c).despawn();
+                }
+            }
+        }
+    }
+}
 
 
 fn on_map_created(
