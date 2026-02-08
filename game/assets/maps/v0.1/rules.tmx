@@ -8,14 +8,14 @@
  <layer id="3" name="output_autowall" width="16" height="16">
   <data encoding="base64" compression="zlib">
    <chunk x="0" y="0" width="16" height="16">
-   eJxjYMANWBhRaVzACAeNbs4oGAWjYHABAGhfAKY=
+   eJxjYMANWBhRaVzACAeNbs5gBkED7YBRMAoGAAAAW94A+A==
   </chunk>
   </data>
  </layer>
  <layer id="2" name="input_walls" width="16" height="16">
   <data encoding="base64" compression="zlib">
    <chunk x="0" y="0" width="16" height="16">
-   eJxjYGBgUGKAAGUorQilmRkhNAuUHgWjYBQMLwAAuikAcA==
+   eJxjYGBgUGKAAGUorQilmRkhNAuUHs5AbKAdMApGwQAAAPt5AIY=
   </chunk>
   </data>
  </layer>

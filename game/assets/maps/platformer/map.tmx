@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="5" nextobjectid="7">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="12" nextobjectid="20">
  <tileset firstgid="1" source="tilemap.tsx"/>
  <layer id="1" name="Слой тайлов 1" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   <chunk x="0" y="-16" width="16" height="16">
+   <chunk x="-16" y="0" width="16" height="16">
    eJxjYBgFo2AU0BswAjETBfpZgJiVCvoBCDgAFg==
   </chunk>
-   <chunk x="16" y="-16" width="16" height="16">
+   <chunk x="0" y="0" width="16" height="16">
    eJxjYBgFo2AUkAuY0DAzifpZ0TAbnfUDAB2wAEA=
   </chunk>
-   <chunk x="0" y="0" width="16" height="16">
+   <chunk x="-16" y="16" width="16" height="16">
    eJxjZGBgYCIDs47iQYE5RvEopgADAFBJBoY=
   </chunk>
-   <chunk x="16" y="0" width="16" height="16">
+   <chunk x="0" y="16" width="16" height="16">
    eJxjZWBgYEXDTGiYmQEBGNHE0fViw2xI+lmI1DOqnzj9HERgTiT97ETqGdU/MvQDACBCBcE=
   </chunk>
   </data>
  </layer>
  <objectgroup id="2" name="Слой объектов 1">
-  <object id="1" x="15.9274" y="-6.88751">
+  <object id="7" x="-232" y="235.5">
    <point/>
   </object>
-  <object id="2" x="419.707" y="223.413" width="26.6891" height="28.411"/>
- </objectgroup>
- <objectgroup id="4" name="Слой объектов 2">
-  <object id="4" x="0.430469" y="-159.704" width="511.397" height="303.481"/>
+  <object id="14" x="192" y="112" width="16" height="144"/>
+  <object id="15" x="176" y="160" width="16" height="96"/>
+  <object id="17" x="160" y="416" width="32" height="32"/>
+  <object id="18" x="-256" y="64" width="512" height="448">
+   <properties>
+    <property name="asd" type="class" propertytype="room::MapRoom">
+     <properties>
+      <property name="zoom" type="float" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
  </objectgroup>
 </map>

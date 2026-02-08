@@ -13491,6 +13491,17 @@
   },
   {
     "id": 452,
+    "name": "kaiv::games::platformer::plugin::NextTrigger",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 452,
     "name": "room::MapRoom",
     "type": "class",
     "useAs": [

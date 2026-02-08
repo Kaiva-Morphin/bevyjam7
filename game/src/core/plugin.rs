@@ -39,7 +39,7 @@ impl Plugin for CorePlugin {
                 
                 PhysicsPlugins::default(),
                 EguiPlugin::default(),
-                CameraPlugin::default(),
+                CameraPlugin{initial_target_zoom: 1.0},
                 RoomPlugin::uninited(),
                 CharacterPlugin,
                 SwitchableEguiInspectorPlugin::default(),

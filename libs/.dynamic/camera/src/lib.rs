@@ -7,7 +7,7 @@ use room::*;
 
 
 
-pub struct CameraPlugin{initial_target_zoom: f32}
+pub struct CameraPlugin{pub initial_target_zoom: f32}
 impl Default for CameraPlugin {
     fn default() -> Self {
         Self{initial_target_zoom: 0.5}
@@ -112,10 +112,11 @@ fn window_resize(
     canvas: Res<ViewportCanvas>,
 ) {
     let Some(e) = r.read().last() else {return;};
+    if e.width == 0.0 || e.height == 0.0 {return;}
     let Some(img) = images.get_mut(&canvas.image) else {return;};
     let target_aspect = TARGET_WIDTH as f32 / TARGET_HEIGHT as f32;
-    let w = (e.width as f32).max(1.0);
-    let h = (e.height as f32).max(1.0);
+    let w = e.width as f32;
+    let h = e.height as f32;
     let aspect = w / h;
     if target_aspect > aspect {
         img.resize(Extent3d{width: e.width as u32, height: (e.width as f32 / target_aspect) as u32, ..Default::default()});
@@ -144,11 +145,11 @@ impl CameraMode {
 
 #[derive(Resource)]
 pub struct CameraController {
-    focused_entities: VecDeque<Entity>,
-    camera_mode: CameraMode,
-    target_zoom: f32,
-    follow_speed: f32,
-    zoom_speed: f32,
+    pub focused_entities: VecDeque<Entity>,
+    pub camera_mode: CameraMode,
+    pub target_zoom: f32,
+    pub follow_speed: f32,
+    pub zoom_speed: f32,
 }
 
 impl Default for CameraController {
@@ -193,7 +194,7 @@ fn tick_camera(
 ) {
     let dt = time.delta_secs().max(MAX_DT);
     let Some(entity) = camera_controller.focused_entities.front() else {return;};
-    let Ok(cam_target) = targets.get(*entity) else {warn!("Target without transform in cam focus"); return;};
+    let Ok(cam_target) = targets.get(*entity) else {warn!("Target without transform in cam focus, deleting"); camera_controller.focused_entities.pop_front(); return;};
     let Ok((cam, mut p, mut t, gt)) = camera.single_mut() else {warn!("Camera without transform"); return;};
     let Projection::Orthographic(p) = &mut *p else {warn!("Camera without perspective projection"); return;};
     let Some(window) = window.iter().next() else {return;};
