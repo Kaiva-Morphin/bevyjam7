@@ -23,6 +23,7 @@ bevy_asset_loader = { version = "0.25.0", features = ["2d"] }
 bevy_easy_gif = "0.3.0"
 rand = "0.9.2"
 bevy_tweening = "0.15.0"
+paste = "1.0.15"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 bevy = { workspace = true, features = ["file_watcher", "embedded_watcher"]}

@@ -1,7 +1,6 @@
 use avian2d::PhysicsPlugins;
 use bevy::prelude::*;
 use bevy_easy_gif::GifPlugin;
-use bevy_ecs_tiled::prelude::TilemapPlugin;
 use bevy_inspector_egui::bevy_egui::{EguiPlugin, EguiPreUpdateSet};
 use camera::CameraPlugin;
 use debug_utils::{
@@ -22,7 +21,6 @@ impl Plugin for CorePlugin {
                 DefaultPlugins
                     .set(WindowPlugin {
                         primary_window: Some(Window {
-                            // resolution: WindowResolution::new(1000., 1000.),
                             title: "Game".to_string(),
                             canvas: Some("#bevy".to_owned()),
                             fit_canvas_to_parent: true,
@@ -36,7 +34,6 @@ impl Plugin for CorePlugin {
                         ..default()
                     })
                     .set(ImagePlugin::default_nearest()),
-                
                 PhysicsPlugins::default(),
                 EguiPlugin::default(),
                 CameraPlugin{initial_target_zoom: 1.0},

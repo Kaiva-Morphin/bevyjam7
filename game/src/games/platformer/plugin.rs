@@ -123,7 +123,6 @@ fn setup(
     latest.state = STATE;
     cmd.insert_resource(RoomController::default());
 
-    info!("Platformer setup");
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Map"),
@@ -193,7 +192,6 @@ fn tick (
             linvel.x = linvel.x.move_towards(target, s * dt);
         }
     }
-
 }
 
 fn cleanup(
