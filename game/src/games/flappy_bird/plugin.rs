@@ -57,8 +57,6 @@ impl Plugin for FlappyBirdPlugin {
             .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
             .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
-
-            .add_observer(collision_handler)
             ;
     }
 }
@@ -95,6 +93,9 @@ fn setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
+    cmd.spawn(DespawnOnExit(STATE))
+        .observe(collision_handler);
+
     cmd.spawn((
         DespawnOnExit(STATE),
         Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
