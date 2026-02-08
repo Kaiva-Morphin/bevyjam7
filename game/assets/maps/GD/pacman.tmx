@@ -1,34 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="9" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="17" nextobjectid="9">
  <tileset firstgid="1" source="GD tiles.tsx"/>
- <layer id="1" name="base" width="30" height="20">
+ <layer id="10" name="white_back" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjZmBgYB6mmJFMOVL0M41iivBAp5GhjikFAEGbAnk=
+   eJxjYBgFIMBMJh7VTx39o2BgAAA5JgD9
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
-   eJxjZmBgYB6kmHEQuIEQZhrFFOGBjr+hjikFAFKDAn8=
+   eJxjYBjZgHkUDygeBQMLAI5eASE=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYBjZgBmKR/UPjP5RMLAAAFk4ACU=
+  </chunk>
+   <chunk x="-16" y="16" width="16" height="16">
+   eJxjYIAAZjIxw6h+qugfBaNgIAAANTUA/Q==
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   eJxjZmBgYB7FA4ZHwSgYSAAArm0BIQ==
+  </chunk>
+   <chunk x="16" y="16" width="16" height="16">
+   eJxjZmBgYGYgHzCP6qdI/ygYBQMJAH04ACU=
   </chunk>
   </data>
  </layer>
- <layer id="3" name="mid" width="30" height="20" visible="0">
+ <layer id="9" name="yellow_back" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjYBgFlACmUUwRHgUDCwBZTwCh
+   eJxjYBgFo2BwACYy8Kh+yvQDAHaQAJ0=
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
-   eJxjYBgFlACmUUwRHgUDCwBZTwCh
+   eJxjYBgFo2DgANMoHlAMAJWAAME=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYBgFo2DgABMSHtVPf/0AIvAAJQ==
+  </chunk>
+   <chunk x="-16" y="16" width="16" height="16">
+   eJxjYBgFgwEwkYlHwSigBAAARkgAHQ==
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   eJxjYBgFAwmYKMSjYBRQAgBQQAAh
+  </chunk>
+   <chunk x="16" y="16" width="16" height="16">
+   eJxjYBgFAwmYkPAoGAX0BgAS6AAH
+  </chunk>
+  </data>
+ </layer>
+ <layer id="14" name="white_aboba" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYBgFIMA8qn9A9Y+CgQEALjAAEw==
+  </chunk>
+  </data>
+ </layer>
+ <layer id="15" name="yellow_aboba" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="-16" y="0" width="16" height="16">
+   eJxjYBgFo2DgAdOo/gHRDwAOIAAN
+  </chunk>
+  </data>
+ </layer>
+ <layer id="16" name="white_end" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="16" y="16" width="16" height="16">
+   eJxjYIAAZgbKwKj+UTAKhh4AAEAwABM=
+  </chunk>
+  </data>
+ </layer>
+ <layer id="13" name="white_front" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="-16" y="0" width="16" height="16">
+   eJxjYBgFo2AU0BIwI2Fqm0upfgAKMAAQ
+  </chunk>
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYBgFo2AUDBbADMX45Ck1HxkAAAe0AA0=
+  </chunk>
+  </data>
+ </layer>
+ <layer id="12" name="yellow_front" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="-16" y="0" width="16" height="16">
+   eJxjYBgFowA/YBpg/aOAdgAACvAABQ==
+  </chunk>
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYBgFww0wQTEpagipJ8bOUTD0AAAcIAAN
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYBgFQxkwDbQDRsGQBgAIgAAD
   </chunk>
   </data>
  </layer>
  <objectgroup id="4" name="spawners">
-  <object id="1" x="-247.5" y="24.5">
+  <object id="1" x="-198.25" y="131">
    <properties>
     <property name="SpawnPoint" type="class" propertytype="game::games::geometry_dash::plugin::SpawnPoint"/>
    </properties>
    <point/>
   </object>
-  <object id="3" x="0.5" y="126">
+  <object id="3" x="40" y="217.5">
    <properties>
     <property name="CameraCenter" type="class" propertytype="game::games::geometry_dash::plugin::CameraCenter"/>
    </properties>

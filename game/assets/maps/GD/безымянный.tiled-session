@@ -10,9 +10,6 @@
         "C:/Users/yaro4/Desktop/ads"
     ],
     "fileStates": {
-        ":/automap-tiles.tsx": {
-            "scaleInDock": 1
-        },
         "C:/Users/yaro4/Desktop/ads/map.tmx": {
             "scale": 2.2525390625,
             "selectedLayer": 3,
@@ -48,16 +45,19 @@
             "scaleInEditor": 1
         },
         "pacman.tmx": {
-            "scale": 3,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                4
+            ],
+            "scale": 2,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 16.99999999999997,
-                "y": 87.16666666666666
+                "x": 108.5,
+                "y": 251.25
             }
         },
         "rules.tmx": {
             "scale": 5.5,
-            "selectedLayer": 0,
+            "selectedLayer": -1,
             "viewCenter": {
                 "x": 35.63636363636364,
                 "y": 64.81818181818181
@@ -88,10 +88,10 @@
         "pacman.tmx"
     ],
     "project": "безымянный.tiled-project",
-    "property.type": "game::games::geometry_dash::plugin::CameraCenter",
+    "property.type": "game::games::geometry_dash::plugin::EndCollider",
     "recentFiles": [
-        "rules.tmx",
         "GD tiles.tsx",
+        "rules.tmx",
         "pacman.tmx",
         "C:/Users/yaro4/Desktop/ads/rules.tmx",
         "C:/Users/yaro4/Desktop/ads/map.tmx",
