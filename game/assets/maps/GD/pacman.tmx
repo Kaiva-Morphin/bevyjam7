@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="9" nextobjectid="4">
+ <tileset firstgid="1" source="GD tiles.tsx"/>
+ <tileset firstgid="5" source=":/automap-tiles.tsx"/>
+ <layer id="1" name="base" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="-16" y="0" width="16" height="16">
+   eJxjZmBgYB6mmJFMOVL0M41iivBAp5GhjikFAEGbAnk=
+  </chunk>
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjZmBgYB6kmHEQuIEQZhrFFOGBjr+hjikFAFKDAn8=
+  </chunk>
+  </data>
+ </layer>
+ <layer id="3" name="mid" width="30" height="20" visible="0">
+  <data encoding="base64" compression="zlib">
+   <chunk x="-16" y="0" width="16" height="16">
+   eJxjYBgFlACmUUwRHgUDCwBZTwCh
+  </chunk>
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYBgFlACmUUwRHgUDCwBZTwCh
+  </chunk>
+  </data>
+ </layer>
+ <objectgroup id="4" name="spawners">
+  <object id="1" x="-247.5" y="24.5">
+   <properties>
+    <property name="SpawnPoint" type="class" propertytype="yaro::games::geometry_dash::plugin::SpawnPoint"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="3" x="0.5" y="126">
+   <properties>
+    <property name="CameraCenter" type="class" propertytype="yaro::games::geometry_dash::plugin::CameraCenter"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+</map>
