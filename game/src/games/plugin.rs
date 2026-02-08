@@ -13,10 +13,10 @@ pub enum AppState {
     // other useful systems ?
     // Loading,
 
-    PacmanEnter,
-    FlappyBird,
+    PacmanEnter, // 95%
+    FlappyBird, // 30%
     Geometry,
-    Jump,
+    Platformer, // 0%
     Hotline,
     Titles,
     Novel,

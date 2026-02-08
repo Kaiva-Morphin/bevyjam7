@@ -5,7 +5,8 @@
     "compatibilityVersion": 1100,
     "extensionsPath": "extensions",
     "folders": [
-        "."
+        ".",
+        "../platformer"
     ],
     "properties": [
     ],
@@ -9580,9 +9581,12 @@
                     "type": "class",
                     "value": {
                         "matrix3": {
-                            "x_axis": null,
-                            "y_axis": null,
-                            "z_axis": null
+                            "x_axis": {
+                            },
+                            "y_axis": {
+                            },
+                            "z_axis": {
+                            }
                         },
                         "translation": {
                             "x": 0,
@@ -10663,8 +10667,10 @@
                     "type": "class",
                     "value": {
                         "matrix2": {
-                            "x_axis": null,
-                            "y_axis": null
+                            "x_axis": {
+                            },
+                            "y_axis": {
+                            }
                         },
                         "translation": {
                             "x": 0,

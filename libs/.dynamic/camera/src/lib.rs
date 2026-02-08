@@ -114,8 +114,8 @@ fn window_resize(
     let Some(e) = r.read().last() else {return;};
     let Some(img) = images.get_mut(&canvas.image) else {return;};
     let target_aspect = TARGET_WIDTH as f32 / TARGET_HEIGHT as f32;
-    let w = e.width as f32;
-    let h = e.height as f32;
+    let w = (e.width as f32).max(1.0);
+    let h = (e.height as f32).max(1.0);
     let aspect = w / h;
     if target_aspect > aspect {
         img.resize(Extent3d{width: e.width as u32, height: (e.width as f32 / target_aspect) as u32, ..Default::default()});

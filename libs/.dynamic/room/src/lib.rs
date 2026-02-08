@@ -5,15 +5,27 @@ use bevy::prelude::*;
 use bevy_ecs_tiled::prelude::*;
 use properties::*;
 
+#[derive(Default)]
+pub struct RoomPlugin {
+    uninited: bool
+}
 
-pub struct RoomPlugin;
+impl RoomPlugin {
+    pub fn uninited() -> Self {
+        Self { uninited: true }
+    }
+}
+
 
 impl Plugin for RoomPlugin {
     fn build(&self, app: &mut App) {
         app
-            .insert_resource(RoomController::default())
             .register_type::<MapRoom>()
             ;
+        if !self.uninited {
+            app
+                .insert_resource(RoomController::default());
+        }
     }
 }
 
