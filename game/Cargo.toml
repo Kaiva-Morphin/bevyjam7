@@ -19,7 +19,7 @@ utils = { version = "0.1.0", path = "../libs/utils" }
 room = { version = "0.1.0", path = "../libs/.dynamic/room" }
 camera = { version = "0.1.0", path = "../libs/.dynamic/camera" }
 debug_utils = { version = "0.1.0", path = "../libs/.static/debug_utils" }
-bevy_asset_loader = "0.25.0"
+bevy_asset_loader = { version = "0.25.0", features = ["2d"] }
 bevy_easy_gif = "0.3.0"
 rand = "0.9.2"
 bevy_tweening = "0.15.0"

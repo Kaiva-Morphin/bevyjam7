@@ -1,175 +1,52 @@
 {
-    "Map/SizeTest": {
-        "height": 4300,
-        "width": 2
-    },
-    "activeFile": "map.tmx",
-    "automapping.whileDrawing": true,
+    "activeFile": "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx",
     "expandedProjectPaths": [
+        "R:/prog/bevyjam7/game/assets/maps/platformer",
         "."
     ],
-    "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
-        "": {
-            "scaleInDock": 1
-        },
-        "C:/Users/kaiv/Downloads/GD/GD tiles.tsx": {
-            "scaleInEditor": 1
-        },
-        "C:/Users/kaiv/Downloads/GD/pacman.tmx": {
-            "scale": 2,
-            "selectedLayer": 0,
-            "viewCenter": {
-                "x": 239.25,
-                "y": 70.5
-            }
-        },
-        "C:/Users/kaiv/Downloads/GD/rules.tmx": {
-            "scale": 4.6460937499999995,
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx": {
+            "scale": 1.1615234374999999,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 15.604506473852354,
-                "y": -15.496889187825786
-            }
-        },
-        "C:/Users/kaiv/Downloads/infinite.tmx": {
-            "scale": 0.75,
-            "selectedLayer": 0,
-            "viewCenter": {
-                "x": -18,
-                "y": -190
-            }
-        },
-        "C:/Users/tiles/orthogonal_1.tsx": {
-            "dynamicWrapping": true,
-            "scaleInDock": 1
-        },
-        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tmx": {
-            "scale": 1.5,
-            "selectedLayer": 9,
-            "viewCenter": {
-                "x": 239.33333333333331,
-                "y": -384.3333333333333
-            }
-        },
-        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tsx": {
-            "dynamicWrapping": false,
-            "scaleInDock": 1
-        },
-        "R:/prog/bevyjam7/game/assets/maps/platformer/main.tmx": {
-            "scale": 2,
-            "selectedLayer": 0,
-            "viewCenter": {
-                "x": 316.75,
-                "y": -3.5
-            }
-        },
-        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx": {
-            "expandedObjectLayers": [
-                2
-            ],
-            "scale": 1,
-            "selectedLayer": 0,
-            "viewCenter": {
-                "x": 348.5,
-                "y": 321
+                "x": 164.00874390448962,
+                "y": 326.2956112325543
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx": {
-            "scale": 1.5,
-            "selectedLayer": 1,
+            "scale": 4.6460937499999995,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 133.66666666666663,
-                "y": 13.333333333333371
+                "x": 127.95695308558939,
+                "y": 127.95695308558942
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/tilemap.tsx": {
-            "scaleInDock": 4,
-            "scaleInEditor": 16
-        },
-        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_flat_top_odd.tmx": {
-            "scale": 1.5,
-            "selectedLayer": 1,
-            "viewCenter": {
-                "x": -7.666666666666686,
-                "y": -102.66666666666663
-            }
-        },
-        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_pointy_top_odd.tmx": {
-            "expandedObjectLayers": [
-                4
-            ],
-            "scale": 11,
-            "selectedLayer": 2,
-            "viewCenter": {
-                "x": 31.13636363636364,
-                "y": 38.09090909090909
-            }
-        },
-        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/tiles/drjamgo_hex_16x16.tsx": {
-            "scaleInDock": 5.5
-        },
-        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/tiles/simple hex flat top.tsx": {
             "scaleInDock": 1
         },
-        "map.tmx": {
-            "expandedObjectLayers": [
-                5
-            ],
-            "scale": 1,
-            "selectedLayer": 1,
-            "viewCenter": {
-                "x": 227.5,
-                "y": 233
-            }
-        },
         "rules.tmx": {
-            "scale": 8,
-            "selectedLayer": 1,
+            "scale": 9.292187499999999,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 29.0625,
-                "y": 23.875
+                "x": 63.978476542794695,
+                "y": 63.97847654279471
             }
         },
         "tilemap.tsx": {
-            "dynamicWrapping": false,
-            "scaleInDock": 4,
-            "scaleInEditor": 11
+            "scaleInDock": 1
         }
     },
-    "last.imagePath": "C:/Users/kaiv/Downloads/GD",
     "last.objectTypesPath": "R:/prog/bevyjam7/game/tiled_types_export.json",
-    "map.fixedSize": false,
-    "map.height": 16,
-    "map.lastUsedFormat": "tmx",
-    "map.layerDataFormat": "3",
-    "map.tileHeight": 16,
-    "map.tileWidth": 16,
-    "map.width": 16,
     "openFiles": [
-        "map.tmx",
-        "tilemap.tsx",
         "rules.tmx",
-        "C:/Users/kaiv/Downloads/infinite.tmx",
-        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tmx"
+        "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx"
     ],
     "project": "map.tiled-project",
-    "property.type": "room::MapRoom",
+    "property.type": "avian2d::dynamics::rigid_body::RigidBody",
     "recentFiles": [
-        "C:/Users/kaiv/Downloads/GD/GD tiles.tsx",
         "rules.tmx",
-        "map.tmx",
-        "tilemap.tsx",
-        "C:/Users/kaiv/Downloads/infinite.tmx",
-        "R:/prog/bevyjam7/game/assets/maps/platformer/tilemap.tsx",
-        "R:/prog/bevyjam6_starpressure/game/assets/tilemaps/v2.0/main.tmx",
-        "R:/prog/bevyjam7/game/assets/maps/platformer/main.tmx",
-        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_pointy_top_odd.tmx",
-        "R:/prog/bevyjam7/libs/bevy_ecs_tiled/assets/maps/hexagonal/infinite_flat_top_odd.tmx"
-    ],
-    "tileset.lastUsedFormat": "tsx",
-    "tileset.tileSize": {
-        "height": 16,
-        "width": 16
-    }
+        "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx"
+    ]
 }

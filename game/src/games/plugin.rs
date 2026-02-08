@@ -6,6 +6,7 @@ use crate::prelude::*;
 pub enum AppState {
     // setup loading screen
     // Begin, 
+    Defeat,
 
     #[default]
     // via asset_collections
@@ -16,7 +17,7 @@ pub enum AppState {
     PacmanEnter, // 95%
     FlappyBird, // 30%
     Geometry,
-    Platformer, // 0%
+    Platformer, // 90% EXTEND?
     Hotline,
     Titles,
     Novel,
@@ -24,6 +25,20 @@ pub enum AppState {
     End
 }
 
+#[derive(Resource)]
+pub struct LastState {
+    pub state: AppState,
+    pub screenshot: Option<Handle<Image>>
+}
+
+impl Default for LastState {
+    fn default() -> Self {
+        Self {
+            state: AppState::PacmanEnter,
+            screenshot: None
+        }
+    }
+}
 
 pub struct GamesPlugin;
 
@@ -32,6 +47,7 @@ impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
         app
             .init_state::<AppState>()
+            .insert_resource(LastState::default())
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
                     .continue_to_state(AppState::FlappyBird)
@@ -42,7 +58,16 @@ impl Plugin for GamesPlugin {
                 super::pacman_eat::plugin::PacmanEatPlugin,
                 super::flappy_bird::plugin::FlappyBirdPlugin,
             ))
-           .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
+            .add_systems(OnEnter(AppState::Defeat), on_defeat)
+            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
            ;
     }
+}
+
+pub fn on_defeat (
+    res : Res<LastState>,
+    mut state: ResMut<NextState<AppState>>
+) {
+    // todo! screenshot
+    state.set(res.state);
 }

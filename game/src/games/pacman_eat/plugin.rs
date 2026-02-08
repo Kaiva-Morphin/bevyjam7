@@ -1,4 +1,4 @@
-use crate::{games::plugin::AppState, prelude::*};
+use crate::{games::plugin::{AppState, LastState}, prelude::*};
 use bevy_asset_loader::asset_collection::AssetCollection;
 
 const STATE: AppState = AppState::PacmanEnter;
@@ -30,16 +30,20 @@ pub struct PacmanEatAssets {
     splash: Handle<Image>,
     #[asset(path = "images/pacman.png")]
     pacman: Handle<Image>,
+    #[asset(texture_atlas_layout(tile_size_x = 16, tile_size_y = 16, columns = 1, rows = 6))]
+    pacman_layout: Handle<TextureAtlasLayout>,
 }
 
 
 fn setup(
     mut cmd: Commands,
     assets: Res<PacmanEatAssets>,
+    mut state: ResMut<LastState>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
+    state.state = STATE;
+    
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Label"),
@@ -51,9 +55,6 @@ fn setup(
     ));
     meshes.add(Rectangle::new(50.0, 100.0));
 
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(16), 1, 6, None, None);
-    let texture_atlas_layout = texture_atlas_layouts.add(layout);
-
     let r = meshes.add(Rectangle::new(PATH_HALF * 2.0, 32.0));
 
     cmd.spawn((
@@ -63,7 +64,7 @@ fn setup(
         Sprite {
             image: assets.pacman.clone(),
             texture_atlas: Some(TextureAtlas {
-                layout: texture_atlas_layout.clone(),
+                layout: assets.pacman_layout.clone(),
                 index: 0,
             }),
             ..default()

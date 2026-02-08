@@ -4,16 +4,29 @@ use bevy_ecs_tiled::tiled::TiledPlugin;
 use bevy_ecs_tiled::tiled::TiledPluginConfig;
 use room::*;
 
-use crate::character::spawners::spawn_player;
 
 pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
         #[cfg(target_arch = "wasm32")]
-        let conf = TiledPluginConfig{tiled_types_export_file: None, ..Default::default()};
+        let mut conf = TiledPluginConfig{tiled_types_export_file: None, ..Default::default()};
         #[cfg(not(target_arch = "wasm32"))]
-        let conf = TiledPluginConfig::default();
+        let mut conf = TiledPluginConfig::default();
+        
+        conf.tiled_types_filter = TiledFilter::from(
+            regex::RegexSet::new([
+                r"^game::.*",
+                r"^room::.*",
+                r"^camera::.*",
+                r"^bevy_sprite::text2d::Text2d$",
+                r"^bevy_text::text::TextColor$",
+                r"^.*::RigidBody$",
+                r"^.*::CollisionLayers$",
+                r"^.*::Sensor$",
+            ])
+            .expect("Wrong regex"),
+        );
         app
             .add_plugins((
                 TiledPlugin(conf),
@@ -22,7 +35,7 @@ impl Plugin for MapPlugin {
             // .register_type::<SpawnPoint>()
             // .add_systems(Startup, spawn_map)
             // .add_observer(on_map_created)
-            // .add_observer(on_collider_spawned)
+            // .add_observer(on_object_spawned)
             // .add_observer(on_spawnpoint)
             // .add_observer(on_room_spawned)
             ;
@@ -42,19 +55,33 @@ pub enum SpawnPoint {
     Player,
 }
 
-fn on_collider_spawned(
-    collider_created: On<TiledEvent<ColliderCreated>>,
+fn on_object_spawned(
+    collider_created: On<TiledEvent<ObjectCreated>>,
     assets: Res<Assets<TiledMapAsset>>,
-    mut commands: Commands
+    mut commands: Commands,
+    ch_q: Query<&Children>,
+    c_q: Query<&CollisionLayers>,
+    s_q: Query<&Sensor>,
+    r_q: Query<&RigidBody>,
 ) {
-    let Some(layer) = collider_created.event().get_layer(&assets) else {return;};
-    if layer.name == "Occluders" {
-        commands.entity(collider_created.event().origin).despawn();
-        return;
-    } else {
-        commands
-            .entity(collider_created.event().origin)
-            .insert(RigidBody::Static);
+    info!("A: {} B: {}", collider_created.event().origin, collider_created.event().entity);
+    let Ok(c) = ch_q.get(collider_created.event().origin) else {return;};
+    info!("C");
+    if let Ok(rb) = r_q.get(collider_created.event().origin) {
+        for child in c.iter() {
+            commands.entity(child).insert((Name::new("Extended"), rb.clone()));
+        }
+    }
+    if let Ok(s) = s_q.get(collider_created.event().entity) {
+        for child in c.iter() {
+            commands.entity(child).insert((Name::new("Extended"), s.clone()));
+        }
+    }
+    
+    if let Ok(l) = c_q.get(collider_created.event().entity) {
+        for child in c.iter() {
+            commands.entity(child).insert((Name::new("Extended"), l.clone()));
+        }
     }
 }
 
@@ -74,7 +101,7 @@ fn on_spawnpoint(
     match spawn_type {
         SpawnPoint::Player { .. } => {
             // spawn_player(&mut cmd, Transform::from_translation(global_transform.translation()));
-            spawn_player(&mut cmd, global_transform.clone());
+            // spawn_player(&mut cmd, global_transform.clone());
         }
         _ => {}
     };

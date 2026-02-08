@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="12" nextobjectid="20">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="12" nextobjectid="22">
  <tileset firstgid="1" source="tilemap.tsx"/>
  <layer id="1" name="Слой тайлов 1" width="16" height="16">
+  <properties>
+   <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+    <properties>
+     <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+    </properties>
+   </property>
+  </properties>
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
    eJxjYBgFo2AU0BswAjETBfpZgJiVCvoBCDgAFg==
@@ -15,20 +22,118 @@
    <chunk x="0" y="16" width="16" height="16">
    eJxjZWBgYEXDTGiYmQEBGNHE0fViw2xI+lmI1DOqnzj9HERgTiT97ETqGdU/MvQDACBCBcE=
   </chunk>
+   <chunk x="16" y="16" width="16" height="16">
+   eJxjYmBgYKIAs47iAcUco3gUU4ABPaUGgQ==
+  </chunk>
+   <chunk x="32" y="16" width="16" height="16">
+   eJxjYmBgYMKCWRmIA6x48Kh+2uvnwINH9Y/qJwQALCMC3A==
+  </chunk>
+   <chunk x="-16" y="32" width="16" height="16">
+   eJzjYGBg4BjFo3gUj0gMABTwCAE=
+  </chunk>
+   <chunk x="0" y="32" width="16" height="16">
+   eJzjYGBg4CACwwAxakf1j+of1T809AMAHtIHAQ==
+  </chunk>
+   <chunk x="16" y="32" width="16" height="16">
+   eJzjYGBg4BjFo3gUj0gMABTwCAE=
+  </chunk>
+   <chunk x="32" y="32" width="16" height="16">
+   eJzjYGBg4MCBiQG49I7qH9U/qn/w6wcASmkDgQ==
+  </chunk>
+   <chunk x="-16" y="48" width="16" height="16">
+   eJzjYGBg4BjFo3gUj0gMABTwCAE=
+  </chunk>
+   <chunk x="0" y="48" width="16" height="16">
+   eJzjYGBg4CACwwAxakf1j+of1T809AMAHtIHAQ==
+  </chunk>
+   <chunk x="16" y="48" width="16" height="16">
+   eJzjYGBg4BjFo3gUj0gMABTwCAE=
+  </chunk>
+   <chunk x="32" y="48" width="16" height="16">
+   eJzjYGBg4MCBiQG49I7qH9U/qn/w6wcASmkDgQ==
+  </chunk>
+   <chunk x="-16" y="64" width="16" height="16">
+   eJzjYGBg4BjFo3gUDwgeaAAA0uEHAQ==
+  </chunk>
+   <chunk x="0" y="64" width="16" height="16">
+   eJzjYGBg4CACwwAxakf1j+of1U+c/oEGAOODBiE=
+  </chunk>
+   <chunk x="16" y="64" width="16" height="16">
+   eJzjYGBg4BjFo3gUDwgeaAAA0uEHAQ==
+  </chunk>
+   <chunk x="32" y="64" width="16" height="16">
+   eJzjYGBg4MCBiQG49I7qH9U/qn/wAwAlqQMR
+  </chunk>
   </data>
  </layer>
  <objectgroup id="2" name="Слой объектов 1">
+  <properties>
+   <property name="r" type="class" propertytype="room::MapRoom">
+    <properties>
+     <property name="zoom" type="float" value="1"/>
+    </properties>
+   </property>
+  </properties>
   <object id="7" x="-232" y="235.5">
+   <properties>
+    <property name="r" type="class" propertytype="game::games::platformer::plugin::SpawnPoint"/>
+   </properties>
    <point/>
   </object>
-  <object id="14" x="192" y="112" width="16" height="144"/>
-  <object id="15" x="176" y="160" width="16" height="96"/>
-  <object id="17" x="160" y="416" width="32" height="32"/>
-  <object id="18" x="-256" y="64" width="512" height="448">
+  <object id="14" x="191.739" y="80" width="16" height="175.957">
    <properties>
-    <property name="asd" type="class" propertytype="room::MapRoom">
+    <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+     <properties>
+      <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="20" x="-272" y="-129" width="16" height="417">
+   <properties>
+    <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+     <properties>
+      <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="15" x="176" y="80" width="16" height="192">
+   <properties>
+    <property name="rb" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+     <properties>
+      <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+     </properties>
+    </property>
+    <property name="se" type="class" propertytype="avian2d::collision::collider::Sensor"/>
+    <property name="st" type="class" propertytype="game::games::platformer::plugin::StopTrigger"/>
+   </properties>
+  </object>
+  <object id="17" x="160" y="800" width="32" height="32">
+   <properties>
+    <property name="asd" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+     <properties>
+      <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+     </properties>
+    </property>
+    <property name="n" type="class" propertytype="game::games::platformer::plugin::NextTrigger"/>
+    <property name="s" type="class" propertytype="avian2d::collision::collider::Sensor"/>
+   </properties>
+  </object>
+  <object id="18" x="-256" y="-128" width="880" height="1376">
+   <properties>
+    <property name="ro" type="class" propertytype="room::MapRoom">
      <properties>
       <property name="zoom" type="float" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="21" x="624" y="-128" width="16" height="417">
+   <properties>
+    <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+     <properties>
+      <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
      </properties>
     </property>
    </properties>

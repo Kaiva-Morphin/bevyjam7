@@ -1,5 +1,6 @@
 use std::collections::VecDeque;
 
+use avian2d::prelude::*;
 use bevy::{camera::{ImageRenderTarget, RenderTarget, ScalingMode}, input::mouse::MouseWheel, prelude::*, render::{render_resource::{Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages}, view::Hdr}, window::WindowResized};
 use kaiv_utils::prelude::ExpDecay;
 use properties::*;
@@ -20,7 +21,8 @@ impl Plugin for CameraPlugin {
         app
             .add_systems(Startup, setup_camera)
             .insert_resource(CameraController{target_zoom: self.initial_target_zoom, ..default()})
-            .add_systems(Update, (window_resize, tick_camera))
+            .add_systems(Update, window_resize)
+            .add_systems(PhysicsSchedule, tick_camera.in_set(NarrowPhaseSystems::Last))
             .add_observer(focus_player)
             ;
     }
@@ -30,6 +32,7 @@ impl Plugin for CameraPlugin {
 #[derive(Resource)]
 pub struct ViewportCanvas {
     pub image: Handle<Image>,
+    pub size: Vec2,
 }
 
 fn setup_camera(
@@ -88,7 +91,8 @@ fn setup_camera(
     ));
     commands.insert_resource(
         ViewportCanvas {
-            image: image_handle.clone()
+            image: image_handle.clone(),
+            size: Vec2::new(TARGET_WIDTH as f32, TARGET_HEIGHT as f32),
         }
     );
     commands.spawn((
@@ -109,7 +113,7 @@ fn setup_camera(
 fn window_resize(
     mut r: MessageReader<WindowResized>,
     mut images: ResMut<Assets<Image>>,
-    canvas: Res<ViewportCanvas>,
+    mut canvas: ResMut<ViewportCanvas>,
 ) {
     let Some(e) = r.read().last() else {return;};
     if e.width == 0.0 || e.height == 0.0 {return;}
@@ -118,11 +122,17 @@ fn window_resize(
     let w = e.width as f32;
     let h = e.height as f32;
     let aspect = w / h;
+    let tw;
+    let th;
     if target_aspect > aspect {
-        img.resize(Extent3d{width: e.width as u32, height: (e.width as f32 / target_aspect) as u32, ..Default::default()});
+        tw = e.width as u32;
+        th = (e.width as f32 / target_aspect) as u32;
     } else {
-        img.resize(Extent3d{width: (e.height as f32 * target_aspect) as u32, height: e.height as u32, ..Default::default()});
+        tw = (e.height as f32 * target_aspect) as u32;
+        th = e.height as u32;
     }
+    img.resize(Extent3d{width: tw, height: th, ..Default::default()});
+    canvas.size = Vec2::new(tw as f32, th as f32);
 }
 
 
@@ -166,9 +176,9 @@ impl Default for CameraController {
 
 // todo!: initial room
 fn focus_player(
-    player: On<Add, Player>,
-    pq: Query<&GlobalTransform, (With<Player>, Without<WorldCamera>)>,
-    mut cq: Query<(Entity, &mut Projection), (With<WorldCamera>, Without<Player>)>,
+    player: On<Add, Focusable>,
+    pq: Query<&GlobalTransform, (With<Focusable>, Without<WorldCamera>)>,
+    mut cq: Query<(Entity, &mut Projection), (With<WorldCamera>, Without<Focusable>)>,
     mut cmd: Commands,
     mut camera_controller: ResMut<CameraController>,
 ) {
@@ -187,17 +197,20 @@ fn tick_camera(
     mut camera_controller: ResMut<CameraController>,   
     room_controller: Option<Res<RoomController>>,
     targets: Query<&Transform, Without<WorldCamera>>,
-    window: Query<&Window>,
+    // window: Query<&Window>,
+    canvas: Res<ViewportCanvas>,
     keys: Res<ButtonInput<KeyCode>>,
     mut freecam: Local<(f32, Vec3)>,
     mut mouse: MessageReader<MouseWheel>,
 ) {
+    
     let dt = time.delta_secs().max(MAX_DT);
     let Some(entity) = camera_controller.focused_entities.front() else {return;};
     let Ok(cam_target) = targets.get(*entity) else {warn!("Target without transform in cam focus, deleting"); camera_controller.focused_entities.pop_front(); return;};
     let Ok((cam, mut p, mut t, gt)) = camera.single_mut() else {warn!("Camera without transform"); return;};
     let Projection::Orthographic(p) = &mut *p else {warn!("Camera without perspective projection"); return;};
-    let Some(window) = window.iter().next() else {return;};
+    // let Some(window) = window.iter().next() else {return;};
+
     let mut target = cam_target.translation;
     let mut z = 0.0;
     for ev in mouse.read() {
@@ -231,9 +244,12 @@ fn tick_camera(
         }
         let Some(room_controller) = room_controller else {break 'a;};
         let Some(EnteredRoom{room: RoomBounds{ld, ru, ..}, ..}) = room_controller.rooms.front() else {break 'a;};
-        let Some((sld, sru)) = screen_rect_in_world(cam, &gt, window) else {break 'a;};
+
+        let half = canvas.size.extend(0.0) * 0.5;
+        let Some((sld, sru)) = screen_rect_in_world(cam, &gt, Vec2::new(-half.x, -half.y), Vec2::new(half.x, half.y)) else {break 'a;};
         let sld = sld.extend(0.0);
-        let sru = sru.extend(0.0);
+        let sru = sru.extend(0.0); 
+
         let sd = sru - sld;
         let d = ru - ld;
         let sx = sd.x;
@@ -259,10 +275,9 @@ fn tick_camera(
 fn screen_rect_in_world(
     camera: &Camera,
     camera_transform: &GlobalTransform,
-    window: &Window,
+    min: Vec2,
+    max: Vec2
 ) -> Option<(Vec2, Vec2)> {
-    let min = Vec2::new(0.0, window.height());
-    let max = Vec2::new(window.width(), 0.0);
     let world_min = camera.viewport_to_world_2d(camera_transform, min).ok()?;
     let world_max = camera.viewport_to_world_2d(camera_transform, max).ok()?;
     Some((world_min, world_max))

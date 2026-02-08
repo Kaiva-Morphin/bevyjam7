@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+avian2d = { version = "*", default-features = false }
 bevy = {version = "*", default-features = false}
 kaiv_utils = { workspace = true, features = ["bevy_support"] }
 properties = { version = "0.1.0", path = "../../properties" }
