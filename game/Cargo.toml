@@ -54,16 +54,11 @@ codegen-units = 1
 # Slows compile times, marginal improvements.
 lto = "thin"
 
+[features]
+default = []
+kaiv = []
+yaro = []
 
 [[bin]]
 name = "game"
 path = "src/main.rs"
-
-[[bin]]
-name = "yaro"
-path = "src/yaro.rs"
-
-[[bin]]
-name = "kaiv"
-path = "src/kaiv.rs"
-
