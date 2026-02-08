@@ -1,34 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="9" nextobjectid="4">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="1" nextlayerid="12" nextobjectid="4">
  <tileset firstgid="1" source="GD tiles.tsx"/>
- <layer id="1" name="base" width="30" height="20">
+ <layer id="1" name="yellow_floor" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjZmBgYB6mmJFMOVL0M41iivBAp5GhjikFAEGbAnk=
+   eJxjYBgFo2DgANMoHlAMAJWAAME=
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
-   eJxjZmBgYB6kmHEQuIEQZhrFFOGBjr+hjikFAFKDAn8=
+   eJxjYBgFo2DgANMoHlAMAJWAAME=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYBgFo2DgABMSHtVPf/0AIvAAJQ==
+  </chunk>
+   <chunk x="-16" y="16" width="16" height="16">
+   eJxjYmBgYBrBeBSMgpEMAMUPAIE=
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   eJxjYmBgYBrBeBSMgpEMAMUPAIE=
+  </chunk>
+   <chunk x="16" y="16" width="16" height="16">
+   eJxjYmBgYIJicgATw9DWPwpGwUgGAFqgABk=
   </chunk>
   </data>
  </layer>
- <layer id="3" name="mid" width="30" height="20" visible="0">
+ <layer id="10" name="white_floor" width="30" height="20">
+  <data encoding="base64" compression="zlib"/>
+ </layer>
+ <layer id="11" name="white_walls" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjYBgFlACmUUwRHgUDCwBZTwCh
+   eJxjZmBgYB7Fo3iA8CgYWAAAMAsB4Q==
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
-   eJxjYBgFlACmUUwRHgUDCwBZTwCh
+   eJxjZmBgYB7Fo3iA8CigLSAUzgAwvwHn
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjZmBgYIZicgAzw6j+Uf3k6x8FAwsABWcAWw==
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   eJxjYMAPmKGYXDDU9Y+CUTCcAQBX0AAZ
+  </chunk>
+  </data>
+ </layer>
+ <layer id="9" name="yellow_walls" width="30" height="20">
+  <data encoding="base64" compression="zlib">
+   <chunk x="-16" y="0" width="16" height="16">
+   eJxjYBgFQwEwQfFI1T8KaAMAI2AAEQ==
+  </chunk>
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYBgFgxEw4cD00j8KRgYAADnQABk=
   </chunk>
   </data>
  </layer>
  <objectgroup id="4" name="spawners">
-  <object id="1" x="-247.5" y="24.5">
+  <object id="1" x="-247.5" y="89.5">
    <properties>
     <property name="SpawnPoint" type="class" propertytype="game::games::geometry_dash::plugin::SpawnPoint"/>
    </properties>
    <point/>
   </object>
-  <object id="3" x="0.5" y="126">
+  <object id="3" x="16" y="174">
    <properties>
     <property name="CameraCenter" type="class" propertytype="game::games::geometry_dash::plugin::CameraCenter"/>
    </properties>

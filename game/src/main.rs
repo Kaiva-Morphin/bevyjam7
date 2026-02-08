@@ -68,3 +68,7 @@ impl Plugin for GamesPlugin {
            ;
     }
 }
+
+#[cfg(not(feature = "kaiv"))]
+#[cfg(not(feature = "yaro"))]
+impl Plugin for GamesPlugin {fn build(&self, _app: &mut App) {}}
