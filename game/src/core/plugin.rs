@@ -1,5 +1,6 @@
 use avian2d::PhysicsPlugins;
 use bevy::prelude::*;
+use bevy_easy_gif::GifPlugin;
 use bevy_inspector_egui::bevy_egui::{EguiPlugin, EguiPreUpdateSet};
 use camera::CameraPlugin;
 use debug_utils::{
@@ -43,6 +44,7 @@ impl Plugin for CorePlugin {
                 SwitchableEguiInspectorPlugin::default(),
                 DebugOverlayPlugin::default(),
                 SwitchableAvianDebugPlugin::enabled(),
+                GifPlugin,
                 // GameStatesPlugin,
                 // PixelCameraPlugin,
                 // CameraControllerPlugin,

@@ -35,7 +35,7 @@ pub fn tick_controllers(
     time: Res<Time>,
     mut player: Query<(&mut CharacterController, &mut LinearVelocity), With<Player>>,
 ){
-    let dt = time.delta_secs().max(MAX_DT);
+    let dt = time.delta_secs().min(MAX_DT);
     for (c, mut t) in player.iter_mut() {
         t.x = c.input_dir.x * 2000.0 * dt;
         t.y = c.input_dir.y * 2000.0 * dt;

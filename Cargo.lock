@@ -178,6 +178,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.101"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f0e0fee31ef5ed1ba1316088939cea399010ed7731dba877ed44aeb407a75ea"
+
+[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -599,6 +605,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_asset_loader"
+version = "0.25.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa4410f1fabc1ff0411f44394222ff6ccf3348ed100cba7d87a84ff376a145db"
+dependencies = [
+ "anyhow",
+ "bevy_app",
+ "bevy_asset",
+ "bevy_asset_loader_derive",
+ "bevy_ecs",
+ "bevy_log",
+ "bevy_platform",
+ "bevy_reflect",
+ "bevy_state",
+ "bevy_utils",
+ "path-slash",
+]
+
+[[package]]
+name = "bevy_asset_loader_derive"
+version = "0.25.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "253fb63838e11b8b5b49052c180113e4e49642f85d4e5335655948651c9e4bb6"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "bevy_asset_macros"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -765,6 +801,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "603d142e406440bf7508bb70188a5c8c48339151ccfa18aebf6f353d7a3e4134"
 dependencies = [
  "bevy_internal",
+]
+
+[[package]]
+name = "bevy_easy_gif"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e85d7456fba83dd24327f6e2dc04c16a211659e28a1b1157c3365d8b06eb02cf"
+dependencies = [
+ "bevy",
+ "gif 0.13.3",
+ "thiserror 2.0.18",
 ]
 
 [[package]]
@@ -2910,6 +2957,8 @@ dependencies = [
  "bevy",
  "bevy-inspector-egui",
  "bevy_animation",
+ "bevy_asset_loader",
+ "bevy_easy_gif",
  "bevy_ecs_tiled",
  "camera",
  "debug_utils",
@@ -2917,6 +2966,7 @@ dependencies = [
  "kaiv_utils",
  "log",
  "properties",
+ "rand 0.9.2",
  "room",
  "thiserror 2.0.18",
  "tiled",
@@ -3001,6 +3051,16 @@ dependencies = [
  "r-efi",
  "wasip2",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "gif"
+version = "0.13.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ae047235e33e2829703574b54fdec96bfbad892062d97fed2f76022287de61b"
+dependencies = [
+ "color_quant",
+ "weezl",
 ]
 
 [[package]]
@@ -3461,7 +3521,7 @@ dependencies = [
  "bytemuck",
  "byteorder-lite",
  "color_quant",
- "gif",
+ "gif 0.14.1",
  "moxcms",
  "num-traits",
  "png",
@@ -4639,6 +4699,12 @@ name = "paste"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
+
+[[package]]
+name = "path-slash"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e91099d4268b0e11973f036e885d652fb0b21fedcf69738c627f94db6a44f42"
 
 [[package]]
 name = "percent-encoding"

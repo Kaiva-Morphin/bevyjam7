@@ -13083,35 +13083,6 @@
     ]
   },
   {
-    "id": 452,
-    "name": "game::tilemap::plugin::SpawnPoint",
-    "type": "class",
-    "useAs": [
-      "property"
-    ],
-    "color": "#000000",
-    "drawFill": true,
-    "members": [
-      {
-        "name": ":variant",
-        "propertyType": "game::tilemap::plugin::SpawnPoint:::Variant",
-        "type": "class",
-        "value": "Unknown"
-      }
-    ]
-  },
-  {
-    "id": 451,
-    "name": "game::tilemap::plugin::SpawnPoint:::Variant",
-    "type": "enum",
-    "storageType": "string",
-    "values": [
-      "Unknown",
-      "Player"
-    ],
-    "valuesAsFlags": false
-  },
-  {
     "id": 845,
     "name": "glam::Affine2",
     "type": "class",
@@ -13517,6 +13488,35 @@
         "value": 0.0
       }
     ]
+  },
+  {
+    "id": 452,
+    "name": "kaiv::tilemap::plugin::SpawnPoint",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": [
+      {
+        "name": ":variant",
+        "propertyType": "kaiv::tilemap::plugin::SpawnPoint:::Variant",
+        "type": "class",
+        "value": "Unknown"
+      }
+    ]
+  },
+  {
+    "id": 451,
+    "name": "kaiv::tilemap::plugin::SpawnPoint:::Variant",
+    "type": "enum",
+    "storageType": "string",
+    "values": [
+      "Unknown",
+      "Player"
+    ],
+    "valuesAsFlags": false
   },
   {
     "id": 453,
