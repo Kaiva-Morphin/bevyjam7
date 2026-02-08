@@ -68,9 +68,9 @@ fn setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
 ) {
-    
-
-    
+    // cmd.spawn((
+    //     DespawnOnExit(STATE),
+    // )).observe(observer);
     cmd.spawn((
         DespawnOnExit(STATE),
         TiledMap(assets.tilemap_handle.clone()),
