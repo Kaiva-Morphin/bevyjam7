@@ -18,9 +18,6 @@
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
-        ":/automap-tiles.tsx": {
-            "scaleInDock": 1
-        },
         "R:/prog/pre_jam/game/assets/tilemaps/v1.0/map.tmx": {
             "scale": 0.49772949218749996,
             "selectedLayer": 0,

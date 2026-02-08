@@ -8,9 +8,6 @@
         "."
     ],
     "fileStates": {
-        ":/automap-tiles.tsx": {
-            "scaleInDock": 1
-        },
         "map.tmx": {
             "scale": 1,
             "selectedLayer": 0,

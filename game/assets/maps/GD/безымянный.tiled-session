@@ -10,6 +10,9 @@
         "C:/Users/yaro4/Desktop/ads"
     ],
     "fileStates": {
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
+        },
         "C:/Users/yaro4/Desktop/ads/map.tmx": {
             "scale": 2.2525390625,
             "selectedLayer": 3,
@@ -87,8 +90,8 @@
     "project": "безымянный.tiled-project",
     "property.type": "yaro::games::geometry_dash::plugin::SpawnPoint",
     "recentFiles": [
-        "GD tiles.tsx",
         "rules.tmx",
+        "GD tiles.tsx",
         "pacman.tmx",
         "C:/Users/yaro4/Desktop/ads/rules.tmx",
         "C:/Users/yaro4/Desktop/ads/map.tmx",

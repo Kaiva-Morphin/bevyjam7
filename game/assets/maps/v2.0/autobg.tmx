@@ -4,7 +4,6 @@
   <property name="NoOverlappingOutput" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="main.tsx"/>
- <tileset firstgid="1025" source=":/automap-tiles.tsx"/>
  <layer id="1" name="input_WALL2" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="0" y="0" width="16" height="16">
