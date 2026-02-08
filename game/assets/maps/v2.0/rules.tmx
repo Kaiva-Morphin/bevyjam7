@@ -3,7 +3,6 @@
  <properties>
   <property name="AutomappingRadius" type="int" value="1"/>
  </properties>
- <tileset firstgid="1" source=":/automap-tiles.tsx"/>
  <tileset firstgid="6" source="main.tsx"/>
  <layer id="1" name="input_collider" width="30" height="20">
   <data encoding="base64" compression="zlib">

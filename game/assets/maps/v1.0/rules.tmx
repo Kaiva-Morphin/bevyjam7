@@ -4,7 +4,6 @@
   <property name="NoOverlappingOutput" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="tilemap.tsx"/>
- <tileset firstgid="15" source=":/automap-tiles.tsx"/>
  <layer id="1" name="regions" width="30" height="20" visible="0">
   <data encoding="base64" compression="zlib">
    <chunk x="0" y="0" width="16" height="16">

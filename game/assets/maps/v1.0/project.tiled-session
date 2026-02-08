@@ -8,9 +8,6 @@
         "."
     ],
     "fileStates": {
-        ":/automap-tiles.tsx": {
-            "scaleInDock": 1
-        },
         "R:/prog/pre_jam/game/assets/tilemaps/test/rule4.tmx": {
             "scale": 4.6460937499999995,
             "selectedLayer": 0,

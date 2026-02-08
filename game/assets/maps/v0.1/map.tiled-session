@@ -13,10 +13,6 @@
         "": {
             "scaleInDock": 1
         },
-        ":/automap-tiles.tsx": {
-            "dynamicWrapping": false,
-            "scaleInDock": 1
-        },
         "C:/Users/kaiv/Downloads/GD/GD tiles.tsx": {
             "scaleInEditor": 1
         },

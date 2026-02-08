@@ -10,6 +10,8 @@ const WIDTH : f32 = 576.0;
 const HALF_HEIGHT : f32 = 250.0 / 2.0;
 const SCALE : f32 = 1.0;
 
+const MS : f32 = 10.0;
+
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
 #[source(AppState = STATE)]
 #[states(scoped_entities)]
@@ -43,7 +45,7 @@ impl Plugin for GeometryDashPlugin {
             .add_systems(OnEnter(STATE), setup)
             .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
             // .add_systems(OnEnter(LocalState::Game), begin_game)
-            // .add_systems(Update, tick_game.run_if(in_state(LocalState::Game)))
+            .add_systems(Update, controller.run_if(in_state(LocalState::Game)))
             // .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
             // .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
@@ -105,7 +107,7 @@ fn spawnpoint_handler(
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Pacman"),
-        LinearVelocity(Vec2::X),
+        LinearVelocity(Vec2::ZERO),
         transform,
         Sprite {
             image: assets.cube.clone(),
@@ -119,7 +121,7 @@ fn spawnpoint_handler(
         Collider::circle(8.0),
         CollisionEventsEnabled,
         RigidBody::Dynamic,
-        GravityScale(0.0),
+        GravityScale(1.0),
     ));
 }
 
@@ -135,10 +137,15 @@ fn camera_handler(
 
 }
 
-fn jump(
-
+fn controller(
+    mut cmd: Commands,
+    mut cube_vel_q: Query<&mut LinearVelocity, With<Cube>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
-
+    let mut velocity = Vec2::X * MS;
+    if keyboard_input.pressed(KeyCode::Space) { velocity.y += 10.0; };
+    let mut vel = cube_vel_q.single_mut().expect("no cube(");
+    *vel = LinearVelocity(velocity);
 }
 
 fn cleanup(
