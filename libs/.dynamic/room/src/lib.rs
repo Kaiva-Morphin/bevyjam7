@@ -21,6 +21,8 @@ impl Plugin for RoomPlugin {
     fn build(&self, app: &mut App) {
         app
             .register_type::<MapRoom>()
+            .add_observer(on_room_entered)
+            .add_observer(on_room_exited)
             ;
         if !self.uninited {
             app
@@ -28,6 +30,9 @@ impl Plugin for RoomPlugin {
         }
     }
 }
+
+#[derive(Component)]
+pub struct Focusable;
 
 #[derive(Component, Reflect, Default)]
 #[reflect(Component, Default)]
@@ -74,6 +79,7 @@ pub fn on_room_spawned(
     let ld = t - vec3(0.0, *height, 0.0);
     let ru = t + vec3(*width, 0.0, 0.0);
     cmd.entity(spawn_entity).insert((
+        Name::new("Room"),
         RigidBody::Static,
         Sensor,
         room_layers(),
@@ -84,8 +90,7 @@ pub fn on_room_spawned(
         },
         CollisionEventsEnabled,
     ))
-        .observe(on_room_entered)
-        .observe(on_room_exited)
+        
         ;
 }
 
@@ -93,13 +98,12 @@ fn on_room_entered(
     event: On<CollisionStart>,
     controller: Option<ResMut<RoomController>>,
     rooms: Query<(&RoomBounds, Entity)>,
-    player: Query<Entity, With<Player>>
+    player: Query<Entity, With<Focusable>>
 ) {
     let Some(mut controller) = controller else {return;};
     let other_entity = event.collider2;
     let room_entity = event.collider1;
     let Ok((room, e)) = rooms.get(room_entity) else {
-        warn!("Non-room collision detected: {}", room_entity);
         return;
     };
     if player.contains(other_entity) {
@@ -110,7 +114,7 @@ fn on_room_entered(
 fn on_room_exited(
     event: On<CollisionEnd>,
     controller: Option<ResMut<RoomController>>,
-    player: Query<Entity, With<Player>>
+    player: Query<Entity, With<Focusable>>
 ) {
     let Some(mut controller) = controller else {return;};
     let room_entity = event.collider1;

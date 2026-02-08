@@ -1,4 +1,4 @@
-use crate::{games::plugin::AppState, prelude::*};
+use crate::{games::plugin::{AppState, LastState}, prelude::*};
 use bevy_asset_loader::asset_collection::AssetCollection;
 use rand::Rng;
 
@@ -7,7 +7,7 @@ pub struct FlappyBirdPlugin;
 // TODO!: TRANSITION EASINGS
 
 const STATE: AppState = AppState::FlappyBird;
-const NEXT_STATE: AppState = AppState::Geometry;
+const NEXT_STATE: AppState = AppState::Platformer;
 
 
 const WIDTH : f32 = 576.0;
@@ -57,6 +57,7 @@ impl Plugin for FlappyBirdPlugin {
             .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
             .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
+            .add_observer(collision_handler)
             ;
     }
 }
@@ -92,9 +93,9 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+    mut state: ResMut<LastState>,
 ) {
-    cmd.spawn(DespawnOnExit(STATE))
-        .observe(collision_handler);
+    state.state = STATE;
 
     cmd.spawn((
         DespawnOnExit(STATE),
@@ -318,7 +319,7 @@ fn tick_defat(
     let dt = time.delta_secs().min(MAX_DT);
     *t += dt;
     if *t >= DEATH_DELAY {
-        state.set(AppState::PacmanEnter);
+        state.set(AppState::Defeat);
     }
 }
 
@@ -328,8 +329,13 @@ fn collision_handler(
     _e: On<CollisionStart>,
     mut state: ResMut<NextState<LocalState>>,
     mut cmd: Commands,
-    q: Query<Entity, With<Pacman>>
+    q: Query<Entity, With<Pacman>>,
+    s: Res<State<AppState>>,
+    ls: Option<Res<State<LocalState>>>,
 ){
+    if s.get() != &STATE {return;}
+    let Some(l) = ls else {return;};
+    if l.get() != &LocalState::Game {return;}
     let p = q.iter().next().expect("No pacman!");
     if _e.collider1 != p && _e.collider2 != p {return;}
     state.set(LocalState::Defeat);

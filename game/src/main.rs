@@ -2,7 +2,7 @@ use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 
 use crate::games::*;
-use crate::games::plugin::AppState;
+use crate::games::plugin::*;
 use crate::prelude::*;
 
 use crate::core::plugin::CorePlugin;
@@ -28,6 +28,7 @@ struct GamesPlugin;
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
         app
+            .insert_resource(LastState::default())
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
@@ -41,8 +42,9 @@ impl Plugin for GamesPlugin {
                 flappy_bird::plugin::FlappyBirdPlugin,
                 geometry_dash::plugin::GeometryDashPlugin,
             ))
-           .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
-           ;
+            .add_systems(OnEnter(AppState::Defeat), on_defeat)
+            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
+        ;
     }
 }
 
@@ -51,10 +53,11 @@ impl Plugin for GamesPlugin {
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
         app
+            .insert_resource(LastState::default())
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::FlappyBird)
+                    .continue_to_state(AppState::Platformer)
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
                     .load_collection::<platformer::plugin::PlatformerAssets>()
@@ -64,11 +67,33 @@ impl Plugin for GamesPlugin {
                 flappy_bird::plugin::FlappyBirdPlugin,
                 platformer::plugin::PlatformerPlugin,
             ))
-           .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
-           ;
+            .add_systems(OnEnter(AppState::Defeat), on_defeat)
+            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
+        ;
     }
 }
 
 #[cfg(not(feature = "kaiv"))]
 #[cfg(not(feature = "yaro"))]
-impl Plugin for GamesPlugin {fn build(&self, _app: &mut App) {}}
+impl Plugin for GamesPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .insert_resource(LastState::default())
+            .init_state::<AppState>()
+            .add_loading_state(
+                LoadingState::new(AppState::LoadingAssets)
+                    .continue_to_state(AppState::Platformer)
+                    .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
+                    .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
+                    .load_collection::<platformer::plugin::PlatformerAssets>()
+            )
+            .add_plugins((
+                pacman_eat::plugin::PacmanEatPlugin,
+                flappy_bird::plugin::FlappyBirdPlugin,
+                platformer::plugin::PlatformerPlugin,
+            ))
+            .add_systems(OnEnter(AppState::Defeat), on_defeat)
+            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
+        ;
+    }
+}

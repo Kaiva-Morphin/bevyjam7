@@ -17,7 +17,6 @@ pub fn spawn_player(
         player_layers(),
         CollisionEventsEnabled,
         CharacterController::default(),
-        Player,
     )); 
 }
 

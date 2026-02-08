@@ -615,9 +615,13 @@ dependencies = [
  "bevy_asset",
  "bevy_asset_loader_derive",
  "bevy_ecs",
+ "bevy_image",
  "bevy_log",
+ "bevy_math",
  "bevy_platform",
  "bevy_reflect",
+ "bevy_render",
+ "bevy_sprite",
  "bevy_state",
  "bevy_utils",
  "path-slash",
@@ -2034,6 +2038,7 @@ dependencies = [
 name = "camera"
 version = "0.1.0"
 dependencies = [
+ "avian2d",
  "bevy",
  "kaiv_utils",
  "properties",

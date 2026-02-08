@@ -24,9 +24,6 @@ pub fn room_layers() -> CollisionLayers {
 }
 
 
-#[derive(Component)]
-pub struct Player;
-
 pub const MAX_DT : f32 = 0.1;
 
 #[derive(Component)]

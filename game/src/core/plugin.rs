@@ -10,7 +10,7 @@ use debug_utils::{
 };
 use room::RoomPlugin;
 
-use crate::{character::plugin::CharacterPlugin, tilemap::plugin::MapPlugin};
+use crate::{tilemap::plugin::MapPlugin};
 
 #[derive(Default)]
 pub struct CorePlugin;
@@ -41,7 +41,7 @@ impl Plugin for CorePlugin {
                 EguiPlugin::default(),
                 CameraPlugin{initial_target_zoom: 1.0},
                 RoomPlugin::uninited(),
-                CharacterPlugin,
+                // CharacterPlugin,
                 SwitchableEguiInspectorPlugin::default(),
                 DebugOverlayPlugin::default(),
                 SwitchableAvianDebugPlugin::enabled(),
