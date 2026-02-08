@@ -31,20 +31,21 @@ impl Plugin for GamesPlugin {
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
+                    .continue_to_state(AppState::Geometry)
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
-                    .load_collection::<platformer::plugin::PlatformerAssets>()
+                    .load_collection::<geometry_dash::plugin::GeometryDashAssets>()
             )
             .add_plugins((
                 pacman_eat::plugin::PacmanEatPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
-                platformer::plugin::PlatformerPlugin,
+                geometry_dash::plugin::GeometryDashPlugin,
             ))
            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
            ;
     }
 }
+
 
 #[cfg(feature="kaiv")]
 impl Plugin for GamesPlugin {
