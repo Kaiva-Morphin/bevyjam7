@@ -1,7 +1,7 @@
-use avian2d::dynamics::solver::solver_body::InertiaFlags;
+use avian2d::{dynamics::solver::solver_body::InertiaFlags, math::Vector};
 use bevy_asset_loader::asset_collection::AssetCollection;
 
-use crate::{games::plugin::AppState, prelude::*};
+use crate::{games::plugin::{AppState, LastState}, prelude::*};
 pub struct GeometryDashPlugin;
 
 const STATE: AppState = AppState::Geometry;
@@ -12,6 +12,8 @@ const HALF_HEIGHT : f32 = 250.0 / 2.0;
 const SCALE : f32 = 1.0;
 
 const DEATH_DELAY : f32 = 1.0;
+
+const GRAVITY_SCALE : f32 = 30.;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
 #[source(AppState = STATE)]
@@ -40,6 +42,11 @@ pub struct PlayerEntity {
     entity: Entity,
 }
 
+#[derive(Resource)]
+pub struct IsLeft {
+    is: bool,
+}
+
 impl Plugin for GeometryDashPlugin {
     fn build(&self, app: &mut App) {
         app
@@ -49,11 +56,10 @@ impl Plugin for GeometryDashPlugin {
             .add_observer(spawnpoint_handler)
             .add_observer(camera_handler)
             .add_observer(on_collider_spawned)
-            .insert_resource(PlayerEntity {entity: Entity::PLACEHOLDER})
             .add_systems(OnEnter(STATE), setup)
             .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
-            // .add_systems(OnEnter(LocalState::Game), begin_game)
-            .add_systems(Update, (controller, print_started_collisions).run_if(in_state(LocalState::Game)))
+            .add_systems(OnEnter(LocalState::Game), begin_game)
+            .add_systems(Update, (controller).run_if(in_state(LocalState::Game)))
             .add_systems(Update, tick_defeat.run_if(in_state(LocalState::Defeat)))
             // .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
@@ -75,18 +81,23 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+    mut state: ResMut<LastState>,
 ) {
+    state.state = STATE;
+    
     cmd.spawn((
         DespawnOnExit(STATE),
         TiledMap(assets.tilemap_handle.clone()),
         Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
     ));
+
+    cmd.insert_resource(PlayerEntity {entity: Entity::PLACEHOLDER});
+    cmd.insert_resource(IsLeft {is: false});
 }
 fn begin_game (
-    mut cmd: Commands,
-    // q: Query<Entity, With<Pacman>>
+    mut state: ResMut<NextState<LocalState>>
 ) {
-    // cmd.entity(q.iter().next().expect("No pacman!")).insert(GravityScale(GRAVITY_AFFECT));
+    state.set(LocalState::Game);
 }
    
 fn tick_transition(
@@ -102,15 +113,24 @@ fn spawnpoint_handler(
     spawnpoint_transform_q: Query<&Transform, With<SpawnPoint>>,
     assets: Res<GeometryDashAssets>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
-    mut plyer_entity: ResMut<PlayerEntity>,
+    mut player_entity: ResMut<PlayerEntity>,
 ) {
     let e = event.entity;
     let transform = spawnpoint_transform_q.get(e).expect("no spawnpoint").clone();
 
     let layout = TextureAtlasLayout::from_grid(UVec2::splat(16), 1, 6, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
-
-    let player = cmd.spawn((
+    
+    let collider = Collider::rectangle(16.0, 16.0);
+    
+    let mut caster_shape = collider.clone();
+    caster_shape.set_scale(Vector::ONE * Vector::new(0.99, 0.99), 10);
+    
+    let layers = CollisionLayers::new(
+        CollisionLayer::Default,
+        [CollisionLayer::Yellow],
+    );
+    player_entity.entity = cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Pacman"),
         LinearVelocity(Vec2::ZERO),
@@ -124,23 +144,53 @@ fn spawnpoint_handler(
             ..default()
         },
         Cube,
-        Collider::rectangle(16.0, 16.0),
-        CollisionEventsEnabled,
+        collider,
         RigidBody::Dynamic,
         LockedAxes::new().lock_rotation(),
-        children![(
-            RayCaster::new(Vec2::ZERO, Dir2::NEG_Y),
-        )],
-        GravityScale(5.),
+        children![
+            ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::X)
+                .with_max_distance(8.01)
+                .with_ignore_self(true)
+                .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+            ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_X)
+                .with_max_distance(8.01)
+                .with_ignore_self(true)
+                .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+            ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::Y)
+                .with_max_distance(8.01)
+                .with_ignore_self(true)
+                .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+            ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_Y)
+                .with_max_distance(8.01)
+                .with_ignore_self(true)
+                .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+        ],
+        GravityScale(GRAVITY_SCALE),
+        layers,
     )).id();
-    plyer_entity.entity = player;
 }
 
 #[derive(Component)]
-struct Floor;
+struct Yellow;
 
 #[derive(Component)]
-struct Wall;
+struct White;
+
+#[derive(Component)]
+struct Aboba;
+
+#[derive(Component)]
+struct End;
+
+#[derive(PhysicsLayer, Default)]
+enum CollisionLayer {
+    #[default]
+    Default,
+    Yellow,
+    White,
+    Aboba,
+    End,
+}
 
 fn on_collider_spawned(
     collider_created: On<TiledEvent<ColliderCreated>>,
@@ -152,16 +202,48 @@ fn on_collider_spawned(
         return;
     }
     let Some(layer) = collider_created.event().get_layer(&assets) else {return;};
-    if layer.name == "yellow_floor" {
+    if layer.name == "yellow_front" || layer.name == "yellow_back" {
+        let layers = CollisionLayers::new(
+        CollisionLayer::Yellow,
+        [CollisionLayer::Yellow, CollisionLayer::Default],
+        );
         commands.entity(collider_created.event().origin).insert((
-            Floor,
+            Yellow,
             RigidBody::Static,
+            layers,
         ));
     }
-    if layer.name == "yellow_walls" {
+    if layer.name == "white_front" || layer.name == "white_back" {
+        let layers = CollisionLayers::new(
+        CollisionLayer::White,
+        [CollisionLayer::White, CollisionLayer::Default],
+        );
         commands.entity(collider_created.event().origin).insert((
-            Wall,
+            White,
             RigidBody::Static,
+            layers,
+        ));
+    }
+    if layer.name == "white_aboba" || layer.name == "yellow_aboba" {
+        let layers = CollisionLayers::new(
+        CollisionLayer::Aboba,
+        [CollisionLayer::Default],
+        );
+        commands.entity(collider_created.event().origin).insert((
+            Aboba,
+            RigidBody::Static,
+            layers,
+        ));
+    }
+    if layer.name == "white_end" {
+        let layers = CollisionLayers::new(
+        CollisionLayer::End,
+        [CollisionLayer::Default],
+        );
+        commands.entity(collider_created.event().origin).insert((
+            End,
+            RigidBody::Static,
+            layers,
         ));
     }
 }
@@ -175,37 +257,114 @@ fn camera_handler(
     let center_transform = center_transform_q.get(e).expect("no center");
     let mut camera_t = camera_q.single_mut().expect("no camera");
     camera_t.translation = center_transform.translation;
-
 }
 
-const MS : f32 = 30.0;
-const G : f32 = 9.81 * 3.;
+const MS : f32 = 90.0;
 
 fn controller(
     mut cmd: Commands,
     mut cube_vel_q: Query<&mut LinearVelocity, With<Cube>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
-    raycast_q: Query<(&RayCaster, &RayHits)>,
-    floor_q: Query<&Floor>,
-    plyer_entity: Res<PlayerEntity>,
+    shapecast_q: Query<(&ShapeCaster, &ShapeHits)>,
+    aboba_q: Query<&Aboba>,
+    end_q: Query<&End>,
+    mut state: ResMut<NextState<LocalState>>,
+    player_entity: Res<PlayerEntity>,
+    mut cube_pos_q: Query<(&mut Position, &mut CollisionLayers), With<Cube>>,
+    mut is_left: ResMut<IsLeft>,
 ) {
     let mut on_ground = false;
-    for (ray, hits) in &raycast_q {
-        for hit in hits.iter_sorted() {
-            if let Ok(_) = floor_q.get(hit.entity) {
-                // println!("{}", hit.distance);
-                if hit.distance < 8.01 {
-                    on_ground = true;
-                    break;
+    for (casters, hits) in &shapecast_q {
+        let dir = casters.direction;
+        for hit in hits.iter() {
+            match dir {
+                Dir2::NEG_Y => {
+                    if hit.entity != player_entity.entity && hit.distance < 0.1 {
+                        // println!("FLOOR {} {}", hit.distance, hit.entity);
+                        on_ground = true;
+                    }
+                },
+                _ => {
+                    // println!("WALLS {} {}", hit.distance, hit.entity);
+                    if hit.entity != player_entity.entity && hit.distance < 0.1 {
+                        if let Ok(_) = aboba_q.get(hit.entity) {
+                            println!("HIT ABOBA");
+                            let (mut pos, mut layers) = cube_pos_q.single_mut().expect("no cube");
+                            *pos = Position::from_xy(pos.x, pos.y + -1. * 6. * 16.);
+                            is_left.is = !is_left.is;
+
+                            if layers.filters == LayerMask::from([CollisionLayer::Yellow]) {
+                                layers.filters = LayerMask::from([CollisionLayer::White]);
+                                cmd.entity(player_entity.entity).despawn_children();
+                                let collider = Collider::rectangle(16.0, 16.0);
+    
+                                let mut caster_shape = collider.clone();
+                                caster_shape.set_scale(Vector::ONE * Vector::new(0.99, 0.99), 10);
+                                cmd.entity(player_entity.entity).insert(children![
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::X)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::White, CollisionLayer::Aboba, CollisionLayer::End])),
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_X)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::White, CollisionLayer::Aboba, CollisionLayer::End])),
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::Y)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::White, CollisionLayer::Aboba, CollisionLayer::End])),
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_Y)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::White, CollisionLayer::Aboba, CollisionLayer::End])),
+                                ],);
+                            } else {
+                                layers.filters = LayerMask::from([CollisionLayer::Yellow]);
+                                cmd.entity(player_entity.entity).despawn_children();
+                                let collider = Collider::rectangle(16.0, 16.0);
+    
+                                let mut caster_shape = collider.clone();
+                                caster_shape.set_scale(Vector::ONE * Vector::new(0.99, 0.99), 10);
+                                cmd.entity(player_entity.entity).insert(children![
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::X)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_X)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::Y)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+                                    ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_Y)
+                                        .with_max_distance(8.01)
+                                        .with_ignore_self(true)
+                                        .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End])),
+                                ],);
+                            }
+                            return;
+                        } else if let Ok(_) = end_q.get(hit.entity) {
+                            println!("HIT END");
+                            return;
+                        } else {
+                            state.set(LocalState::Defeat);
+                        }
+                    }
                 }
             }
         }
     }
     let mut vel = cube_vel_q.single_mut().expect("no cube(");
-    vel.x = MS;
+    if !is_left.is {
+        vel.x = MS;
+    } else {
+        vel.x = -MS;
+    }
     // println!("{} {}", keyboard_input.pressed(KeyCode::Space), on_ground);
     if keyboard_input.pressed(KeyCode::Space) && on_ground {
-        vel.y = 60.;
+        vel.y = 160.;
     }
 }
 
@@ -213,15 +372,11 @@ fn tick_defeat(
     mut t: Local<f32>,
     time: Res<Time>,
     mut state: ResMut<NextState<AppState>>,
-    mut cube_transform_q: Query<&mut Transform, With<Cube>>,
-    spawnpoint_transform_q: Query<&Transform, With<SpawnPoint>>,
 ){
     let dt = time.delta_secs().min(MAX_DT);
     *t += dt;
     if *t >= DEATH_DELAY {
-        let mut cube_t = cube_transform_q.single_mut().expect("no cube");
-        let spawnpoint_t = spawnpoint_transform_q.single().expect("no spawnpoint").clone();
-        *cube_t = spawnpoint_t;
+        state.set(AppState::Defeat);
     }
 }
 
@@ -231,10 +386,5 @@ fn cleanup(
 ) {
     cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
     cmd.remove_resource::<PlayerEntity>();
-}
-
-fn print_started_collisions(mut collision_reader: MessageReader<CollisionStart>) {
-    for event in collision_reader.read() {
-        println!("{} and {} started colliding", event.collider1, event.collider2);
-    }
+    cmd.remove_resource::<IsLeft>();
 }

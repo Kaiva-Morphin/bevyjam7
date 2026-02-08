@@ -14017,6 +14017,30 @@
                 "Player"
             ],
             "valuesAsFlags": false
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 665,
+            "members": [
+            ],
+            "name": "game::games::geometry_dash::plugin::AbobaCollider",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 666,
+            "members": [
+            ],
+            "name": "game::games::geometry_dash::plugin::EndCollider",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
         }
     ]
 }
