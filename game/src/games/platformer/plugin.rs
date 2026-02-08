@@ -1,6 +1,7 @@
 use crate::{games::plugin::AppState, prelude::*};
 use bevy_asset_loader::asset_collection::AssetCollection;
 use room::RoomController;
+use camera::CameraController;
 
 const STATE: AppState = AppState::Platformer;
 const NEXT_STATE: AppState = AppState::PacmanEnter;
@@ -14,13 +15,24 @@ impl Plugin for PlatformerPlugin {
             .add_systems(OnEnter(STATE), setup)
             .add_systems(Update, tick.run_if(in_state(STATE)))
             .add_systems(OnExit(STATE), cleanup)
+            .register_type::<NextTrigger>()
+            .register_type::<StopTrigger>()
             ;
     }
 }
 
+#[derive(Component, Default, Reflect)]
+#[reflect(Default, Component)]
 struct NextTrigger;
+
+#[derive(Component, Default, Reflect)]
+#[reflect(Default, Component)]
 struct StopTrigger;
 
+
+#[derive(Component, Default, Reflect)]
+#[reflect(Default, Component)]
+struct SpawnPoint;
 
 #[derive(AssetCollection, Resource)]
 pub struct PlatformerAssets {
@@ -28,6 +40,21 @@ pub struct PlatformerAssets {
     tilemap: Handle<TiledMapAsset>,
     #[asset(path = "images/pacman.png")]
     pacman: Handle<Image>,
+}
+
+fn focus_player(
+    player: On<Add, SpawnPoint>,
+    pq: Query<&GlobalTransform, (With<Player>, Without<WorldCamera>)>,
+    mut cq: Query<(Entity, &mut Projection), (With<WorldCamera>, Without<Player>)>,
+    mut cmd: Commands,
+    mut camera_controller: ResMut<CameraController>,
+) {
+    camera_controller.focused_entities.push_front(player.entity);
+    let Ok(pt) = pq.get(player.entity) else {return;};
+    let Some((ce, mut p)) = cq.iter_mut().next() else {return;}; 
+    let Projection::Orthographic(p) = &mut *p else {warn!("Camera without perspective projection"); return;};
+    p.scale = camera_controller.target_zoom;
+    cmd.entity(ce).insert(Transform::from_translation(pt.translation()));
 }
 
 
@@ -54,7 +81,6 @@ fn setup(
 
 #[derive(Component)]
 pub struct Pacman;
-
 
 fn tick (
     time: Res<Time>,

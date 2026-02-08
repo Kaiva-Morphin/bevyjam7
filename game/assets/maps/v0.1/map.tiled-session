@@ -17,6 +17,25 @@
             "dynamicWrapping": false,
             "scaleInDock": 1
         },
+        "C:/Users/kaiv/Downloads/GD/GD tiles.tsx": {
+            "scaleInEditor": 1
+        },
+        "C:/Users/kaiv/Downloads/GD/pacman.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 239.25,
+                "y": 70.5
+            }
+        },
+        "C:/Users/kaiv/Downloads/GD/rules.tmx": {
+            "scale": 4.6460937499999995,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 15.604506473852354,
+                "y": -15.496889187825786
+            }
+        },
         "C:/Users/kaiv/Downloads/infinite.tmx": {
             "scale": 0.75,
             "selectedLayer": 0,
@@ -47,6 +66,25 @@
             "viewCenter": {
                 "x": 316.75,
                 "y": -3.5
+            }
+        },
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 348.5,
+                "y": 321
+            }
+        },
+        "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 133.66666666666663,
+                "y": 13.333333333333371
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/tilemap.tsx": {
@@ -82,19 +120,19 @@
             "expandedObjectLayers": [
                 5
             ],
-            "scale": 3,
-            "selectedLayer": 4,
+            "scale": 1,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 48.16666666666666,
-                "y": -82.66666666666666
+                "x": 227.5,
+                "y": 233
             }
         },
         "rules.tmx": {
-            "scale": 11,
-            "selectedLayer": 0,
+            "scale": 8,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 64.04545454545455,
-                "y": 64
+                "x": 29.0625,
+                "y": 23.875
             }
         },
         "tilemap.tsx": {
@@ -103,7 +141,7 @@
             "scaleInEditor": 11
         }
     },
-    "last.imagePath": "R:/prog/bevyjam7/game/assets/maps/platformer",
+    "last.imagePath": "C:/Users/kaiv/Downloads/GD",
     "last.objectTypesPath": "R:/prog/bevyjam7/game/tiled_types_export.json",
     "map.fixedSize": false,
     "map.height": 16,
@@ -122,6 +160,7 @@
     "project": "map.tiled-project",
     "property.type": "room::MapRoom",
     "recentFiles": [
+        "C:/Users/kaiv/Downloads/GD/GD tiles.tsx",
         "rules.tmx",
         "map.tmx",
         "tilemap.tsx",
