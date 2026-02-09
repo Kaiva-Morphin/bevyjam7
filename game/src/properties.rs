@@ -21,8 +21,8 @@ pub const PLATFORMER_ANIM_DELAY : f32 = 0.1;
 
 
 pub const FLAPPY_WIDTH : f32 = 576.0;
-pub const FLAPPY_HALF_HEIGHT : f32 = 250.0 / 2.0;
-pub const FLAPPY_SCALE : f32 = 1.0;
+pub const FLAPPY_HALF_HEIGHT : f32 = 260.0 / 2.0;
+pub const FLAPPY_SCALE : f32 = 1.0 / 16.0;
 pub const FLAPPY_LEFT_BOUND : f32 = -FLAPPY_WIDTH / 2.0 + 120.0;
 pub const FLAPPY_RIGHT_BOUND : f32 = FLAPPY_WIDTH / 2.0 - 200.0;
 
@@ -33,12 +33,12 @@ pub const FLAPPY_BIRD_PROGRESS_SPEED : f32 = 25.0;
 pub const FLAPPY_BIRD_OUT_SPEED : f32 = 500.0;
 pub const FLAPPY_PIPE_SPEED : f32 = 250.0;
 pub const FLAPPY_PIPE_SPAWN_DELAY : f32 = 1.5;
-pub const FLAPPY_PIPE_GAP : f32 = 35.0;
+pub const FLAPPY_PIPE_GAP : f32 = 85.0;
 pub const FLAPPY_PIPE_SPREAD : f32 = 40.0;
 pub const FLAPPY_GRAVITY_AFFECT : f32 = 50.0;
 pub const FLAPPY_BIRD_JUMP_STRENGTH : f32 = 200.0;
 pub const FLAPPY_DEATH_DELAY : f32 = 1.0;
-
+pub const FLAPPY_PIPE_SCALE : f32 = 0.25;
 
 
 pub const NOVEL_MUSIC_INTERPOLATION : f32 = 1.0;

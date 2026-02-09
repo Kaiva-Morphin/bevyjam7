@@ -41,12 +41,14 @@ impl Plugin for FlappyBirdPlugin {
 pub struct FlappyBirdAssets {
     #[asset(path = "images/pipe.png")]
     pipe: Handle<Image>,
-    #[asset(path = "images/pacman.png")]
+    #[asset(path = "images/flappy.png")]
     pacman: Handle<Image>,
     #[asset(path = "images/flappy_bird_transition.png")]
     transition_bg: Handle<Image>,
     #[asset(path = "images/flappy_bird_bg.png")]
     bg: Handle<Image>,
+    #[asset(texture_atlas_layout(tile_size_x = 792, tile_size_y = 1000, columns = 2, rows = 1))]
+    layout: Handle<TextureAtlasLayout>,
 }
 
 
@@ -84,9 +86,6 @@ fn setup(
     
     cmd.insert_resource(Pipes{since_prev: 100., ..Default::default()});
 
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(16), 1, 6, None, None);
-    let texture_atlas_layout = texture_atlas_layouts.add(layout);
-    
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Bottom"),
@@ -134,13 +133,13 @@ fn setup(
         Sprite {
             image: assets.pacman.clone(),
             texture_atlas: Some(TextureAtlas {
-                layout: texture_atlas_layout.clone(),
-                index: 3,
+                layout: assets.layout.clone(),
+                index: 0,
             }),
             ..default()
         },
         Pacman,
-        Collider::circle(8.0),
+        Collider::circle(14.0 * (1.0 / FLAPPY_SCALE)),
         CollisionEventsEnabled,
         RigidBody::Dynamic,
         GravityScale(0.0),
@@ -198,8 +197,8 @@ fn spawn_pipe(
         GlobalTransform::default(),
         children![
             (
-                Collider::rectangle(10.0, FLAPPY_HALF_HEIGHT),
-                Transform::from_translation(Vec3::new(0.0, -FLAPPY_HALF_HEIGHT * 0.5 - FLAPPY_PIPE_GAP, 5.0)),
+                Collider::rectangle(30.0 * (1.0 / FLAPPY_PIPE_SCALE), FLAPPY_HALF_HEIGHT * (1.0 / FLAPPY_PIPE_SCALE) * 1.7),
+                Transform::from_translation(Vec3::new(0.0, -FLAPPY_HALF_HEIGHT * 0.5 - FLAPPY_PIPE_GAP, 5.0)).with_scale(Vec3::splat(FLAPPY_PIPE_SCALE)),
                 CollisionEventsEnabled,
                 Sensor,
                 RigidBody::Kinematic,
@@ -207,12 +206,12 @@ fn spawn_pipe(
                 children!(
                     Sprite{
                         image: assets.pipe.clone(), ..default()
-                    }
+                    },
                 )
             ),
             (
-                Collider::rectangle(10.0, FLAPPY_HALF_HEIGHT),
-                Transform::from_translation(Vec3::new(0.0, FLAPPY_HALF_HEIGHT * 0.5 + FLAPPY_PIPE_GAP, 5.0)),
+                Collider::rectangle(30.0 * (1.0 / FLAPPY_PIPE_SCALE), FLAPPY_HALF_HEIGHT * (1.0 / FLAPPY_PIPE_SCALE) * 1.7),
+                Transform::from_translation(Vec3::new(0.0, FLAPPY_HALF_HEIGHT * 0.5 + FLAPPY_PIPE_GAP, 5.0)).with_scale(Vec3::splat(FLAPPY_PIPE_SCALE)),
                 CollisionEventsEnabled,
                 Sensor,
                 RigidBody::Kinematic,
@@ -220,7 +219,7 @@ fn spawn_pipe(
                 children!(
                     Sprite{
                         image: assets.pipe.clone(), ..default()
-                    }
+                    },
                 )
             ),
         ]
@@ -251,9 +250,9 @@ fn tick_game(
     let Some(a) = &mut s.texture_atlas else {return;};
     if *at > 0.0 {
         *at -= dt;
-        a.index = 4;
+        a.index = 1;
     } else {
-        a.index = 3;
+        a.index = 0;
     }
     if t.translation.x >= FLAPPY_RIGHT_BOUND {
         state.set(LocalState::Win);

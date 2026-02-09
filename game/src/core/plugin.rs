@@ -10,7 +10,7 @@ use debug_utils::{
 };
 use room::RoomPlugin;
 
-use crate::{tilemap::plugin::MapPlugin};
+use crate::{shaders::bg::BGPlugin, tilemap::plugin::MapPlugin};
 
 #[derive(Default)]
 pub struct CorePlugin;
@@ -46,6 +46,7 @@ impl Plugin for CorePlugin {
                 GifPlugin,
                 MapPlugin,
                 TweeningPlugin,
+                BGPlugin,
                 // GameStatesPlugin,
                 // PixelCameraPlugin,
                 // CameraControllerPlugin,
