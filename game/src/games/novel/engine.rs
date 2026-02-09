@@ -84,7 +84,7 @@ macro_rules! backgrounds {
 pub struct ActorAppearance {
     pub actor: Actor,
     pub flip_x: bool,
-    pub pos: Vec3,
+    pub transform: Transform,
 }
 
 #[derive(Default)]

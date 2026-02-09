@@ -21,7 +21,7 @@ pub enum AppState {
     Hotline,
     Titles,
     Novel,
-    
+    FakeEnd,
     End
 }
 

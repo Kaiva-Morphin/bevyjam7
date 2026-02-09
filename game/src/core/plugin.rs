@@ -2,6 +2,7 @@ use avian2d::PhysicsPlugins;
 use bevy::prelude::*;
 use bevy_easy_gif::GifPlugin;
 use bevy_inspector_egui::bevy_egui::{EguiPlugin, EguiPreUpdateSet};
+use bevy_tweening::TweeningPlugin;
 use camera::CameraPlugin;
 use debug_utils::{
     avian::plugin::SwitchableAvianDebugPlugin, debug_overlay::DebugOverlayPlugin,
@@ -44,6 +45,7 @@ impl Plugin for CorePlugin {
                 SwitchableAvianDebugPlugin::enabled(),
                 GifPlugin,
                 MapPlugin,
+                TweeningPlugin,
                 // GameStatesPlugin,
                 // PixelCameraPlugin,
                 // CameraControllerPlugin,

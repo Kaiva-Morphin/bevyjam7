@@ -47,6 +47,13 @@ pub struct NovelAssets {
 actors! {
     "Freddy" : Freddy => "images/novel/actors/faz.png",
     "Freddy" : FreddyNight => "images/novel/actors/faz_night.png",
+    "CJ" : CJ => "images/novel/actors/cj.png",
+    "Bobux" : Bob => "images/novel/actors/bobux.png",
+    "Assasino" : Ass => "images/novel/actors/assasino.png",
+    "Bellerino" : Bal => "images/novel/actors/ballerina.png",
+    "Time" : Time => "images/novel/actors/time.png",
+    "Rust" : Rust => "images/novel/actors/rust.jpg",
+    "Go" : Go => "images/novel/actors/golang.png",
 }
 
 backgrounds!{
@@ -54,6 +61,8 @@ backgrounds!{
     LivingroomDark => "images/novel/bg/Livingroom_Dark.png",
     BedroomNight => "images/novel/bg/Bedroom_Night_Dark.png",
     KitchenNight => "images/novel/bg/Kitchen_Night.png",
+    GroveStreet => "images/novel/bg/grove.jpg",
+    Computer => "images/novel/bg/supercomputer.jpg",
 }
 
 const LEFT : Vec3 = Vec3::new(-150.0, 0.0, 0.0);
@@ -66,27 +75,121 @@ impl Default for NovelState {
             t: Timer::from_seconds(1.0 / CHARS_PER_SECOND, TimerMode::Repeating),
             current_stage: 0,
             stages: stages!{
-                StreetAutumnNight {=> "Какая приятная ночь чтобы прогуляться!"},
-                StreetAutumnNight {=> "Я думаю, что мне стоит гулять чаще"},
-                StreetAutumnNight {=> "Ну ладно, пора домой"},
+                StreetAutumnNight {=> "What a nice evening!"},
+                StreetAutumnNight {=> "I think I should walk around a bit more..."},
+                GroveStreet {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => "Aye, whatcha doin here man?"
+                },
+                GroveStreet {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => "This ain't your hood"
+                },
+                GroveStreet {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => "Looking for trouble?"
+                },
+                GroveStreet {
+                    CJ (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.5))),
+                    Bob (transform = Transform::from_translation(LEFT)),
+                    => "Chill mate, guy buys stuff from me \nLet him off the hook"
+                },
+                GroveStreet {
+                    CJ (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.5))),
+                    Bob (transform = Transform::from_translation(LEFT)),
+                    => "Fine Bobby, but only this time"
+                },
+                GroveStreet {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => "Now get the hell outa here"
+                },
+                StreetAutumnNight {=> "Well, that was one hell of an encounter"},
+                StreetAutumnNight {=> "I'd better head home..."},
                 LivingroomDark {
                     =>
-                    "Пойду поем"
+                    "Gotta get some coffee..."
+                },
+                LivingroomDark {
+                    =>
+                    "What's that sound?"
+                },
+                LivingroomDark {
+                    Freddy
+                    => "ur ur \n urur"
+                },
+                LivingroomDark {
+                    Freddy (flip_x = true)
+                    => ""
+                },
+                LivingroomDark {
+                    Freddy (flip_x = true, transform = Transform::from_translation(RIGHT))
+                    => ""
+                },
+                LivingroomDark {
+                    => ""
+                },
+                LivingroomDark {
+                    => "..."
                 },
                 KitchenNight {
-                    =>
-                    "Что это за звук?"
+                    => "What coffee do I have here?\nOh right, these two"
                 },
-                BedroomNight {
-                    Freddy
-                    => "ur ur ur"
+                KitchenNight {
+                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
+                    Ass (transform = Transform::from_translation(LEFT).with_scale(Vec3::splat(0.2))),
+                    => "Oh no, darling...\nHe's here for us..."
                 },
-                BedroomNight {
-                    Freddy (pos = Vec3::new(100.0, 0.0, 0.0)),
-                    FreddyNight (flip_x = true, pos = LEFT) 
-                    => "Hello, my dear friend."
+                KitchenNight {
+                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
+                    Ass (transform = Transform::from_translation(LEFT).with_scale(Vec3::splat(0.2))),
+                    => "No, my love, I can't lose you!\nYou're the love of my life!"
                 },
-                BedroomNight {FreddyNight (pos = Vec3::ZERO) => "Press my nose, cutie <3"},
+                KitchenNight {
+                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
+                    Ass (transform = Transform::from_translation(LEFT).with_scale(Vec3::splat(0.2))),
+                    => "I have to let him drink me, so you can live another day...\nGoodbye my love..."
+                },
+                KitchenNight {
+                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
+                    => "NOOOOOOOO"
+                },
+                Computer {
+                    => "Hmm, I guess I should do some work..."
+                },
+                Computer {
+                    Time,
+                    => "Oh yes, it's time for bevy jam!"
+                },
+                Computer {
+                    => "Let's see what's the topic this time"
+                },
+                Computer {
+                    => "..."
+                },
+                Computer {
+                    => "Bevy editor from another world"
+                },
+                Computer {
+                    => "What an interesting choice.\nI guess any game engine needs an editor..."
+                },
+                Computer {
+                    => "But Rust is hard...\nshould I even study rust?"
+                },
+                Computer {
+                    Rust (transform = Transform::from_translation(RIGHT)),
+                    Go (transform = Transform::from_translation(LEFT)),
+                    => "There's no point in rust\nBackend can be done with kotlin or golang"
+                },
+                Computer {
+                    Rust (transform = Transform::from_translation(RIGHT)),
+                    Go (transform = Transform::from_translation(LEFT)),
+                    => "Rust is definitely faster\nGo even has a garbage collector\nKotlin has a ton of legacy code behind it"
+                },
+                Computer {
+                    Rust (transform = Transform::from_translation(RIGHT)), // todo: rotate
+                    Go (transform = Transform::from_translation(LEFT)),
+                    => "So what did you choose?"
+                },
             },
         }
     }
@@ -277,7 +380,7 @@ fn next_stage(
                 flip_x: appearance.flip_x,
                 ..default()
             },
-            Transform::from_translation(appearance.pos)
+            appearance.transform,
         ));
     }
 }
