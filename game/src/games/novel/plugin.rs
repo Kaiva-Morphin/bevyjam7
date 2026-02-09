@@ -1,9 +1,8 @@
 use std::time::Duration;
 
-use crate::{actors, backgrounds, games::{novel::engine::*, plugin::{AppState, LastState}}, prelude::*, stages};
-use bevy::{color::palettes::css::RED, text::FontSmoothing};
+use crate::{actors, backgrounds, games::{novel::engine::*, plugin::{AppState, LastState}}, novel_music, prelude::*, sound_effects, stages};
+use bevy::text::FontSmoothing;
 use bevy_asset_loader::prelude::AssetCollection;
-use camera::WorldUiRoot;
 
 
 
@@ -45,19 +44,27 @@ pub struct NovelAssets {
 
 
 actors! {
-    "Freddy" : Freddy => "images/novel/actors/faz.png",
-    "Freddy" : FreddyNight => "images/novel/actors/faz_night.png",
+    Freddy => "images/novel/actors/faz.png",
+    FreddyNight => "images/novel/actors/faz_night.png",
 }
 
-backgrounds!{
+backgrounds! {
     StreetAutumnNight => "images/novel/bg/Street_Autumn_Night.png",
     LivingroomDark => "images/novel/bg/Livingroom_Dark.png",
     BedroomNight => "images/novel/bg/Bedroom_Night_Dark.png",
     KitchenNight => "images/novel/bg/Kitchen_Night.png",
 }
 
+sound_effects! {
+    PipeFall => ""
+}
+
+novel_music! {
+    PipeFall => ""
+}
+
 const LEFT : Vec3 = Vec3::new(-150.0, 0.0, 0.0);
-const RIGHT : Vec3 = Vec3::new(150.0, 0.0, 0.0);
+
 impl Default for NovelState {
     fn default() -> Self {
         Self {
@@ -66,27 +73,27 @@ impl Default for NovelState {
             t: Timer::from_seconds(1.0 / CHARS_PER_SECOND, TimerMode::Repeating),
             current_stage: 0,
             stages: stages!{
-                StreetAutumnNight {=> "Какая приятная ночь чтобы прогуляться!"},
-                StreetAutumnNight {=> "Я думаю, что мне стоит гулять чаще"},
-                StreetAutumnNight {=> "Ну ладно, пора домой"},
-                LivingroomDark {
-                    =>
-                    "Пойду поем"
-                },
-                KitchenNight {
-                    =>
-                    "Что это за звук?"
-                },
-                BedroomNight {
-                    Freddy
-                    => "ur ur ur"
-                },
-                BedroomNight {
-                    Freddy (pos = Vec3::new(100.0, 0.0, 0.0)),
-                    FreddyNight (flip_x = true, pos = LEFT) 
-                    => "Hello, my dear friend."
-                },
-                BedroomNight {FreddyNight (pos = Vec3::ZERO) => "Press my nose, cutie <3"},
+                StreetAutumnNight {=> ("aboba") "Какая приятная ночь чтобы прогуляться!"},
+                StreetAutumnNight {=> ("aboba & Freddy") "Я думаю, что мне стоит гулять чаще"},
+                StreetAutumnNight {=> ("aboba") "Ну ладно, пора домой"},
+                // LivingroomDark {
+                //     =>
+                //     "Пойду поем"
+                // },
+                // KitchenNight {
+                //     =>
+                //     "Что это за звук?"
+                // },
+                // BedroomNight {
+                //     Freddy
+                //     => "ur ur ur"
+                // },
+                // BedroomNight {
+                //     Freddy (pos = Vec3::new(100.0, 0.0, 0.0)),
+                //     FreddyNight (flip_x = true, pos = LEFT) 
+                //     => "Hello, my dear friend."
+                // },
+                // BedroomNight {FreddyNight (pos = Vec3::ZERO) => "Press my nose, cutie <3"},
             },
         }
     }
@@ -141,9 +148,6 @@ impl NovelState {
 }
 
 
-
-
-
 #[derive(Component)]
 struct BackgroundSprite;
 
@@ -163,7 +167,7 @@ fn setup(
     let s = NovelState::default().inited();
     let cam = cam.iter().next().expect("No cam!");
     let slicer = TextureSlicer {
-        border: BorderRect::all(0.0),
+        border: BorderRect::all(2.0),
         center_scale_mode: SliceScaleMode::Tile { stretch_value: 2.0 },
         sides_scale_mode: SliceScaleMode::Tile { stretch_value: 2.0 },
         max_corner_scale: 1.0,
@@ -249,8 +253,51 @@ fn setup(
     ));
 }
 
-fn next_stage(
+fn tick(    
+    bg: Res<BackgroundsAssets>,
+    actors: Res<ActorsAssets>,
+    mut state: ResMut<NovelState>,
+    mut next: ResMut<NextState<AppState>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    time: Res<Time>,
     mut cmd: Commands,
+    mut t_q: Query<&mut Text, With<TextNode>>,
+    mut bg_q: Query<&mut Sprite, With<BackgroundSprite>>,
+    sprite_q: Query<Entity, With<ActorSprite>>,
+){
+    let pressed = keyboard_input.just_pressed(KeyCode::Space);
+    if state.is_finished() {
+        if pressed {
+            next.set(NEXT_STATE);
+        }
+        return;
+    }
+    if state.is_all_chars_shown() {
+        if pressed {
+            next_stage(&mut cmd, &mut state, &mut t_q, &mut bg_q, &sprite_q, &bg, &actors);
+        }
+        return;
+    }
+    if pressed {
+        for mut t in t_q.iter_mut() {
+            t.0 = state.full_text().to_string();
+        }
+        state.read_all_text();
+        return;
+    }
+    let dt = time.dt();
+    state.t.tick(Duration::from_secs_f32(dt));
+    if state.t.just_finished() {
+        state.chars_shown += 1;
+        for mut t in t_q.iter_mut() {
+            t.0 = state.text().to_string();
+        }
+        state.t.reset();
+    }
+}
+
+fn next_stage(
+    cmd: &mut Commands,
     state: &mut ResMut<NovelState>,
     t_q: &mut Query<&mut Text, With<TextNode>>,
     bg_q: &mut Query<&mut Sprite, With<BackgroundSprite>>,
@@ -281,50 +328,6 @@ fn next_stage(
         ));
     }
 }
-
-fn tick(    
-    bg: Res<BackgroundsAssets>,
-    actors: Res<ActorsAssets>,
-    mut state: ResMut<NovelState>,
-    mut next: ResMut<NextState<AppState>>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    time: Res<Time>,
-    mut cmd: Commands,
-    mut t_q: Query<&mut Text, With<TextNode>>,
-    mut bg_q: Query<&mut Sprite, With<BackgroundSprite>>,
-    sprite_q: Query<Entity, With<ActorSprite>>,
-){
-    let pressed = keyboard_input.just_pressed(KeyCode::Space);
-    if state.is_finished() {
-        if pressed {
-            next.set(NEXT_STATE);
-        }
-        return;
-    }
-    if state.is_all_chars_shown() {
-        if pressed {
-            next_stage(cmd, &mut state, &mut t_q, &mut bg_q, &sprite_q, &bg, &actors);
-        }
-        return;
-    }
-    if pressed {
-        for mut t in t_q.iter_mut() {
-            t.0 = state.full_text().to_string();
-        }
-        state.read_all_text();
-        return;
-    }
-    let dt = time.dt();
-    state.t.tick(Duration::from_secs_f32(dt));
-    if state.t.just_finished() {
-        state.chars_shown += 1;
-        for mut t in t_q.iter_mut() {
-            t.0 = state.text().to_string();
-        }
-        state.t.reset();
-    }
-}
-
 
 fn cleanup(
     mut cmd: Commands

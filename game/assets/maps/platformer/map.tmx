@@ -74,7 +74,7 @@
     </properties>
    </property>
   </properties>
-  <object id="7" x="-232" y="235.5">
+  <object id="7" x="118" y="237.5">
    <properties>
     <property name="r" type="class" propertytype="game::games::platformer::plugin::SpawnPoint"/>
    </properties>

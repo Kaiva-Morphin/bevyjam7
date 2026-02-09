@@ -12,6 +12,7 @@ pub mod tilemap;
 pub mod prelude;
 pub mod properties;
 pub mod games;
+pub mod tween;
 
 fn main() {
     App::new()
@@ -79,10 +80,12 @@ impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
         app
             .insert_resource(LastState::default())
+            .insert_resource(LastScreenshot::default())
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
                     .continue_to_state(AppState::Novel)
+                    .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
                     .load_collection::<platformer::plugin::PlatformerAssets>()
@@ -97,7 +100,10 @@ impl Plugin for GamesPlugin {
                 novel::plugin::NovelPlugin,
             ))
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
-            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
+            .add_systems(Update, (
+                bevy::dev_tools::states::log_transitions::<AppState>,
+                animate_screenshot
+            ))
         ;
     }
 }

@@ -1,4 +1,4 @@
-use crate::{games::plugin::{AppState, LastState}, prelude::*};
+use crate::{games::plugin::{AppState, LastState, await_screenshot_and_translate}, prelude::*};
 use bevy_asset_loader::asset_collection::AssetCollection;
 use rand::Rng;
 
@@ -8,30 +8,6 @@ pub struct FlappyBirdPlugin;
 
 const STATE: AppState = AppState::FlappyBird;
 const NEXT_STATE: AppState = AppState::Platformer;
-
-
-const WIDTH : f32 = 576.0;
-const HALF_HEIGHT : f32 = 250.0 / 2.0;
-const SCALE : f32 = 1.0;
-
-const LEFT_BOUND : f32 = -WIDTH / 2.0 + 120.0;
-const RIGHT_BOUND : f32 = WIDTH / 2.0 - 200.0;
-
-const PACMAN_TRANSITION_SPEED : f32 = 500.;
-const BG_TRANSITION_SPEED : f32 = 800.;
-const PARALLAX_SPEED : f32 = 50.0;
-const PACMAN_PROGRESS_SPEED : f32 = 25.0;
-const PACMAN_OUT_SPEED : f32 = 500.0;
-
-const PIPE_SPEED : f32 = 250.0;
-const PIPE_SPAWN_DELAY : f32 = 1.5;
-const PIPE_GAP : f32 = 25.0;
-const PIPE_SPREAD : f32 = 40.0;
-
-const GRAVITY_AFFECT : f32 = 50.0;
-const PACMAN_JUMP_STRENGTH : f32 = 200.0;
-
-const DEATH_DELAY : f32 = 1.0;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
 #[source(AppState = STATE)]
@@ -54,7 +30,7 @@ impl Plugin for FlappyBirdPlugin {
             .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
             .add_systems(OnEnter(LocalState::Game), begin_game)
             .add_systems(Update, tick_game.run_if(in_state(LocalState::Game)))
-            .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
+            // .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
             .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
             .add_observer(collision_handler)
@@ -106,7 +82,8 @@ fn setup(
         },
     ));
     cmd.insert_resource(LocalRes::default());
-    cmd.insert_resource(Pipes::default());
+    
+    cmd.insert_resource(Pipes{since_prev: 100., ..Default::default()});
 
     let layout = TextureAtlasLayout::from_grid(UVec2::splat(16), 1, 6, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
@@ -115,25 +92,25 @@ fn setup(
         DespawnOnExit(STATE),
         Name::new("Bottom"),
         RigidBody::Kinematic,
-        Collider::rectangle(WIDTH, 10.0),
+        Collider::rectangle(FLAPPY_WIDTH, 10.0),
         Sensor,
         CollisionEventsEnabled,
-        Transform::from_translation(Vec3::new(0.0, -HALF_HEIGHT, 0.0)),
+        Transform::from_translation(Vec3::new(0.0, -FLAPPY_HALF_HEIGHT, 0.0)),
     ));
 
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Top"),
         RigidBody::Kinematic,
-        Collider::rectangle(WIDTH, 10.0),
+        Collider::rectangle(FLAPPY_WIDTH, 10.0),
         Sensor,
         CollisionEventsEnabled,
-        Transform::from_translation(Vec3::new(0.0, HALF_HEIGHT, 0.0)),
+        Transform::from_translation(Vec3::new(0.0, FLAPPY_HALF_HEIGHT, 0.0)),
     ));
 
     meshes.add(Rectangle::new(50.0, 100.0));
 
-    let r = meshes.add(Rectangle::new(WIDTH, HALF_HEIGHT*2. + 20.0));
+    let r = meshes.add(Rectangle::new(FLAPPY_WIDTH, FLAPPY_HALF_HEIGHT*2. + 20.0));
 
     cmd.spawn((
         DespawnOnExit(STATE),
@@ -142,19 +119,19 @@ fn setup(
             image: assets.transition_bg.clone(),
             ..default()
         },
-        Transform::from_translation(Vec3::new(WIDTH * 0.5, 0.0, 10.0)),
+        Transform::from_translation(Vec3::new(FLAPPY_WIDTH * 0.5, 0.0, 10.0)),
         TransitionScreen,
         children![(
             Mesh2d(r),
             MeshMaterial2d(materials.add(Color::BLACK)),
-            Transform::from_translation(Vec3::new(-WIDTH * 0.5 - 33.0, 0.0, 0.0))
+            Transform::from_translation(Vec3::new(-FLAPPY_WIDTH * 0.5 - 33.0, 0.0, 0.0))
         )]
     ));
 
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Pacman"),
-        Transform::from_translation(Vec3::new(WIDTH * 0.5, 0.0, 10.6)).with_scale(Vec3::splat(SCALE)),
+        Transform::from_translation(Vec3::new(FLAPPY_WIDTH * 0.5, 0.0, 10.6)).with_scale(Vec3::splat(FLAPPY_SCALE)),
         Sprite {
             image: assets.pacman.clone(),
             texture_atlas: Some(TextureAtlas {
@@ -175,7 +152,7 @@ fn begin_game (
     mut cmd: Commands,
     q: Query<Entity, With<Pacman>>
 ) {
-    cmd.entity(q.iter().next().expect("No pacman!")).insert(GravityScale(GRAVITY_AFFECT));
+    cmd.entity(q.iter().next().expect("No pacman!")).insert(GravityScale(FLAPPY_GRAVITY_AFFECT));
 }
 
 fn tick_transition(
@@ -186,15 +163,15 @@ fn tick_transition(
     mut state: ResMut<NextState<LocalState>>
 ){
     let dt = t.delta_secs().min(MAX_DT);
-    res.fake_x += PACMAN_TRANSITION_SPEED * dt;
+    res.fake_x += FLAPPY_TRANSITION_SPEED * dt;
     for mut t in pacman.iter_mut() {
-        t.translation.x -= (PACMAN_TRANSITION_SPEED + PARALLAX_SPEED) * dt;
-        if t.translation.x <= LEFT_BOUND {
+        t.translation.x -= (FLAPPY_TRANSITION_SPEED + FLAPPY_PARALLAX_SPEED) * dt;
+        if t.translation.x <= FLAPPY_LEFT_BOUND {
             state.set(LocalState::Game);
         }
     }
     for mut t in transition.iter_mut() {
-        t.translation.x -= BG_TRANSITION_SPEED * dt;
+        t.translation.x -= FLAPPY_BG_TRANSITION_SPEED * dt;
     }
 }
 
@@ -222,8 +199,8 @@ fn spawn_pipe(
         GlobalTransform::default(),
         children![
             (
-                Collider::rectangle(10.0, HALF_HEIGHT),
-                Transform::from_translation(Vec3::new(0.0, -HALF_HEIGHT * 0.5 - PIPE_GAP, 5.0)),
+                Collider::rectangle(10.0, FLAPPY_HALF_HEIGHT),
+                Transform::from_translation(Vec3::new(0.0, -FLAPPY_HALF_HEIGHT * 0.5 - FLAPPY_PIPE_GAP, 5.0)),
                 CollisionEventsEnabled,
                 Sensor,
                 RigidBody::Kinematic,
@@ -235,8 +212,8 @@ fn spawn_pipe(
                 )
             ),
             (
-                Collider::rectangle(10.0, HALF_HEIGHT),
-                Transform::from_translation(Vec3::new(0.0, HALF_HEIGHT * 0.5 + PIPE_GAP, 5.0)),
+                Collider::rectangle(10.0, FLAPPY_HALF_HEIGHT),
+                Transform::from_translation(Vec3::new(0.0, FLAPPY_HALF_HEIGHT * 0.5 + FLAPPY_PIPE_GAP, 5.0)),
                 CollisionEventsEnabled,
                 Sensor,
                 RigidBody::Kinematic,
@@ -266,12 +243,12 @@ fn tick_game(
     let mut rng = rand::rng();
     let dt = t.delta_secs().min(MAX_DT);
     let (mut t, mut v, mut s) = pacman.iter_mut().next().expect("No pacman!");
-    res.fake_x += (PARALLAX_SPEED - PACMAN_PROGRESS_SPEED) * dt;
+    res.fake_x += (FLAPPY_PARALLAX_SPEED - FLAPPY_BIRD_PROGRESS_SPEED) * dt;
     if keys.just_pressed(KeyCode::Space) {
-        v.y = PACMAN_JUMP_STRENGTH;
+        v.y = FLAPPY_BIRD_JUMP_STRENGTH;
         *at = 0.3;
     }
-    t.translation += dt * PACMAN_PROGRESS_SPEED;
+    t.translation += dt * FLAPPY_BIRD_PROGRESS_SPEED;
     let Some(a) = &mut s.texture_atlas else {return;};
     if *at > 0.0 {
         *at -= dt;
@@ -279,20 +256,20 @@ fn tick_game(
     } else {
         a.index = 3;
     }
-    if t.translation.x >= RIGHT_BOUND {
+    if t.translation.x >= FLAPPY_RIGHT_BOUND {
         state.set(LocalState::Win);
     }
 
     pipes.since_prev += dt;
     for entity in pipes.pipes.clone().iter() {
         let Ok(mut e) = pipe_q.get_mut(*entity) else {continue;};
-        e.translation.x -= PIPE_SPEED * dt;
-        if e.translation.x <= -WIDTH * 0.5 {
+        e.translation.x -= FLAPPY_PIPE_SPEED * dt;
+        if e.translation.x <= -FLAPPY_WIDTH * 0.5 {
             pipes.buffer.push(*entity);
         }
     }
 
-    if pipes.since_prev > PIPE_SPAWN_DELAY {
+    if pipes.since_prev > FLAPPY_PIPE_SPAWN_DELAY {
         pipes.since_prev = 0.0;
         let e = if let Some(p) = pipes.buffer.pop() {
             p
@@ -302,28 +279,28 @@ fn tick_game(
             pipes.pipes.push(e);
             e
         };
-        let r = rng.random_range(-PIPE_SPREAD..=PIPE_SPREAD);
+        let r = rng.random_range(-FLAPPY_PIPE_SPREAD..=FLAPPY_PIPE_SPREAD);
         cmd.entity(e).insert(
-            // Transform::from_translation(vec3(WIDTH, rng.random_range(-PIPE_SPREAD..=PIPE_SPREAD), 0.0))
-            Transform::from_translation(vec3(WIDTH, r, 0.0))
+            // Transform::from_translation(vec3(FLAPPY_WIDTH, rng.random_range(-FLAPPY_PIPE_SPREAD..=FLAPPY_PIPE_SPREAD), 0.0))
+            Transform::from_translation(vec3(FLAPPY_WIDTH, r, 0.0))
         );
     }
 
 }
 
-fn tick_defat(
-    mut t: Local<f32>,
-    time: Res<Time>,
-    mut state: ResMut<NextState<AppState>>,
-){
-    let dt = time.delta_secs().min(MAX_DT);
-    *t += dt;
-    if *t >= DEATH_DELAY {
-        state.set(AppState::Defeat);
-    }
-}
+// fn tick_defat(
+//     mut cmd: Commands,
+//     canvas: Res<camera::ViewportCanvas>,
+// ){
+//     // cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
+//     //     .observe(crate::games::plugin::await_screenshot_and_translate(AppState::Defeat));
+// }
 
-fn cleanup() {}
+fn cleanup(
+    mut cmd: Commands,
+) {
+    cmd.remove_resource::<Pipes>();
+}
 
 fn collision_handler(
     _e: On<CollisionStart>,
@@ -332,13 +309,19 @@ fn collision_handler(
     q: Query<Entity, With<Pacman>>,
     s: Res<State<AppState>>,
     ls: Option<Res<State<LocalState>>>,
+    canvas: Res<camera::ViewportCanvas>,
+    mut screenshot: ResMut<crate::games::plugin::LastScreenshot>,
 ){
     if s.get() != &STATE {return;}
     let Some(l) = ls else {return;};
     if l.get() != &LocalState::Game {return;}
     let p = q.iter().next().expect("No pacman!");
     if _e.collider1 != p && _e.collider2 != p {return;}
-    state.set(LocalState::Defeat);
+    if screenshot.awaiting == false {
+        cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
+            .observe(crate::games::plugin::await_screenshot_and_translate(AppState::Defeat));
+        screenshot.awaiting = true;
+    }
     cmd.entity(q.iter().next().expect("No pacman!")).remove::<RigidBody>();
 }
 
@@ -351,8 +334,8 @@ fn tick_win(
     let dt = t.delta_secs().min(MAX_DT);
     let (e, mut t) = q.iter_mut().next().expect("No pacman!");
     cmd.entity(e).remove::<RigidBody>();
-    t.translation.x += dt * PACMAN_OUT_SPEED;
-    if t.translation.x >= WIDTH * 0.5 + 100.0 {
+    t.translation.x += dt * FLAPPY_BIRD_OUT_SPEED;
+    if t.translation.x >= FLAPPY_WIDTH * 0.5 + 100.0 {
         state.set(NEXT_STATE)
     }
 }

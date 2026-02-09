@@ -22,7 +22,10 @@ impl Plugin for CameraPlugin {
             .add_systems(Startup, setup_camera)
             .insert_resource(CameraController{target_zoom: self.initial_target_zoom, ..default()})
             .add_systems(Update, window_resize)
+            // .add_systems(PhysicsSchedule, tick_camera)
+            // .add_systems(PhysicsSchedule, tick_camera.in_set(NarrowPhaseSystems::First))
             .add_systems(PhysicsSchedule, tick_camera.in_set(NarrowPhaseSystems::Last))
+            // .add_systems(PhysicsSchedulePlugin, tick_camera.in_set(NarrowPhaseSystems::First))
             .add_observer(focus_player)
             ;
     }
@@ -138,6 +141,7 @@ fn window_resize(
         scale.0 = th as f32 / TARGET_HEIGHT as f32;
     }
     img.resize(Extent3d{width: tw, height: th, ..Default::default()});
+    info!("scale: {}", 1.0 / scale.0);
     canvas.size = Vec2::new(tw as f32, th as f32);
 }
 
@@ -212,7 +216,7 @@ fn tick_camera(
     
     let dt = time.delta_secs().max(MAX_DT);
     let Some(entity) = camera_controller.focused_entities.front() else {return;};
-    let Ok(cam_target) = targets.get(*entity) else {warn!("Target without transform in cam focus, deleting"); camera_controller.focused_entities.pop_front(); return;};
+    let Ok(cam_target) = targets.get(*entity) else {camera_controller.focused_entities.pop_front(); return;};
     let Ok((cam, mut p, mut t, gt)) = camera.single_mut() else {warn!("Camera without transform"); return;};
     let Projection::Orthographic(p) = &mut *p else {warn!("Camera without perspective projection"); return;};
     // let Some(window) = window.iter().next() else {return;};
@@ -274,7 +278,7 @@ fn tick_camera(
         }
     }
     
-    t.translation = t.translation.exp_decay(target, follow_speed, dt);
+    t.translation = target; // t.translation.exp_decay(target, follow_speed, dt);
     p.scale = p.scale.exp_decay(target_zoom, zoom_speed, dt);
 }
 

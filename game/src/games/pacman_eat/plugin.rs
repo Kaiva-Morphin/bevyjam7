@@ -4,12 +4,6 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 const STATE: AppState = AppState::PacmanEnter;
 const NEXT_STATE: AppState = AppState::FlappyBird;
 
-const PATH_HALF : f32 = 280.0;
-const SCALE : f32 = 4.0;
-const ANIM_DELAY : f32 = 0.06;
-const WALK_SPEED : f32 = 400.0;
-
-
 pub struct PacmanEatPlugin;
 
 
@@ -47,7 +41,7 @@ fn setup(
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Label"),
-        Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)).with_scale(vec3(SCALE, SCALE, 0.0)),
+        Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)).with_scale(vec3(PACMAN_EAT_SCALE, PACMAN_EAT_SCALE, 0.0)),
         Sprite {
             image: assets.splash.clone(),
             ..default()
@@ -55,12 +49,12 @@ fn setup(
     ));
     meshes.add(Rectangle::new(50.0, 100.0));
 
-    let r = meshes.add(Rectangle::new(PATH_HALF * 2.0, 32.0));
+    let r = meshes.add(Rectangle::new(PACMAN_EAT_PATH_HALF * 2.0, 32.0));
 
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Pacman"),
-        Transform::from_translation(Vec3::new(-PATH_HALF, 0.0, 0.6)).with_scale(vec3(SCALE, SCALE, 0.0)),
+        Transform::from_translation(Vec3::new(-PACMAN_EAT_PATH_HALF, 0.0, 0.6)).with_scale(vec3(PACMAN_EAT_SCALE, PACMAN_EAT_SCALE, 0.0)),
         Sprite {
             image: assets.pacman.clone(),
             texture_atlas: Some(TextureAtlas {
@@ -73,7 +67,7 @@ fn setup(
         children![(
             Mesh2d(r),
             MeshMaterial2d(materials.add(Color::BLACK)),
-            Transform::from_translation(Vec3::new(-PATH_HALF - 1., 0.0, 0.0))
+            Transform::from_translation(Vec3::new(-PACMAN_EAT_PATH_HALF - 1., 0.0, 0.0))
         )]
     ));
 }
@@ -91,12 +85,12 @@ fn tick (
     let dt = time.delta_secs().min(MAX_DT);
     *t += dt;
     for (mut sprite, mut transform) in q.iter_mut() {
-        if *t >= ANIM_DELAY && let Some(atlas) = &mut sprite.texture_atlas {
+        if *t >= PACMAN_EAT_ANIM_DELAY && let Some(atlas) = &mut sprite.texture_atlas {
                 atlas.index = (atlas.index + 1) % 3;
                 *t = 0.0;
         }
-        transform.translation.x += WALK_SPEED * dt;
-        if transform.translation.x > PATH_HALF {
+        transform.translation.x += PACMAN_EAT_WALK_SPEED * dt;
+        if transform.translation.x > PACMAN_EAT_PATH_HALF {
             next_state.set(NEXT_STATE);
         }
     }

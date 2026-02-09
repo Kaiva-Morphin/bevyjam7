@@ -1,10 +1,10 @@
-use crate::{games::novel::plugin::{Actor, Background}, prelude::*};
+use crate::{games::novel::plugin::{Actor, Background, NovelSoundEffect, NovelMusic}, prelude::*};
 
 #[macro_export]
 macro_rules! actors {
     (
         $(
-            $name:literal : $variant:ident => $path:literal
+            $variant:ident => $path:literal
         ),* $(,)?
     ) => {
         paste::paste! {
@@ -17,14 +17,6 @@ macro_rules! actors {
             }
 
             impl Actor {
-                pub fn name(&self) -> &'static str {
-                    match self {
-                        $(
-                            Actor::$variant => $name,
-                        )*
-                    }
-                }
-
                 pub fn get_asset(&self, assets: &ActorsAssets) -> Handle<Image> {
                     match self {
                         $(
@@ -80,6 +72,76 @@ macro_rules! backgrounds {
     };
 }
 
+#[macro_export]
+macro_rules! sound_effects {
+    (
+        $(
+            $se: ident => $path:literal
+        ),* $(,)?
+    ) => {
+        paste::paste! {
+            #[derive(Debug, Clone, Default)]
+            pub enum NovelSoundEffect {
+                #[default]
+                $(
+                    $se,
+                )*
+            }
+            impl NovelSoundEffect {
+                pub fn get_asset(&self, assets: &NovelSoundEffectsAssets) -> Handle<AudioSource> {
+                    match self {
+                        $(
+                            NovelSoundEffect::$se => assets.[<$se:snake>].clone(),
+                        )*
+                    }
+                }
+            }
+            #[derive(AssetCollection, Resource)]
+            pub struct NovelSoundEffectsAssets {
+                $(
+                    #[asset(path = $path)]
+                    pub [<$se:snake>]: Handle<AudioSource>,
+                )*
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! novel_music {
+    (
+        $(
+            $music: ident => $path:literal
+        ),* $(,)?
+    ) => {
+        paste::paste! {
+            #[derive(Debug, Clone, Default)]
+            pub enum NovelMusic {
+                #[default]
+                $(
+                    $music,
+                )*
+            }
+            impl NovelMusic {
+                pub fn get_asset(&self, assets: &NovelMusicAssets) -> Handle<AudioSource> {
+                    match self {
+                        $(
+                            NovelMusic::$music => assets.[<$music:snake>].clone(),
+                        )*
+                    }
+                }
+            }
+            #[derive(AssetCollection, Resource)]
+            pub struct NovelMusicAssets {
+                $(
+                    #[asset(path = $path)]
+                    pub [<$music:snake>]: Handle<AudioSource>,
+                )*
+            }
+        }
+    };
+}
+
 #[derive(Default)]
 pub struct ActorAppearance {
     pub actor: Actor,
@@ -90,6 +152,9 @@ pub struct ActorAppearance {
 #[derive(Default)]
 pub struct NovelStage {
     pub actors: Vec<ActorAppearance>,
+    pub sfx: Option<NovelSoundEffect>,
+    pub music: NovelMusic,
+    pub speaker: String,
     pub bg: Background,
     pub text: String,
 }
@@ -105,6 +170,7 @@ macro_rules! stages {
                     ))?
                 ),* $(,)?
                 =>
+                $(($speaker:literal))?
                 $text:literal
             }
         ),* $(,)?
@@ -112,6 +178,7 @@ macro_rules! stages {
         vec![
             $(
                 NovelStage {
+                    $(speaker: $speaker.to_string(),)?
                     actors: vec![
                         $(
                             {
@@ -129,8 +196,10 @@ macro_rules! stages {
                             }
                         ),*
                     ],
+                    $(sfx: Some(SoundEffect::$actor),)?
                     bg: Background::$bg,
                     text: $text.to_string(),
+                    ..Default::default()
                 }
             ),*
         ]

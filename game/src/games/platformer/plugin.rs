@@ -1,19 +1,12 @@
-use crate::{games::plugin::{AppState, LastState}, prelude::*};
+use crate::{games::plugin::{AppState, LastScreenshot, LastState}, prelude::*};
 use avian2d::math::Vector;
 use bevy_asset_loader::asset_collection::AssetCollection;
+use bevy_inspector_egui::bevy_egui::render::EguiRenderSettings;
 use room::{Focusable, RoomController, on_room_spawned};
 use camera::CameraController;
 
 const STATE: AppState = AppState::Platformer;
-const NEXT_STATE: AppState = AppState::PacmanEnter;
-
-const GRAVITY_FORCE : f32 = 50.0;
-const JUMP_FORCE : f32 = 300.0;
-const MAX_SPEED : f32 = 200.0;
-const AIR_TR : f32 = 1000.0;
-const GROUND_TR : f32 = 1500.0;
-
-const ANIM_DELAY : f32 = 0.1;
+const NEXT_STATE: AppState = AppState::Defeat;
 
 pub struct PlatformerPlugin;
 
@@ -72,7 +65,6 @@ fn focus_player(
     mut camera_controller: ResMut<CameraController>,
 ) {
     if state.get() != &STATE {return;}
-    info!("Focus player");
     let Ok(pt) = spawnpoint_q.get(point.entity) else {return;};
     let pt = pt.translation;
 
@@ -98,7 +90,7 @@ fn focus_player(
         collider,
         CollisionEventsEnabled,
         Focusable,
-        GravityScale(GRAVITY_FORCE),
+        GravityScale(PLATFORMER_GRAVITY_FORCE),
         Transform::from_translation(pt),
         ShapeCaster::new(caster_shape, Vector::ZERO, 0.0, Dir2::NEG_Y)
                 .with_max_distance(8.1)
@@ -106,7 +98,6 @@ fn focus_player(
                 .with_query_filter(SpatialQueryFilter::from_mask(GameLayer::Default)),
         Friction::new(0.0),
     )).id();
-    info!("Transform {}", pt);
     camera_controller.focused_entities.push_front(player);
     let Some((ce, mut p)) = cq.iter_mut().next() else {return;}; 
     let Projection::Orthographic(p) = &mut *p else {warn!("Camera without perspective projection"); return;};
@@ -157,28 +148,28 @@ fn tick (
             }
         }
         if keyboard_input.pressed(KeyCode::Space) && grounded {
-            linvel.y = JUMP_FORCE;
+            linvel.y = PLATFORMER_JUMP_FORCE;
         }
 
-        let s = if grounded {GROUND_TR} else {AIR_TR};
+        let s = if grounded {PLATFORMER_GROUND_GAIN} else {PLATFORMER_AIR_GAIN};
         let mut target = 0.0;
         if keyboard_input.pressed(KeyCode::KeyA) {
-            target -= MAX_SPEED;
+            target -= PLATFORMER_MAX_SPEED;
             sprite.flip_x = true;
             *t += dt;
         }
         if keyboard_input.pressed(KeyCode::KeyD) {
-            target += MAX_SPEED;
+            target += PLATFORMER_MAX_SPEED;
             sprite.flip_x = false;
             *t += dt;
         }
 
-        if grounded && *t < ANIM_DELAY * 2.0 && let Some(ta) = &mut sprite.texture_atlas {
-            let i = (*t / ANIM_DELAY).floor() as usize;
+        if grounded && *t < PLATFORMER_ANIM_DELAY * 2.0 && let Some(ta) = &mut sprite.texture_atlas {
+            let i = (*t / PLATFORMER_ANIM_DELAY).floor() as usize;
             ta.index = i;
             
         }
-        if *t > ANIM_DELAY * 2.0 {
+        if *t > PLATFORMER_ANIM_DELAY * 2.0 {
             *t = 0.0;
         }
         if !grounded && let Some(ta) = &mut sprite.texture_atlas {
@@ -197,6 +188,7 @@ fn tick (
 fn cleanup(
     mut cmd: Commands,
     mut cam: Query<&mut Transform, With<WorldCamera>>,
+    canvas: Res<camera::ViewportCanvas>,
 ) {
     cmd.remove_resource::<RoomController>();
     cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
@@ -205,11 +197,13 @@ fn cleanup(
 fn on_collision(
     _e: On<CollisionStart>,
     state: Res<State<AppState>>,
-    mut next_state: ResMut<NextState<AppState>>,
+    mut next: ResMut<NextState<AppState>>,
     mut cmd: Commands,
     p_q: Query<(Entity, &Position), With<Player>>,
     e_q: Query<&GlobalTransform,With<StopTrigger>>,
     n_q: Query<&NextTrigger>,
+    canvas: Res<camera::ViewportCanvas>,
+    mut screenshot: ResMut<LastScreenshot>,
 ) {
     if state.get() != &STATE {return;}
     let e = _e.collider1;
@@ -217,7 +211,11 @@ fn on_collision(
     let Ok((p, t)) = p_q.get(p) else {return;};
     let is_next = n_q.get(e).is_ok();
     if is_next {
-        next_state.set(NEXT_STATE);
+        if screenshot.awaiting == false {
+            cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
+                .observe(crate::games::plugin::await_screenshot_and_translate(AppState::Defeat));
+            screenshot.awaiting = true;
+        }
     }
     let Ok(st) = e_q.get(e) else {return;};
     let x = st.translation().x;

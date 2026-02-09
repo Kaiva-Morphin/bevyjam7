@@ -1,0 +1,40 @@
+
+
+pub const HAND_IN_ANIMATION_DURATION : f32 = 0.25;
+pub const HAND_OUT_ANIMATION_DURATION : f32 = 0.2;
+
+
+pub const PACMAN_EAT_PATH_HALF : f32 = 280.0;
+pub const PACMAN_EAT_SCALE : f32 = 4.0;
+pub const PACMAN_EAT_ANIM_DELAY : f32 = 0.06;
+pub const PACMAN_EAT_WALK_SPEED : f32 = 400.0;
+
+
+
+pub const PLATFORMER_GRAVITY_FORCE : f32 = 50.0;
+pub const PLATFORMER_JUMP_FORCE : f32 = 300.0;
+pub const PLATFORMER_MAX_SPEED : f32 = 200.0;
+pub const PLATFORMER_AIR_GAIN : f32 = 1000.0;
+pub const PLATFORMER_GROUND_GAIN : f32 = 1500.0;
+pub const PLATFORMER_ANIM_DELAY : f32 = 0.1;
+
+
+
+pub const FLAPPY_WIDTH : f32 = 576.0;
+pub const FLAPPY_HALF_HEIGHT : f32 = 250.0 / 2.0;
+pub const FLAPPY_SCALE : f32 = 1.0;
+pub const FLAPPY_LEFT_BOUND : f32 = -FLAPPY_WIDTH / 2.0 + 120.0;
+pub const FLAPPY_RIGHT_BOUND : f32 = FLAPPY_WIDTH / 2.0 - 200.0;
+
+pub const FLAPPY_TRANSITION_SPEED : f32 = 500.;
+pub const FLAPPY_BG_TRANSITION_SPEED : f32 = 800.;
+pub const FLAPPY_PARALLAX_SPEED : f32 = 50.0;
+pub const FLAPPY_BIRD_PROGRESS_SPEED : f32 = 25.0;
+pub const FLAPPY_BIRD_OUT_SPEED : f32 = 500.0;
+pub const FLAPPY_PIPE_SPEED : f32 = 250.0;
+pub const FLAPPY_PIPE_SPAWN_DELAY : f32 = 1.5;
+pub const FLAPPY_PIPE_GAP : f32 = 25.0;
+pub const FLAPPY_PIPE_SPREAD : f32 = 40.0;
+pub const FLAPPY_GRAVITY_AFFECT : f32 = 50.0;
+pub const FLAPPY_BIRD_JUMP_STRENGTH : f32 = 200.0;
+pub const FLAPPY_DEATH_DELAY : f32 = 1.0;
