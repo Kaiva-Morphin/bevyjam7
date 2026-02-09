@@ -6,7 +6,7 @@ use camera::ViewportCanvas;
 
 use crate::{games::plugin::{AppState}, prelude::*};
 
-const STATE: AppState = AppState::Novel;
+const STATE: AppState = AppState::FakeEnd;
 const NEXT_STATE: AppState = AppState::Platformer;
 
 const RECT_HS: f32 = 3.;
@@ -17,6 +17,11 @@ struct TextureRect;
 pub struct FakeEndAssets {
     #[asset(path = "yaroholder.png")]
     text: Handle<Image>,
+}
+
+#[derive(Resource)]
+pub struct JokerTexture {
+    pub handle: Handle<Image>,
 }
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
@@ -35,6 +40,7 @@ pub struct FakeEndPlugin;
 impl Plugin for FakeEndPlugin {
     fn build(&self, app: &mut App) {
         app
+        .add_systems(Startup, global_setup)
             // .insert_resource(LocalRes::default())
             // .insert_resource(Pipes::default())
             .add_sub_state::<LocalState>()
@@ -56,13 +62,9 @@ fn tick_transition(
     state.set(LocalState::Game);
 }
 
-fn setup(
+fn global_setup(
     mut cmd: Commands,
-    assets: Res<FakeEndAssets>,
     mut images: ResMut<Assets<Image>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    cam: Query<Entity, With<WorldCamera>>,
 ) {
     let size = Extent3d {
         width: 512,
@@ -83,7 +85,18 @@ fn setup(
         TextureUsages::TEXTURE_BINDING | TextureUsages::COPY_DST | TextureUsages::RENDER_ATTACHMENT;
     
     let image_handle = images.add(image);
+    cmd.insert_resource(JokerTexture {handle: image_handle});
+}
 
+fn setup(
+    mut cmd: Commands,
+    assets: Res<FakeEndAssets>,
+    mut images: ResMut<Assets<Image>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    cam: Query<Entity, With<WorldCamera>>,
+    joker: Res<JokerTexture>
+) {
     // cmd.spawn((
     //     DespawnOnExit(STATE),
     //     Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
@@ -93,22 +106,23 @@ fn setup(
     //     },
     // ));
     let cam = cam.iter().next().expect("No cam!");
-    let screen = cmd.spawn((
-            UiTargetCamera(cam),
-            Node{
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                ..default()
-            },
-            ImageNode {
-                image: image_handle.clone(),
-                ..default()
-            },
+    cmd.spawn((
+        DespawnOnExit(LocalState::Aboba),
+        UiTargetCamera(cam),
+        Node{
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            ..default()
+        },
+        ImageNode {
+            image: joker.handle.clone(),
+            ..default()
+        },
     ZIndex(100)));
 
     cmd
         .spawn((
-            DespawnOnExit(STATE),
+            DespawnOnExit(LocalState::Aboba),
             Camera3d::default(),
             // Camera2d,
             Camera {
@@ -116,14 +130,14 @@ fn setup(
                 order: -2,
                 ..default()
             },
-            RenderTarget::Image(image_handle.clone().into()),
+            RenderTarget::Image(joker.handle.clone().into()),
             RenderLayers::layer(3),
             Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
         ));
 
     // Lighting
     cmd.spawn((
-        DespawnOnExit(STATE),
+        DespawnOnExit(LocalState::Aboba),
         DirectionalLight {
             illuminance: 10000.0,
             ..default()
@@ -142,7 +156,7 @@ fn setup(
     
     cmd.spawn((
         Name::new("Texture rect"),
-        DespawnOnExit(STATE),
+        DespawnOnExit(LocalState::Aboba),
         Mesh3d(mesh),
         MeshMaterial3d(material),
         Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
@@ -171,13 +185,13 @@ fn monke_fall(
     //     fall_start.start = true;
     // }
     const DEGPF: f32 = -0.01;
-        if fall_start.num as f32 * -DEGPF > PI / 2. {
-            state.set(LocalState::Aboba);
-        }
-        let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
-        let q = Quat::from_axis_angle(Vec3::X, DEGPF);
-        transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
-        fall_start.num += 1;
+    if fall_start.num as f32 * -DEGPF > PI {
+        state.set(LocalState::Aboba);
+    }
+    let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
+    let q = Quat::from_axis_angle(Vec3::X, DEGPF);
+    transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
+    fall_start.num += 1;
 }
 
 fn cleanup(
