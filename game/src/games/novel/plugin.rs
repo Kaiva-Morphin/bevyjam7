@@ -234,7 +234,6 @@ impl NovelState {
     }
 
     fn speaker(&self) -> &String {
-        info!("Speaker: {}", self.stages[self.current_stage].speaker);
         &self.stages[self.current_stage].speaker
     }
 
@@ -521,7 +520,6 @@ fn tick(
             }
             if current != next {
                 for e in current_q.iter() {
-                    info!("Replacing music");
                     cmd.entity(e).remove::<CurrentMusic>().insert(PrevMusic);
                 }
                 cmd.spawn((
