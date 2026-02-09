@@ -16,7 +16,6 @@ enum LocalState {
     #[default]
     InitialAnim,
     Game,
-    Defeat,
     Win,
 }
 

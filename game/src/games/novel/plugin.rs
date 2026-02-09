@@ -76,8 +76,8 @@ novel_music! {
     Battle => "sounds/novel/poopie pack_boss battle.wav",
 }
 
-const LEFT : Vec3 = Vec3::new(-150.0, 0.0, 0.0);
-const RIGHT : Vec3 = Vec3::new(150.0, 0.0, 0.0);
+const LEFT : Transform = Transform::from_translation(Vec3::new(-150.0, 0.0, 0.0));
+const RIGHT : Transform = Transform::from_translation(Vec3::new(150.0, 0.0, 0.0));
 
 impl Default for NovelState {
     fn default() -> Self {
@@ -88,7 +88,7 @@ impl Default for NovelState {
             t: Timer::from_seconds(1.0 / CHARS_PER_SECOND, TimerMode::Repeating),
             current_stage: 0,
             stages: stages!{
-                StreetAutumnNight Journey {=> "What a nice evening!"},
+                StreetAutumnNight Journey {=> "What a nice evening!" (PipeFall) },
                 StreetAutumnNight Journey {=> "I think I should walk around a bit more..."},
                 GroveStreet Battle {
                     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
@@ -103,13 +103,13 @@ impl Default for NovelState {
                     => "Looking for trouble?"
                 },
                 GroveStreet Journey {
-                    CJ (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.5))),
-                    Bob (transform = Transform::from_translation(LEFT)),
+                    CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
+                    Bob (transform = LEFT),
                     => "Chill mate, guy buys stuff from me \nLet him off the hook"
                 },
                 GroveStreet Journey {
-                    CJ (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.5))),
-                    Bob (transform = Transform::from_translation(LEFT)),
+                    CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
+                    Bob (transform = LEFT),
                     => "Fine Bobby, but only this time"
                 },
                 GroveStreet Journey {
@@ -135,7 +135,7 @@ impl Default for NovelState {
                     => ""
                 },
                 LivingroomDark Journey {
-                    Freddy (flip_x = true, transform = Transform::from_translation(RIGHT))
+                    Freddy (flip_x = true, transform = RIGHT)
                     => ""
                 },
                 LivingroomDark Journey {
@@ -148,22 +148,22 @@ impl Default for NovelState {
                     => "What coffee do I have here?\nOh right, these two"
                 },
                 KitchenNight Journey {
-                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
-                    Ass (transform = Transform::from_translation(LEFT).with_scale(Vec3::splat(0.2))),
+                    Bal (transform = RIGHT.with_scale(Vec3::splat(0.3))),
+                    Ass (transform = LEFT.with_scale(Vec3::splat(0.2))),
                     => "Oh no, darling...\nHe's here for us..."
                 },
                 KitchenNight Journey {
-                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
-                    Ass (transform = Transform::from_translation(LEFT).with_scale(Vec3::splat(0.2))),
+                    Bal (transform = RIGHT.with_scale(Vec3::splat(0.3))),
+                    Ass (transform = LEFT.with_scale(Vec3::splat(0.2))),
                     => "No, my love, I can't lose you!\nYou're the love of my life!"
                 },
                 KitchenNight Journey {
-                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
-                    Ass (transform = Transform::from_translation(LEFT).with_scale(Vec3::splat(0.2))),
+                    Bal (transform = RIGHT.with_scale(Vec3::splat(0.3))),
+                    Ass (transform = LEFT.with_scale(Vec3::splat(0.2))),
                     => "I have to let him drink me, so you can live another day...\nGoodbye my love..."
                 },
                 KitchenNight Journey {
-                    Bal (transform = Transform::from_translation(RIGHT).with_scale(Vec3::splat(0.3))),
+                    Bal (transform = RIGHT.with_scale(Vec3::splat(0.3))),
                     => "NOOOOOOOO"
                 },
                 Computer Journey {
@@ -189,18 +189,18 @@ impl Default for NovelState {
                     => "But Rust is hard...\nshould I even study rust?"
                 },
                 Computer Battle {
-                    Rust (transform = Transform::from_translation(RIGHT)),
-                    Go (transform = Transform::from_translation(LEFT)),
+                    Rust (transform = RIGHT),
+                    Go (transform = LEFT),
                     => "There's no point in rust\nBackend can be done with kotlin or golang"
                 },
                 Computer Battle {
-                    Rust (transform = Transform::from_translation(RIGHT)),
-                    Go (transform = Transform::from_translation(LEFT)),
+                    Rust (transform = RIGHT),
+                    Go (transform = LEFT),
                     => "Rust is definitely faster\nGo even has a garbage collector\nKotlin has a ton of legacy code behind it"
                 },
                 Computer Battle {
-                    Rust (transform = Transform::from_translation(RIGHT)), // todo: rotate
-                    Go (transform = Transform::from_translation(LEFT)),
+                    Rust (transform = RIGHT), // todo: rotate
+                    Go (transform = LEFT),
                     => "So what did you choose?"
                 },
             },
@@ -440,6 +440,18 @@ fn setup(
         },
         AudioPlayer::new(s.music().get_asset(&music)),
     ));
+    for eff in s.sfx().iter() {
+        cmd.spawn((
+            DespawnOnExit(STATE),
+            CurrentMusic,
+            PlaybackSettings{
+                mode: PlaybackMode::Once,
+                volume: Volume::SILENT,
+                ..default()
+            },
+            AudioPlayer::new(eff.get_asset(&sfx)),
+        ));
+    }
     cmd.insert_resource(s);
 }
 

@@ -1,7 +1,6 @@
 use crate::{games::plugin::{AppState, LastScreenshot, LastState}, prelude::*};
 use avian2d::math::Vector;
 use bevy_asset_loader::asset_collection::AssetCollection;
-use bevy_inspector_egui::bevy_egui::render::EguiRenderSettings;
 use room::{Focusable, RoomController, on_room_spawned};
 use camera::CameraController;
 
@@ -188,7 +187,6 @@ fn tick (
 fn cleanup(
     mut cmd: Commands,
     mut cam: Query<&mut Transform, With<WorldCamera>>,
-    canvas: Res<camera::ViewportCanvas>,
 ) {
     cmd.remove_resource::<RoomController>();
     cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
@@ -197,7 +195,6 @@ fn cleanup(
 fn on_collision(
     _e: On<CollisionStart>,
     state: Res<State<AppState>>,
-    mut next: ResMut<NextState<AppState>>,
     mut cmd: Commands,
     p_q: Query<(Entity, &Position), With<Player>>,
     e_q: Query<&GlobalTransform,With<StopTrigger>>,

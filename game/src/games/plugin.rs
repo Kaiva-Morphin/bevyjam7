@@ -204,10 +204,9 @@ pub fn on_defeat(
             }
         },
     );
-    info!("Spawning hand");
     let cam = cam.iter().next().expect("No cam!");
 
-    let screen = cmd.spawn((
+    cmd.spawn((
         UiTargetCamera(cam),
         Node{
             width: Val::Percent(100.0),

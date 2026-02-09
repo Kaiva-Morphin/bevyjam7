@@ -141,7 +141,6 @@ fn window_resize(
         scale.0 = th as f32 / TARGET_HEIGHT as f32;
     }
     img.resize(Extent3d{width: tw, height: th, ..Default::default()});
-    info!("scale: {}", 1.0 / scale.0);
     canvas.size = Vec2::new(tw as f32, th as f32);
 }
 
