@@ -115,7 +115,7 @@ macro_rules! novel_music {
         ),* $(,)?
     ) => {
         paste::paste! {
-            #[derive(Debug, Clone, Default)]
+            #[derive(Debug, Clone, Default, PartialEq, Eq)]
             pub enum NovelMusic {
                 #[default]
                 $(

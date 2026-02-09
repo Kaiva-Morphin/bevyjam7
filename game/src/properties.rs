@@ -38,3 +38,7 @@ pub const FLAPPY_PIPE_SPREAD : f32 = 40.0;
 pub const FLAPPY_GRAVITY_AFFECT : f32 = 50.0;
 pub const FLAPPY_BIRD_JUMP_STRENGTH : f32 = 200.0;
 pub const FLAPPY_DEATH_DELAY : f32 = 1.0;
+
+
+
+pub const NOVEL_MUSIC_INTERPOLATION : f32 = 1.0;

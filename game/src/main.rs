@@ -91,7 +91,7 @@ impl Plugin for GamesPlugin {
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::FlappyBird)
+                    .continue_to_state(AppState::Novel)
                     .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
@@ -99,6 +99,8 @@ impl Plugin for GamesPlugin {
                     .load_collection::<novel::plugin::ActorsAssets>()
                     .load_collection::<novel::plugin::BackgroundsAssets>()
                     .load_collection::<novel::plugin::NovelAssets>()
+                    .load_collection::<novel::plugin::NovelMusicAssets>()
+                    .load_collection::<novel::plugin::NovelSoundEffectsAssets>()
                     .load_collection::<fake_end::plugin::FakeEndAssets>()
             )
             .add_plugins((

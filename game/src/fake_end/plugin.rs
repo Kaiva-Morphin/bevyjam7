@@ -6,7 +6,7 @@ use camera::ViewportCanvas;
 
 use crate::{games::plugin::{AppState}, prelude::*};
 
-const STATE: AppState = AppState::Novel;
+const STATE: AppState = AppState::FakeEnd;
 const NEXT_STATE: AppState = AppState::Platformer;
 
 const RECT_HS: f32 = 3.;
