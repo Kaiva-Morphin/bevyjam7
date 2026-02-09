@@ -35,7 +35,7 @@
     ]
   },
   {
-    "id": 15,
+    "id": 13,
     "name": "avian2d::collision::collider::layers::LayerMask",
     "type": "class",
     "useAs": [
@@ -82,7 +82,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 16,
+    "id": 14,
     "name": "bevy_color::color::Color",
     "type": "class",
     "useAs": [
@@ -188,36 +188,7 @@
     "members": []
   },
   {
-    "id": 13,
-    "name": "game::tilemap::plugin::SpawnPoint",
-    "type": "class",
-    "useAs": [
-      "property"
-    ],
-    "color": "#000000",
-    "drawFill": true,
-    "members": [
-      {
-        "name": ":variant",
-        "propertyType": "game::tilemap::plugin::SpawnPoint:::Variant",
-        "type": "class",
-        "value": "Unknown"
-      }
-    ]
-  },
-  {
     "id": 12,
-    "name": "game::tilemap::plugin::SpawnPoint:::Variant",
-    "type": "enum",
-    "storageType": "string",
-    "values": [
-      "Unknown",
-      "Player"
-    ],
-    "valuesAsFlags": false
-  },
-  {
-    "id": 14,
     "name": "room::MapRoom",
     "type": "class",
     "useAs": [

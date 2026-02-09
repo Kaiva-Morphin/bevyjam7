@@ -82,15 +82,19 @@ impl Plugin for GamesPlugin {
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
+                    .continue_to_state(AppState::Novel)
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
                     .load_collection::<platformer::plugin::PlatformerAssets>()
+                    .load_collection::<novel::plugin::ActorsAssets>()
+                    .load_collection::<novel::plugin::BackgroundsAssets>()
+                    .load_collection::<novel::plugin::NovelAssets>()
             )
             .add_plugins((
                 pacman_eat::plugin::PacmanEatPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
                 platformer::plugin::PlatformerPlugin,
+                novel::plugin::NovelPlugin,
             ))
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
             .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)

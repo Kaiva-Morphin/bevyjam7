@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
 use avian2d::prelude::*;
-use bevy::{camera::{ImageRenderTarget, RenderTarget, ScalingMode}, input::mouse::MouseWheel, prelude::*, render::{render_resource::{Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages}, view::Hdr}, window::WindowResized};
+use bevy::{camera::{ImageRenderTarget, RenderTarget, ScalingMode}, input::mouse::MouseWheel, prelude::*, render::{render_resource::{Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages}}, window::WindowResized};
 use kaiv_utils::prelude::ExpDecay;
 use properties::*;
 use room::*;
@@ -28,6 +28,9 @@ impl Plugin for CameraPlugin {
     }
 }
 
+#[derive(Component)]
+pub struct WorldUiRoot;
+
 
 #[derive(Resource)]
 pub struct ViewportCanvas {
@@ -39,7 +42,6 @@ fn setup_camera(
     mut commands: Commands,
     mut images: ResMut<Assets<Image>>,
 ) {
-    
     let canvas_size = Extent3d {
         width: TARGET_WIDTH,
         height: TARGET_HEIGHT,
@@ -64,7 +66,7 @@ fn setup_camera(
 
 
     let image_handle = images.add(canvas);
-    commands.spawn((
+    let cam = commands.spawn((
         Name::new("WorldCamera"),
         Camera2d,
         WorldCamera,
@@ -88,7 +90,8 @@ fn setup_camera(
             area: Rect::new(-1.0, -1.0, 1.0, 1.0),
         }),
         WORLD_LAYERS,
-    ));
+    )).id();
+
     commands.insert_resource(
         ViewportCanvas {
             image: image_handle.clone(),
@@ -114,6 +117,7 @@ fn window_resize(
     mut r: MessageReader<WindowResized>,
     mut images: ResMut<Assets<Image>>,
     mut canvas: ResMut<ViewportCanvas>,
+    mut scale: ResMut<UiScale>,
 ) {
     let Some(e) = r.read().last() else {return;};
     if e.width == 0.0 || e.height == 0.0 {return;}
@@ -127,9 +131,11 @@ fn window_resize(
     if target_aspect > aspect {
         tw = e.width as u32;
         th = (e.width as f32 / target_aspect) as u32;
+        scale.0 = tw as f32 / TARGET_WIDTH as f32;
     } else {
         tw = (e.height as f32 * target_aspect) as u32;
         th = e.height as u32;
+        scale.0 = th as f32 / TARGET_HEIGHT as f32;
     }
     img.resize(Extent3d{width: tw, height: th, ..Default::default()});
     canvas.size = Vec2::new(tw as f32, th as f32);
