@@ -4,3 +4,4 @@ pub mod platformer;
 pub mod plugin;
 pub mod geometry_dash;
 pub mod novel;
+pub mod bevy_editor;

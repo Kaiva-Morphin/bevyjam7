@@ -2,10 +2,11 @@ use std::{f32::consts::PI, time::Duration};
 
 use bevy::{asset::RenderAssetUsages, camera::{RenderTarget, visibility::RenderLayers}, render::render_resource::{Extent3d, TextureDimension, TextureFormat, TextureUsages}};
 use bevy_asset_loader::asset_collection::AssetCollection;
+use camera::ViewportCanvas;
 
 use crate::{games::plugin::{AppState}, prelude::*};
 
-const STATE: AppState = AppState::FakeEnd;
+const STATE: AppState = AppState::Novel;
 const NEXT_STATE: AppState = AppState::Platformer;
 
 const RECT_HS: f32 = 3.;
@@ -27,6 +28,7 @@ enum LocalState {
     Game,
     Defeat,
     Win,
+    Aboba,
 }
 
 pub struct FakeEndPlugin;
@@ -42,7 +44,7 @@ impl Plugin for FakeEndPlugin {
             .add_systems(Update, monke_fall.run_if(in_state(LocalState::Game)))
             // .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
             // .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
-            .add_systems(OnExit(STATE), cleanup)
+            .add_systems(OnEnter(LocalState::Aboba), cleanup)
             // .add_observer(collision_handler)
             ;
     }
@@ -60,6 +62,7 @@ fn setup(
     mut images: ResMut<Assets<Image>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    cam: Query<Entity, With<WorldCamera>>,
 ) {
     let size = Extent3d {
         width: 512,
@@ -81,14 +84,27 @@ fn setup(
     
     let image_handle = images.add(image);
 
-    cmd.spawn((
-        DespawnOnExit(STATE),
-        Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-        Sprite {
-            image: image_handle.clone(),
-            ..default()
-        },
-    ));
+    // cmd.spawn((
+    //     DespawnOnExit(STATE),
+    //     Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+    //     Sprite {
+    //         image: image_handle.clone(),
+    //         ..default()
+    //     },
+    // ));
+    let cam = cam.iter().next().expect("No cam!");
+    let screen = cmd.spawn((
+            UiTargetCamera(cam),
+            Node{
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                ..default()
+            },
+            ImageNode {
+                image: image_handle.clone(),
+                ..default()
+            },
+    ZIndex(100)));
 
     cmd
         .spawn((
@@ -96,6 +112,7 @@ fn setup(
             Camera3d::default(),
             // Camera2d,
             Camera {
+                clear_color: ClearColorConfig::Custom(Color::Srgba(Srgba::rgba_u8(0, 0, 0, 0))),
                 order: -2,
                 ..default()
             },
@@ -128,7 +145,7 @@ fn setup(
         DespawnOnExit(STATE),
         Mesh3d(mesh),
         MeshMaterial3d(material),
-        Transform::from_translation(Vec3::new(0.0, 0.0, -5.0)),
+        Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
         RenderLayers::layer(3),
         TextureRect,
     ));
@@ -146,24 +163,21 @@ pub struct FallStart {
 fn monke_fall(
     mut transform_q: Query<&mut Transform, With<TextureRect>>,
     mut fall_start: ResMut<FallStart>,
-    mut state: ResMut<NextState<AppState>>,
+    mut state: ResMut<NextState<LocalState>>,
     time: Res<Time>,
 ) {
-    fall_start.timer += time.delta_secs();
-    if fall_start.timer >= 1.0 {
-        fall_start.start = true;
-    }
+    // fall_start.timer += time.delta_secs();
+    // if fall_start.timer >= 0.0 {
+    //     fall_start.start = true;
+    // }
     const DEGPF: f32 = -0.01;
-    if fall_start.start {
         if fall_start.num as f32 * -DEGPF > PI / 2. {
-            state.set(NEXT_STATE);
-            fall_start.start = false;
+            state.set(LocalState::Aboba);
         }
-        let pivot_point = Vec3::new(0.0, -RECT_HS, -5.0);
+        let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
         let q = Quat::from_axis_angle(Vec3::X, DEGPF);
         transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
         fall_start.num += 1;
-    }
 }
 
 fn cleanup(
