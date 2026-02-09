@@ -27,6 +27,7 @@ pub enum AppState {
     Titles,
     Novel, // 90% 
     
+    FakeEnd,
     End
 }
 

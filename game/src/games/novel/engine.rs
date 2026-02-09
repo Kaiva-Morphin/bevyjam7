@@ -146,7 +146,7 @@ macro_rules! novel_music {
 pub struct ActorAppearance {
     pub actor: Actor,
     pub flip_x: bool,
-    pub pos: Vec3,
+    pub transform: Transform,
 }
 
 #[derive(Default)]
@@ -163,7 +163,7 @@ pub struct NovelStage {
 macro_rules! stages {
     (
         $(
-            $bg:ident {
+            $bg:ident $music:ident  {
                 $(
                     $actor:ident $((
                         $( $field:ident = $value:expr ),* $(,)?
@@ -172,13 +172,16 @@ macro_rules! stages {
                 =>
                 $(($speaker:literal))?
                 $text:literal
+                $(($sfx:ident))?
             }
         ),* $(,)?
     ) => {
         vec![
             $(
                 NovelStage {
+                    music: NovelMusic::$music,
                     $(speaker: $speaker.to_string(),)?
+                    $(sfx: Some(NovelSoundEffect::$sfx),)?
                     actors: vec![
                         $(
                             {
@@ -196,7 +199,6 @@ macro_rules! stages {
                             }
                         ),*
                     ],
-                    $(sfx: Some(SoundEffect::$actor),)?
                     bg: Background::$bg,
                     text: $text.to_string(),
                     ..Default::default()

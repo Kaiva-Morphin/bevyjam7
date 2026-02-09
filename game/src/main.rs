@@ -13,6 +13,7 @@ pub mod prelude;
 pub mod properties;
 pub mod games;
 pub mod tween;
+pub mod fake_end;
 
 fn main() {
     App::new()
@@ -33,15 +34,21 @@ impl Plugin for GamesPlugin {
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Geometry)
+                    .continue_to_state(AppState::FakeEnd)
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
-                    .load_collection::<geometry_dash::plugin::GeometryDashAssets>()
+                    .load_collection::<platformer::plugin::PlatformerAssets>()
+                    .load_collection::<novel::plugin::ActorsAssets>()
+                    .load_collection::<novel::plugin::BackgroundsAssets>()
+                    .load_collection::<novel::plugin::NovelAssets>()
+                    .load_collection::<fake_end::plugin::FakeEndAssets>()
             )
             .add_plugins((
                 pacman_eat::plugin::PacmanEatPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
-                geometry_dash::plugin::GeometryDashPlugin,
+                platformer::plugin::PlatformerPlugin,
+                novel::plugin::NovelPlugin,
+                fake_end::plugin::FakeEndPlugin,
             ))
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
             .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
@@ -84,7 +91,7 @@ impl Plugin for GamesPlugin {
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Novel)
+                    .continue_to_state(AppState::FlappyBird)
                     .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
@@ -92,12 +99,14 @@ impl Plugin for GamesPlugin {
                     .load_collection::<novel::plugin::ActorsAssets>()
                     .load_collection::<novel::plugin::BackgroundsAssets>()
                     .load_collection::<novel::plugin::NovelAssets>()
+                    .load_collection::<fake_end::plugin::FakeEndAssets>()
             )
             .add_plugins((
                 pacman_eat::plugin::PacmanEatPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
                 platformer::plugin::PlatformerPlugin,
                 novel::plugin::NovelPlugin,
+                fake_end::plugin::FakeEndPlugin,
             ))
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
             .add_systems(Update, (

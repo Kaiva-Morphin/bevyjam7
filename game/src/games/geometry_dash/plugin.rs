@@ -101,7 +101,6 @@ fn begin_game (
 }
    
 fn tick_transition(
-    t: Res<Time>,
     mut state: ResMut<NextState<LocalState>>
 ){
     state.set(LocalState::Game);
