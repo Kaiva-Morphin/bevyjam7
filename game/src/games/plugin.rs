@@ -1,8 +1,7 @@
 use std::time::Duration;
 
-use bevy::render::view::screenshot::ScreenshotCaptured;
+use bevy::render::view::screenshot::{Screenshot, ScreenshotCaptured};
 use bevy_asset_loader::asset_collection::AssetCollection;
-use camera::ViewportCanvas;
 
 use crate::prelude::*;
 
@@ -19,13 +18,13 @@ pub enum AppState {
     // other useful systems ?
     // Loading,
 
-    PacmanEnter, // 95%
-    FlappyBird, // 60%
-    Geometry, // 90%
-    Platformer, // 90% EXTEND?
+    PacmanEnter,
+    FlappyBird,
+    Geometry,
+    Platformer,
     Hotline,
     Titles,
-    Novel, // 90% 
+    Novel,
     Fnaf,
     FakeEnd,
     End
@@ -77,6 +76,11 @@ pub struct LastScreenshot {
     pub awaiting: bool
 }
 
+pub fn warmup_screenshot(
+    mut cmd: Commands
+) {
+    cmd.spawn(Screenshot::primary_window());
+}
 
 
 pub fn await_screenshot_and_translate(
@@ -148,17 +152,9 @@ pub fn on_defeat(
         // The lens gives the TweenAnimator access to the Transform component,
         // to animate it. It also contains the start and end values associated
         // with the animation ratios 0. and 1.
-        UiPositionLens {
-            start: UiRect {
-                left: Val::Px(300.0),
-                top: Val::Px(300.0),
-                ..Default::default()
-            },
-            end: UiRect {
-                left: Val::Px(175.0),
-                top: Val::Px(10.0),
-                ..Default::default()
-            },
+        TransformPositionLens {
+            start: vec3(1.0, -1.0, 2.0) * canvas.window_size.extend(0.0) * 0.75,
+            end: vec3(0., 0., 2.,),
         },
     );
     let dummy = Tween::new(
@@ -171,13 +167,9 @@ pub fn on_defeat(
         // The lens gives the TweenAnimator access to the Transform component,
         // to animate it. It also contains the start and end values associated
         // with the animation ratios 0. and 1.
-        UiPositionLens {
-            start: UiRect {
-                ..Default::default()
-            },
-            end: UiRect {
-                ..Default::default()
-            },
+        TransformPositionLens {
+            start: vec3(0., 0., 0.,),
+            end: vec3(0., 0., 0.,),
         },
     );
 
@@ -191,40 +183,25 @@ pub fn on_defeat(
         // The lens gives the TweenAnimator access to the Transform component,
         // to animate it. It also contains the start and end values associated
         // with the animation ratios 0. and 1.
-        UiPositionLens {
-            start: UiRect {
-                left: Val::Px(0.0),
-                top: Val::Px(0.0),
-                ..Default::default()
-            },
-            end: UiRect {
-                left: Val::Px(230.0),
-                top: Val::Px(400.0),
-                ..Default::default()
-            }
+        TransformPositionLens {
+            start: vec3(0., 0., 0.,),
+            end: vec3(0.5, -1.0, 0.0) * canvas.window_size.extend(0.0) * 1.5,
         },
     );
     let cam = cam.iter().next().expect("No cam!");
-
     cmd.spawn((
-        UiTargetCamera(cam),
-        Node{
-            width: Val::Percent(100.0),
-            height: Val::Percent(100.0),
-            ..default()
-        },
-        ImageNode {
+        Sprite {
             image: new_handle,
             ..default()
         },
         ScreenshotEntity::default(),
+        HIGHRES_LAYERS,
         TweenAnim::new(dummy.then(tween2)),
         children![(
+            HIGHRES_LAYERS,
             Name::new("Hand"),
-            Node{
-                ..default()
-            },
-            ImageNode {
+            Transform::default().with_scale(Vec3::splat(ui_scale.0 * 0.5)),
+            Sprite {
                 image: assets.hand.clone(),
                 texture_atlas: Some(TextureAtlas {
                     layout: assets.hand_layout.clone(),
@@ -236,13 +213,44 @@ pub fn on_defeat(
             TweenAnim::new(tween1),
         )],
     ));
+
+    // cmd.spawn((
+    //     UiTargetCamera(cam),
+    //     Node{
+    //         width: Val::Percent(100.0),
+    //         height: Val::Percent(100.0),
+    //         ..default()
+    //     },
+    //     ImageNode {
+    //         image: new_handle,
+    //         ..default()
+    //     },
+    //     ScreenshotEntity::default(),
+    //     TweenAnim::new(dummy.then(tween2)),
+    //     children![(
+    //         Name::new("Hand"),
+    //         Node{
+    //             ..default()
+    //         },
+    //         ImageNode {
+    //             image: assets.hand.clone(),
+    //             texture_atlas: Some(TextureAtlas {
+    //                 layout: assets.hand_layout.clone(),
+    //                 ..default()
+    //             }),
+    //             ..default()
+    //         },
+    //         HandEntity::default(),
+    //         TweenAnim::new(tween1),
+    //     )],
+    // ));
     state.set(res.state);
 }
 
 pub fn animate_screenshot(
     time: Res<Time>,
     mut query: Query<(Entity, &mut ScreenshotEntity)>,
-    mut h_q: Query<(Entity, &mut ImageNode), With<HandEntity>>,
+    mut h_q: Query<(Entity, &mut Sprite), With<HandEntity>>,
     mut cmd: Commands
 ){
     let dt = time.dt();
@@ -256,7 +264,6 @@ pub fn animate_screenshot(
             }
         }
         if s.t > HAND_IN_ANIMATION_DURATION + HAND_OUT_ANIMATION_DURATION {
-            // info!("Despawning hand");
             s.t = 0.0;
             cmd.entity(e).despawn();
         }

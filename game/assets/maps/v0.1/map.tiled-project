@@ -6,7 +6,8 @@
     "extensionsPath": "extensions",
     "folders": [
         ".",
-        "../platformer"
+        "../platformer",
+        "../miami"
     ],
     "properties": [
     ],

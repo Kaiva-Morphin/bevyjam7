@@ -1,16 +1,23 @@
 {
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
     "activeFile": "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx",
     "expandedProjectPaths": [
         "R:/prog/bevyjam7/game/assets/maps/platformer",
         "."
     ],
     "fileStates": {
+        "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx": {
+            "scaleInEditor": 8
+        },
         "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx": {
-            "scale": 1.1615234374999999,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 164.00874390448962,
-                "y": 326.2956112325543
+                "x": 88.5,
+                "y": 208
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx": {
@@ -36,7 +43,13 @@
             "scaleInDock": 1
         }
     },
+    "last.imagePath": "R:/prog/bevyjam7/game/assets/maps/miami",
     "last.objectTypesPath": "R:/prog/bevyjam7/game/tiled_types_export.json",
+    "map.fixedSize": false,
+    "map.lastUsedFormat": "tmx",
+    "map.layerDataFormat": "4",
+    "map.tileHeight": 18,
+    "map.tileWidth": 18,
     "openFiles": [
         "rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",
@@ -45,8 +58,14 @@
     "project": "map.tiled-project",
     "property.type": "avian2d::dynamics::rigid_body::RigidBody",
     "recentFiles": [
+        "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx",
         "rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx"
-    ]
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 18,
+        "width": 18
+    }
 }

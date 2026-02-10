@@ -1,5 +1,4 @@
 use bevy::{render::render_resource::AsBindGroup, shader::ShaderRef, sprite_render::{Material2d, Material2dPlugin}, window::WindowResized};
-use camera::ViewportCanvas;
 
 use crate::prelude::*;
 

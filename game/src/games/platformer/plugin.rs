@@ -209,8 +209,11 @@ fn on_collision(
     let is_next = n_q.get(e).is_ok();
     if is_next {
         if screenshot.awaiting == false {
-            cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
-                .observe(crate::games::plugin::await_screenshot_and_translate(AppState::Defeat));
+            // cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
+            cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
+                .observe(crate::games::plugin::await_screenshot_and_translate(AppState::Defeat))
+                // .observe(bevy::render::view::screenshot::save_to_disk("./screen.png"))
+                ;
             screenshot.awaiting = true;
         }
     }

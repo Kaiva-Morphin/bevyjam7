@@ -28,5 +28,7 @@ pub fn map_matcher(path: &Path) -> Box<dyn Read + 'static> {
         "maps/platformer/tilemap.tsx"
         "maps/GD/pacman.tmx"
         "maps/GD/GD tiles.tsx"
+        "maps/miami/tilemap.tmx"
+        "maps/miami/miami.tsx"
     )
 }

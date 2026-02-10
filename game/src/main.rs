@@ -64,31 +64,6 @@ impl Plugin for GamesPlugin {
 }
 
 
-#[cfg(feature="kaiv")]
-impl Plugin for GamesPlugin {
-    fn build(&self, app: &mut App) {
-        app
-            .insert_resource(LastState::default())
-            .init_state::<AppState>()
-            .add_loading_state(
-                LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
-                    .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
-                    .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
-                    .load_collection::<platformer::plugin::PlatformerAssets>()
-            )
-            .add_plugins((
-                pacman_eat::plugin::PacmanEatPlugin,
-                flappy_bird::plugin::FlappyBirdPlugin,
-                platformer::plugin::PlatformerPlugin,
-            ))
-            .add_systems(OnEnter(AppState::Defeat), on_defeat)
-            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
-        ;
-    }
-}
-
-#[cfg(not(feature = "kaiv"))]
 #[cfg(not(feature = "yaro"))]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
@@ -98,7 +73,7 @@ impl Plugin for GamesPlugin {
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::PacmanEnter)
+                    .continue_to_state(AppState::Platformer)
                     .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
@@ -119,6 +94,7 @@ impl Plugin for GamesPlugin {
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
             ))
+            .add_systems(Startup, warmup_screenshot)
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
             .add_systems(Update, (
                 bevy::dev_tools::states::log_transitions::<AppState>,
