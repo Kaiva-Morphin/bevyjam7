@@ -7,6 +7,7 @@ members = [
     "libs/.dynamic/room", 
     "libs/.static/bevy_ecs_tiled",
     "libs/.static/debug_utils",
+    "libs/games",
 ]
 resolver = "2"
 

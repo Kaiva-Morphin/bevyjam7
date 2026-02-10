@@ -6,8 +6,8 @@
     "activeFile": "pacman.tmx",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
-        ".",
-        "C:/Users/yaro4/Desktop/ads"
+        "C:/Users/yaro4/Desktop/ads",
+        "."
     ],
     "fileStates": {
         ":/automap-tiles.tsx": {
@@ -54,8 +54,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 90.5,
-                "y": 180.75
+                "x": 90.25,
+                "y": 180.5
             }
         },
         "rules.tmx": {
@@ -79,7 +79,7 @@
         }
     },
     "last.imagePath": "D:/prog/rustD/bevyjam7/game/assets/maps/GD",
-    "last.objectTypesPath": "D:/prog/rustD/bevyjam7/game/tiled_types_export.json",
+    "last.objectTypesPath": "R:/prog/bevyjam7/game/tiled_types_export.json",
     "map.fixedSize": false,
     "map.lastUsedFormat": "tmx",
     "map.layerDataFormat": "3",

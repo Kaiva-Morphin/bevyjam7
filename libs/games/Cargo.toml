@@ -1,0 +1,20 @@
+[package]
+name = "games"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+avian2d = "*"
+bevy_asset_loader = "*"
+camera = { version = "0.1.0", path = "../.dynamic/camera" }
+rand = "*"
+room = { version = "0.1.0", path = "../.dynamic/room" }
+bevy = "*"
+bevy_ecs_tiled = { version = "0.11.2", path = "../.static/bevy_ecs_tiled", features = ["avian"]}
+paste = "1.0.15"
+properties = { version = "0.1.0", path = "../properties" }
+kaiv_utils = { workspace = true, features = ["bevy_support"] }
+utils = { version = "0.1.0", path = "../utils" }
+bevy_tweening = "0.15.0"
+bevy-inspector-egui.workspace = true
+debug_utils = { version = "0.1.0", path = "../.static/debug_utils" }

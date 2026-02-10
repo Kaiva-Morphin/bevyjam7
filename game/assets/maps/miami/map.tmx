@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="9" nextobjectid="16">
+ <tileset firstgid="1" source="miami.tsx"/>
+ <layer id="2" name="floor" width="30" height="20">
+  <data encoding="base64" compression="zstd">
+   <chunk x="0" y="0" width="16" height="16">
+   KLUv/WAAA7UAABgABgcGgNA+HaTYJcqHoAYMOxID1eU=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   KLUv/WAAA9UAACgABgcmBweAsD6AIVCgsYf6h6ASkHchH8rR
+  </chunk>
+   <chunk x="32" y="0" width="16" height="16">
+   KLUv/WAAA4UAABAABwQAfQgpBCXs6uNJ5dg=
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   KLUv/WAAA/UAADAAAAAABwYIgHAtHmmg9g1BBejYmQDpQ8hgHZYcCQ==
+  </chunk>
+   <chunk x="16" y="16" width="16" height="16">
+   KLUv/WAAAwUBADgHAAAAJgcGCYAQuw59OFUfEGDpAMoeDkNIg0bQYNCl
+  </chunk>
+   <chunk x="32" y="16" width="16" height="16">
+   KLUv/WAAA8UAACgHAAAAJgYAfUCFEqDCXl9/CFQEJZh2RA==
+  </chunk>
+  </data>
+ </layer>
+ <layer id="8" name="shadows" width="30" height="20" opacity="0.58">
+  <properties>
+   <property name="sh" value=""/>
+  </properties>
+  <data encoding="base64" compression="zstd">
+   <chunk x="0" y="0" width="16" height="16">
+   KLUv/WAAA6UEAJQDAKEAAADi4QMBAADEAAAAAgEBwwABBOMAAADkAAMB4wDkowAAAKSi4gHCAAAAwQDBAMEAAADCAAAAKKAgkWnLAYACMza1HZGIcYalREaeaLlkrz3ITugTMa2YIdwkrIxzdkVAA3IGCNQQmR0qyRIszIfqlakAchswi4oRzgbzgIAAL24L2DH7HVJweXu/NaBCdRY=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   KLUv/WAAA70DABQDAOHiogABAQAAAsMAAADkAOMDAQAABAHjAOKhowAAAKTCAAAAwQDEwQDjAAAA5AAAABug8LLSDiACTUpk9ABwGZgRcQPEEQDD94zvyx3ZhyzN8HO818TRlLpPsC8EvsxjwNLfADUfSnN6Hg8el+60nTHgQRkY
+  </chunk>
+   <chunk x="32" y="0" width="16" height="16">
+   KLUv/WAAA30BAKAA4eKiAAEBAAACAcMAAADkAOMDAQoAAUIOQWLHHdi9tYLBuG8QbMWwXSb8qNwV
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   KLUv/WAAAx0EACQDoQAAAKIAAwEAAOQApAAAAOIAAADh4qKjAMEAAAACAQAAAQHDAAAAxADCBAHjAKTBAAEooGCLuXLgApvZdolw8oSTZ1ye4JLTMJndMsEocoKej3g0X/dWW8INlXohD1gHp6tNg9fLpckx4ZlBViNb8yERzZ93NGMxK0DkQLwl+CiQ
+  </chunk>
+   <chunk x="16" y="16" width="16" height="16">
+   KLUv/WAAA10EAKQDAKEAAACiAAMBAAAEAQDjAOIAouGj5AAAAAEBAAACAQAAwgAAAMEAwwADAaQA5OMA4aTiAgEBAgEBACWgwcm2tPUOkIJTQsUDPqjbWL/ojg1L7uM2g/s0TmcbnFDDZvdTh0gwfhROwMu3o2tlGxvu2IEDRvG20DVogDgc9x0ePgTRWOQsH1vqdwc=
+  </chunk>
+   <chunk x="32" y="16" width="16" height="16">
+   KLUv/WAAAx0DANQCAOMAAAAEAQADAeQA4uEAAACiAAAAoQAAAKMAAgEAAAEBwgAAAMEAAADD4QEBEwBhuApPy4GjlfHAVMCCp30wtPEdWBkxuFAAGqChSWeFFYcAdZfd8GAMDA0bgoQNTiNxVw==
+  </chunk>
+  </data>
+ </layer>
+ <layer id="1" name="walls" width="30" height="20">
+  <properties>
+   <property name="rb" value=""/>
+  </properties>
+  <data encoding="base64" compression="zstd">
+   <chunk x="0" y="0" width="16" height="16">
+   KLUv/WAAA10EAFQDAAEAAABCQWMAAAAkAAAAYmEjYWRDAAAARABjQ0RkAwAAAAQCQmEiAAAAIWMhIQAAACIAAAApoCA5Zw2gAhsbagcIAjDm0h3ICRZL9OJz90KfEGNFpnCLsDQ4mRWBubDeUDN1qKRL7M2HiqvriGwIsq4bdFzm4QEOrGvdXZz+bgTX93s8YyqUYQE=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   KLUv/WAAA5UDANQCAEFCAgBhAAAAYiMAAABEAENjAAAAZENCAQMAAAAEIgAAACEkIUMAAABEAAAAG6DwmJIHIAJNSmT0AFyGa0T8APEI4PA94+vyR+aQuxkmHcQ1cU2p/wTzQvDLkAFLgwNUfCgVp+d4fkzoztsZAw/KxA==
+  </chunk>
+   <chunk x="32" y="0" width="16" height="16">
+   KLUv/WAAA20BAJAAQUICAGEAAABiIwAAAEQAQ2MKAIApHIJ0jzu1e2DF1XGPIMSKuV3G+FE5IQ==
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   KLUv/WAAA+UDAMQCAQAAAAIAYwAAAEQABAAAAEIAAABBQgIDIQAAAGIAAABhIwAAACQiZEMEIWEooFA1ajXgApvZdolw8gSXZ5w84SanYTLdMmGULkHnIz6a1621LcWhEhjSgHVwut408HpbmhwTMJN7ldvKt0Q6f/5ocLErQNBAvCX+KJA=
+  </chunk>
+   <chunk x="16" y="16" width="16" height="16">
+   KLUv/WAAA+0DABQDAAEAAAACAGMAAABkAENjQgJBA0QAAABhAAAAYgAAACIAAAAhI2MERENBBEJiYWJhACWgoeGL7R2gglNC5AE/0Oyvn/upwZI/zjj5pzGdkcCODpuhcodLMe4oXIFXr4I1ho6JMyDT4Ni9FR9cBsjJvXHHsXvY7G3STk37
+  </chunk>
+   <chunk x="32" y="16" width="16" height="16">
+   KLUv/WAAA+0CAJQCAEMAAABkAGNEQkEAAAACAAAAAQAAAANiAAAAYSIAAAAhAAAAI0RBZGETgLBe3Go5YbjqablHqxMosH7aZ2jFQVkMLlSgAw1NopWLDMHcuUBZDAzFIUh1cCJxPg==
+  </chunk>
+  </data>
+ </layer>
+ <objectgroup id="3" name="objects">
+  <object id="1" x="0" y="288">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="weapons"/>
+ <objectgroup color="#aa0000" id="7" name="enemies">
+  <object id="11" x="378" y="378">
+   <point/>
+  </object>
+  <object id="12" x="378" y="432">
+   <point/>
+  </object>
+  <object id="13" x="378" y="126">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#aaff7f" id="4" name="h_doors">
+  <object id="5" x="18" y="288">
+   <point/>
+  </object>
+  <object id="6" x="270" y="288">
+   <point/>
+  </object>
+  <object id="14" x="414" y="288">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup color="#55aa00" id="5" name="v_doors">
+  <object id="7" x="180" y="234">
+   <point/>
+  </object>
+  <object id="8" x="342" y="234">
+   <point/>
+  </object>
+  <object id="9" x="342" y="342">
+   <point/>
+  </object>
+  <object id="10" x="180" y="342">
+   <point/>
+  </object>
+  <object id="15" x="648" y="378">
+   <point/>
+  </object>
+ </objectgroup>
+</map>

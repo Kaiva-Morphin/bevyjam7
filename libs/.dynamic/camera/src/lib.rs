@@ -109,6 +109,7 @@ fn setup_camera(
         Name::new("HighresCamera"),
         HIGHRES_LAYERS,
         Camera2d,
+        HighresCamera,
         Msaa::Off,
         Camera {
             order: 2,
@@ -204,7 +205,7 @@ fn focus_player(
 }
 
 
-fn tick_camera(
+pub fn tick_camera(
     time: Res<Time>,
     mut camera: Query<(&Camera, &mut Projection, &mut Transform, &GlobalTransform), With<WorldCamera>>,
     mut camera_controller: ResMut<CameraController>,   

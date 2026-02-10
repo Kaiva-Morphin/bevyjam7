@@ -3,29 +3,66 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx",
+    "activeFile": "R:/prog/bevyjam7/game/assets/maps/miami/map.tmx",
+    "automapping.whileDrawing": true,
     "expandedProjectPaths": [
+        "R:/prog/bevyjam7/game/assets/maps/miami",
         "R:/prog/bevyjam7/game/assets/maps/platformer",
         "."
     ],
+    "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
-        "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx": {
-            "scaleInEditor": 8
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 1
         },
-        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx": {
-            "scale": 1,
+        "R:/prog/bevyjam7/game/assets/maps/miami/map.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 432.33333333333337,
+                "y": 287.33333333333326
+            }
+        },
+        "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        "R:/prog/bevyjam7/game/assets/maps/miami/rules.tmx": {
+            "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 88.5,
-                "y": 208
+                "x": 307.8333333333333,
+                "y": 105.33333333333334
+            }
+        },
+        "R:/prog/bevyjam7/game/assets/maps/miami/tilemap.tmx": {
+            "scale": 4,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 161.125,
+                "y": -37
+            }
+        },
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 747.5,
+                "y": 525
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx": {
             "scale": 4.6460937499999995,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 127.95695308558939,
-                "y": 127.95695308558942
+                "x": 233.63712796367923,
+                "y": 103.09736001345217
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/tilemap.tsx": {
@@ -35,8 +72,8 @@
             "scale": 9.292187499999999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 63.978476542794695,
-                "y": 63.97847654279471
+                "x": 116.81856398183962,
+                "y": 51.54868000672609
             }
         },
         "tilemap.tsx": {
@@ -53,15 +90,21 @@
     "openFiles": [
         "rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",
-        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx"
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx",
+        "R:/prog/bevyjam7/game/assets/maps/miami/map.tmx",
+        "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx",
+        "R:/prog/bevyjam7/game/assets/maps/miami/rules.tmx"
     ],
     "project": "map.tiled-project",
-    "property.type": "avian2d::dynamics::rigid_body::RigidBody",
+    "property.type": "games::miami::map::TilemapShadow",
     "recentFiles": [
-        "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx",
         "rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",
-        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx"
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx",
+        "R:/prog/bevyjam7/game/assets/maps/miami/rules.tmx",
+        "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx",
+        "R:/prog/bevyjam7/game/assets/maps/miami/map.tmx",
+        "R:/prog/bevyjam7/game/assets/maps/miami/tilemap.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

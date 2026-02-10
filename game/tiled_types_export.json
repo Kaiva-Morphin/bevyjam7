@@ -35,7 +35,7 @@
     ]
   },
   {
-    "id": 13,
+    "id": 14,
     "name": "avian2d::collision::collider::layers::LayerMask",
     "type": "class",
     "useAs": [
@@ -82,7 +82,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 14,
+    "id": 15,
     "name": "bevy_color::color::Color",
     "type": "class",
     "useAs": [
@@ -134,7 +134,7 @@
   },
   {
     "id": 7,
-    "name": "game::games::geometry_dash::plugin::CameraCenter",
+    "name": "game::dev_games::geometry_dash::plugin::CameraCenter",
     "type": "class",
     "useAs": [
       "property"
@@ -145,7 +145,7 @@
   },
   {
     "id": 8,
-    "name": "game::games::geometry_dash::plugin::SpawnPoint",
+    "name": "game::dev_games::geometry_dash::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
       "property"
@@ -156,7 +156,7 @@
   },
   {
     "id": 9,
-    "name": "game::games::platformer::plugin::NextTrigger",
+    "name": "game::dev_games::miami::map::TilemapShadow",
     "type": "class",
     "useAs": [
       "property"
@@ -167,7 +167,7 @@
   },
   {
     "id": 10,
-    "name": "game::games::platformer::plugin::SpawnPoint",
+    "name": "games::platformer::plugin::NextTrigger",
     "type": "class",
     "useAs": [
       "property"
@@ -178,7 +178,7 @@
   },
   {
     "id": 11,
-    "name": "game::games::platformer::plugin::StopTrigger",
+    "name": "games::platformer::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
       "property"
@@ -189,6 +189,17 @@
   },
   {
     "id": 12,
+    "name": "games::platformer::plugin::StopTrigger",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 13,
     "name": "room::MapRoom",
     "type": "class",
     "useAs": [

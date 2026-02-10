@@ -8,12 +8,10 @@
 
 use bevy::asset::LoadContext;
 use std::{
-    io::{Error as IoError, Read},
+    io::{Cursor, Error as IoError, ErrorKind, Read},
     path::Path,
     sync::Arc,
 };
-
-use crate::properties::map_matcher;
 
 /// A [`tiled::ResourceReader`] implementation for reading Tiled resources from Bevy's asset system.
 ///
@@ -71,7 +69,20 @@ impl<'a> tiled::ResourceReader for BytesResourceReader<'a, '_> {
     /// If the path has a `.tsx` extension, the reader attempts to load the external tileset file
     /// using Bevy's asset system. Otherwise, it returns the embedded bytes.
     fn read_from(&mut self, path: &Path) -> std::result::Result<Self::Resource, Self::Error> {
-        Ok(map_matcher(path))
-        // Ok(Box::new(Cursor::new(self.bytes.clone())))
+        #[cfg(feature = "wasm")]
+        return Ok(crate::properties::map_matcher(path));
+
+        #[cfg(not(feature = "wasm"))]
+        {
+        if let Some(extension) = path.extension() {
+            if extension == "tsx" || extension == "tx" {
+                let future = self.context.read_asset_bytes(path.to_path_buf());
+                let data = futures_lite::future::block_on(future)
+                    .map_err(|err| IoError::new(ErrorKind::NotFound, err))?;
+                return Ok(Box::new(Cursor::new(data)));
+            }
+        }
+        return Ok(Box::new(Cursor::new(self.bytes.clone())))
+        }
     }
 }

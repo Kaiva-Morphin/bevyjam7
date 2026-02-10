@@ -1,19 +1,15 @@
 use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 
-use crate::games::*;
-use crate::games::plugin::*;
+use crate::dev_games::*;
+use crate::dev_games::plugin::*;
 use crate::prelude::*;
 
 use crate::core::plugin::CorePlugin;
-pub mod character;
-pub mod core;
-pub mod tilemap;
 pub mod prelude;
 pub mod properties;
-pub mod games;
-pub mod tween;
-pub mod shaders;
+pub mod dev_games;
+
 
 fn main() {
     App::new()
@@ -67,6 +63,15 @@ impl Plugin for GamesPlugin {
 #[cfg(not(feature = "yaro"))]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
+        use ::games::prelude::*;
+            // .register_type::<SpawnPoint>()
+            // .add_systems(Startup, spawn_map)
+            // .add_observer(on_map_created)
+            // .add_observer(on_object_spawned)
+            // .add_observer(on_spawnpoint)
+            // .add_observer(on_room_spawned)
+            ;
+
         app
             .insert_resource(LastState::default())
             .insert_resource(LastScreenshot::default())
@@ -85,6 +90,7 @@ impl Plugin for GamesPlugin {
                     .load_collection::<novel::plugin::NovelSoundEffectsAssets>()
                     .load_collection::<fake_end::plugin::FakeEndAssets>()
                     .load_collection::<fnaf::plugin::FNAFAssets>()
+                    .load_collection::<miami::plugin::MiamiAssets>()
             )
             .add_plugins((
                 pacman_eat::plugin::PacmanEatPlugin,
@@ -93,6 +99,7 @@ impl Plugin for GamesPlugin {
                 novel::plugin::NovelPlugin,
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
+                miami::plugin::MiamiPlugin,
             ))
             .add_systems(Startup, warmup_screenshot)
             .add_systems(OnEnter(AppState::Defeat), on_defeat)

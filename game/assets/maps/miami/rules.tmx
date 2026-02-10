@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="miami.tsx"/>
+ <tileset firstgid="1025" source=":/automap-tiles.tsx"/>
+ <layer id="1" name="input_walls" width="30" height="20">
+  <data encoding="base64" compression="zstd">
+   <chunk x="0" y="0" width="16" height="16">
+   KLUv/WAAA90BAMgBAAIDBAAhIiMkAEFCQ0QAYWJjZACBBAQAEqgQuD0QA3wQHDb///90DPLczeC45eCx7eDYbtDrgfwD
+  </chunk>
+  </data>
+ </layer>
+ <layer id="2" name="output_shadows" width="30" height="20" opacity="0.57">
+  <data encoding="base64" compression="zstd">
+   <chunk x="0" y="0" width="16" height="16">
+   KLUv/WAAA+0BAMChAKKjpADBwsPEAOHi4+QAAQECAwQhBAAToDDuAzAD6xryjJq/1LMsNzsPDSROzuA2SB3c7jKY6saJvR8=
+  </chunk>
+  </data>
+ </layer>
+</map>

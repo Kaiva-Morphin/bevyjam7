@@ -15,164 +15,7 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 1,
-            "members": [
-                {
-                    "name": "0",
-                    "type": "color",
-                    "value": "#ffffffff"
-                }
-            ],
-            "name": "bevy_color::color::Color",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
             "id": 2,
-            "members": [
-                {
-                    "name": "0",
-                    "type": "string",
-                    "value": ""
-                }
-            ],
-            "name": "bevy_sprite::text2d::Text2d",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 3,
-            "members": [
-                {
-                    "name": "0",
-                    "type": "color",
-                    "value": "#ffffffff"
-                }
-            ],
-            "name": "bevy_text::text::TextColor",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 4,
-            "members": [
-            ],
-            "name": "game::games::geometry_dash::plugin::CameraCenter",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 5,
-            "members": [
-            ],
-            "name": "game::games::geometry_dash::plugin::SpawnPoint",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 6,
-            "members": [
-            ],
-            "name": "game::games::platformer::plugin::NextTrigger",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 7,
-            "members": [
-            ],
-            "name": "game::games::platformer::plugin::SpawnPoint",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 8,
-            "members": [
-            ],
-            "name": "game::games::platformer::plugin::StopTrigger",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 9,
-            "members": [
-                {
-                    "name": ":variant",
-                    "propertyType": "game::tilemap::plugin::SpawnPoint:::Variant",
-                    "type": "string",
-                    "value": "Unknown"
-                }
-            ],
-            "name": "game::tilemap::plugin::SpawnPoint",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "id": 10,
-            "name": "game::tilemap::plugin::SpawnPoint:::Variant",
-            "storageType": "string",
-            "type": "enum",
-            "values": [
-                "Unknown",
-                "Player"
-            ],
-            "valuesAsFlags": false
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 11,
-            "members": [
-                {
-                    "name": "zoom",
-                    "type": "float",
-                    "value": 0
-                }
-            ],
-            "name": "room::MapRoom",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 12,
             "members": [
                 {
                     "name": "filters",
@@ -198,7 +41,7 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 13,
+            "id": 3,
             "members": [
                 {
                     "name": "0",
@@ -215,7 +58,19 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 14,
+            "id": 1,
+            "members": [
+            ],
+            "name": "avian2d::collision::collider::Sensor",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 4,
             "members": [
                 {
                     "name": ":variant",
@@ -231,7 +86,7 @@
             ]
         },
         {
-            "id": 15,
+            "id": 5,
             "name": "avian2d::dynamics::rigid_body::RigidBody:::Variant",
             "storageType": "string",
             "type": "enum",
@@ -245,10 +100,138 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 16,
+            "id": 6,
+            "members": [
+                {
+                    "name": "0",
+                    "type": "color",
+                    "value": "#ffffffff"
+                }
+            ],
+            "name": "bevy_color::color::Color",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 7,
+            "members": [
+                {
+                    "name": "0",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "bevy_sprite::text2d::Text2d",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 8,
+            "members": [
+                {
+                    "name": "0",
+                    "type": "color",
+                    "value": "#ffffffff"
+                }
+            ],
+            "name": "bevy_text::text::TextColor",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 9,
             "members": [
             ],
-            "name": "avian2d::collision::collider::Sensor",
+            "name": "game::dev_games::geometry_dash::plugin::CameraCenter",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 10,
+            "members": [
+            ],
+            "name": "game::dev_games::geometry_dash::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 11,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::map::TilemapShadow",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 12,
+            "members": [
+                {
+                    "name": "zoom",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "room::MapRoom",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 13,
+            "members": [
+            ],
+            "name": "games::platformer::plugin::NextTrigger",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 14,
+            "members": [
+            ],
+            "name": "games::platformer::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 15,
+            "members": [
+            ],
+            "name": "games::platformer::plugin::StopTrigger",
             "type": "class",
             "useAs": [
                 "property"
