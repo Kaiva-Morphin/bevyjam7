@@ -96,7 +96,7 @@
         "R:/prog/bevyjam7/game/assets/maps/miami/rules.tmx"
     ],
     "project": "map.tiled-project",
-    "property.type": "games::miami::map::TilemapShadow",
+    "property.type": "game::dev_games::miami::entity::MiamiEntitySpawner",
     "recentFiles": [
         "rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",

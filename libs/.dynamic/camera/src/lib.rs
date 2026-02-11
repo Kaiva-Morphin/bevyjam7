@@ -282,7 +282,7 @@ pub fn tick_camera(
         }
     }
     
-    t.translation = target; // t.translation.exp_decay(target, follow_speed, dt);
+    t.translation = if camera_controller.follow_speed <= 0.0 { target } else {t.translation.exp_decay(target, follow_speed, dt)};
     p.scale = p.scale.exp_decay(target_zoom, zoom_speed, dt);
 }
 

@@ -1,11 +1,9 @@
 use std::time::Duration;
 
-use bevy::render::view::screenshot::{Screenshot, ScreenshotCaptured};
+use bevy::render::view::screenshot::Screenshot;
 use bevy_asset_loader::asset_collection::AssetCollection;
 
 use crate::prelude::*;
-
-
 
 
 pub struct GamesPlugin;
@@ -66,7 +64,7 @@ pub fn on_defeat(
     canvas: Res<camera::ViewportCanvas>,
     h_q: Query<Entity, With<HandEntity>>,
     assets: Res<GameAssets>,
-    cam: Query<Entity, With<WorldCamera>>,
+    // cam: Query<Entity, With<WorldCamera>>,
     ui_scale: Res<UiScale>,
     // canvas: Res<camera::ViewportCanvas>,
 ) {
@@ -130,7 +128,7 @@ pub fn on_defeat(
             end: vec3(0.5, -1.0, 0.0) * canvas.window_size.extend(0.0) * 1.5,
         },
     );
-    let cam = cam.iter().next().expect("No cam!");
+    // let cam = cam.iter().next().expect("No cam!");
     cmd.spawn((
         Sprite {
             image: new_handle,

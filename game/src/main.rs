@@ -63,22 +63,13 @@ impl Plugin for GamesPlugin {
 #[cfg(not(feature = "yaro"))]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
-        use ::games::prelude::*;
-            // .register_type::<SpawnPoint>()
-            // .add_systems(Startup, spawn_map)
-            // .add_observer(on_map_created)
-            // .add_observer(on_object_spawned)
-            // .add_observer(on_spawnpoint)
-            // .add_observer(on_room_spawned)
-            ;
-
         app
             .insert_resource(LastState::default())
             .insert_resource(LastScreenshot::default())
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
+                    .continue_to_state(AppState::Miami)
                     .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()

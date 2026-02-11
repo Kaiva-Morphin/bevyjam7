@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="9" nextobjectid="16">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="9" nextobjectid="23">
  <tileset firstgid="1" source="miami.tsx"/>
  <layer id="2" name="floor" width="30" height="20">
   <data encoding="base64" compression="zstd">
@@ -25,7 +25,7 @@
  </layer>
  <layer id="8" name="shadows" width="30" height="20" opacity="0.58">
   <properties>
-   <property name="sh" value=""/>
+   <property name="sh" type="class" propertytype="game::dev_games::miami::map::TilemapShadow"/>
   </properties>
   <data encoding="base64" compression="zstd">
    <chunk x="0" y="0" width="16" height="16">
@@ -50,7 +50,11 @@
  </layer>
  <layer id="1" name="walls" width="30" height="20">
   <properties>
-   <property name="rb" value=""/>
+   <property name="rb" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+    <properties>
+     <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+    </properties>
+   </property>
   </properties>
   <data encoding="base64" compression="zstd">
    <chunk x="0" y="0" width="16" height="16">
@@ -73,14 +77,47 @@
   </chunk>
   </data>
  </layer>
- <objectgroup id="3" name="objects">
-  <object id="1" x="0" y="288">
+ <objectgroup id="6" name="weapons">
+  <properties>
+   <property name="spawner" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner"/>
+  </properties>
+  <object id="20" x="54.5758" y="317.212">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
+     <properties>
+      <property name="weapon_type" type="class" propertytype="game::dev_games::miami::weapon::WeaponType">
+       <properties>
+        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="Pistol"/>
+       </properties>
+      </property>
+     </properties>
+    </property>
+   </properties>
+   <point/>
+  </object>
+  <object id="22" x="64.0758" y="272.712">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
+     <properties>
+      <property name="weapon_type" type="class" propertytype="game::dev_games::miami::weapon::WeaponType">
+       <properties>
+        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="Axe"/>
+       </properties>
+      </property>
+     </properties>
+    </property>
+   </properties>
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="6" name="weapons"/>
- <objectgroup color="#aa0000" id="7" name="enemies">
+ <objectgroup color="#aa0000" id="7" name="spawners">
   <object id="11" x="378" y="378">
+   <point/>
+  </object>
+  <object id="19" x="-18" y="288">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner"/>
+   </properties>
    <point/>
   </object>
   <object id="12" x="378" y="432">

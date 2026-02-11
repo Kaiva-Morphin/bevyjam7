@@ -5,7 +5,7 @@ use room::{Focusable, RoomController, on_room_spawned};
 use camera::CameraController;
 
 const STATE: AppState = AppState::Platformer;
-const NEXT_STATE: AppState = AppState::Novel;
+const NEXT_STATE: AppState = AppState::Miami;
 
 pub struct PlatformerPlugin;
 

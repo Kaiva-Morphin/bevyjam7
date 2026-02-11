@@ -30,6 +30,7 @@ impl Plugin for MapPlugin {
                 r"^.*::NextTrigger$",
                 r"^.*::CameraCenter$",
                 r"^.*::SpawnPoint$",
+                r"^.*::MiamiSpawnPoint$",
             ])
             .expect("Wrong regex"),
         );
