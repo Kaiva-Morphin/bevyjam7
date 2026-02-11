@@ -1,5 +1,6 @@
 use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::{CameraController, tick_camera};
+use rand::rand_core::le;
 use room::Focusable;
 
 use crate::{dev_games::miami::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}}, prelude::*};
@@ -58,6 +59,7 @@ impl Plugin for MiamiPlugin {
                 update_controllers,
                 (control_player, shoot, throw_weapon).chain(),
                 tick_thrown,
+                tick,
                 update_chasers,
                 chase,
                 // display_path,
@@ -99,12 +101,22 @@ fn setup(
 }
 
 
-fn tick(){}
+fn tick(
+    time: Res<Time>,
+    mut camera: Query<&mut Transform, With<WorldCamera>>
+){
+    let Some(mut t) = camera.iter_mut().next() else {return;};
+    t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02;
+}
 
 fn cleanup(
-    mut camera: ResMut<CameraController>,
+    mut controller: ResMut<CameraController>,
+    mut camera: Query<(&mut Transform, &mut Projection), With<WorldCamera>>,
 ){
-    camera.follow_speed = 0.0;
+    controller.follow_speed = 0.0;
+    controller.target_zoom = 0.8;
+    let Ok((mut t, mut p)) = camera.single_mut() else {return;};
+    t.rotation.z = 0.0;
 }
 
 pub fn miami_player_layers() -> CollisionLayers {

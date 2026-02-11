@@ -257,6 +257,7 @@ pub fn on_entity_spawnpoint(
         )).id();
         let weapon = cmd.spawn((
             weapon,
+            DespawnOnExit(STATE),
             Transform::default(),
             WeaponComponents{sprite},
             WeaponOf(id),

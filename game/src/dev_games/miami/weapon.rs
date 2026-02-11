@@ -217,6 +217,7 @@ impl Weapon {
                 let mut t = Transform::from_translation(pos);
                 t.rotation = Quat::from_rotation_z(look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
                 cmd.spawn((
+                    DespawnOnExit(STATE),
                     Name::new("Projectile"),
                     miami_projectile_damager_layer(),
                     Sprite{
@@ -244,6 +245,7 @@ impl Weapon {
             WeaponType::Axe | WeaponType::Baguette => {
                 let mut t = Transform::from_xyz(0.0, -6.0, 0.0);
                 let e = cmd.spawn((
+                    DespawnOnExit(STATE),
                     miami_projectile_damager_layer(),
                     t,
                     Sensor,
@@ -287,6 +289,7 @@ pub fn on_weapon_spawnpoint(
     let Ok((spawner, transform)) = q.get(point.entity) else {return;};
     let wpn: Weapon = spawner.weapon_type.to_weapon();
     let sprite = cmd.spawn((
+        DespawnOnExit(STATE),
         Visibility::default(),
         WeaponSprite,
         Transform::default(),
@@ -297,11 +300,11 @@ pub fn on_weapon_spawnpoint(
         },
     )).id();
     let w = cmd.spawn((
+        DespawnOnExit(STATE),
         Sensor,
         CollisionEventsEnabled,
         Collider::circle(8.0),
         Name::new("Weapon"),
-        DespawnOnExit(STATE),
         ReadyToPickUpWeapon,
         Visibility::default(),
         GlobalTransform::default(),
@@ -542,6 +545,7 @@ pub fn health_watcher(
         controller.prev_hp = controller.hp;
         if controller.hp <= 0.0 {
             cmd.spawn((
+                DespawnOnExit(STATE),
                 t,
                 Name::new("Body"),
                 GlobalTransform::IDENTITY,
@@ -552,6 +556,7 @@ pub fn health_watcher(
                 }
             ));
             cmd.spawn((
+                DespawnOnExit(STATE),
                 b,
                 Name::new("Blood"),
                 GlobalTransform::IDENTITY,
@@ -565,6 +570,7 @@ pub fn health_watcher(
             cmd.entity(e).despawn();
         } else {
             cmd.spawn((
+                DespawnOnExit(STATE),
                 b,
                 Name::new("Blood"),
                 Sprite {

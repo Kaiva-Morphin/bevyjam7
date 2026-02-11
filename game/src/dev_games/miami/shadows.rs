@@ -1,4 +1,4 @@
-use crate::{dev_games::miami::entity::CharacterPivotPoint, prelude::*};
+use crate::{dev_games::miami::{entity::CharacterPivotPoint, plugin::STATE}, prelude::*};
 
 
 #[derive(Component)]
@@ -24,6 +24,7 @@ pub fn setup_shadows(
         let mut s = s.clone();
         s.color = miami_shadow_color();
         let shadow = cmd.spawn((
+            DespawnOnExit(STATE),
             Name::new("Shadow"),
             s,
             Transform::from_translation(MIAMI_SHADOW_OFFSET),

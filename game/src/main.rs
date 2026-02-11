@@ -74,7 +74,7 @@ impl Plugin for GamesPlugin {
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
+                    .continue_to_state(AppState::Miami)
                     .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
@@ -90,7 +90,7 @@ impl Plugin for GamesPlugin {
             )
             .add_plugins((
                 PathfinderPlugin,
-                
+
 
                 pacman_eat::plugin::PacmanEatPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
