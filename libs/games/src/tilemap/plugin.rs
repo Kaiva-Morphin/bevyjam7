@@ -31,6 +31,9 @@ impl Plugin for MapPlugin {
                 r"^.*::CameraCenter$",
                 r"^.*::SpawnPoint$",
                 r"^.*::MiamiSpawnPoint$",
+                r"^.*::TiledPhysicsAvianBackend$",
+                r"^.*::TiledPhysicsBackend$",
+                
             ])
             .expect("Wrong regex"),
         );
@@ -39,6 +42,7 @@ impl Plugin for MapPlugin {
                 TiledPlugin(conf),
                 TiledPhysicsPlugin::<TiledPhysicsAvianBackend>::default(),
             ))
+            .register_type::<TiledPhysicsAvianBackend>()
             // .register_type::<SpawnPoint>()
             // .add_systems(Startup, spawn_map)
             // .add_observer(on_map_created)
@@ -48,6 +52,9 @@ impl Plugin for MapPlugin {
             ;
     }
 }
+
+
+
 
 // fn spawn_map(mut commands: Commands, asset_server: Res<AssetServer>) {
 //     commands.spawn(TiledMap(asset_server.load("maps/v0.1/map.tmx")))

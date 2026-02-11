@@ -175,6 +175,57 @@
         {
             "color": "#ff000000",
             "drawFill": true,
+            "id": 16,
+            "members": [
+                {
+                    "name": ":variant",
+                    "propertyType": "game::dev_games::miami::entity::MiamiEntity:::Variant",
+                    "type": "string",
+                    "value": "Player"
+                }
+            ],
+            "name": "game::dev_games::miami::entity::MiamiEntity",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "id": 17,
+            "name": "game::dev_games::miami::entity::MiamiEntity:::Variant",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Player",
+                "Endoskeleton",
+                "Bonnie",
+                "PurpleGuy",
+                "Freddy"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 18,
+            "members": [
+                {
+                    "name": "entity_type",
+                    "propertyType": "game::dev_games::miami::entity::MiamiEntity",
+                    "type": "class",
+                    "value": {
+                    }
+                }
+            ],
+            "name": "game::dev_games::miami::entity::MiamiEntitySpawner",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
             "id": 11,
             "members": [
             ],
@@ -183,6 +234,56 @@
             "useAs": [
                 "property"
             ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 19,
+            "members": [
+                {
+                    "name": "weapon_type",
+                    "propertyType": "game::dev_games::miami::weapon::WeaponType",
+                    "type": "class",
+                    "value": {
+                    }
+                }
+            ],
+            "name": "game::dev_games::miami::weapon::MiamiWeaponSpawner",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 20,
+            "members": [
+                {
+                    "name": ":variant",
+                    "propertyType": "game::dev_games::miami::weapon::WeaponType:::Variant",
+                    "type": "string",
+                    "value": "Pistol"
+                }
+            ],
+            "name": "game::dev_games::miami::weapon::WeaponType",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "id": 21,
+            "name": "game::dev_games::miami::weapon::WeaponType:::Variant",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Pistol",
+                "Axe",
+                "Baguette",
+                "EnemyFists"
+            ],
+            "valuesAsFlags": false
         },
         {
             "color": "#ff000000",
@@ -240,101 +341,14 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 16,
+            "id": 22,
             "members": [
-                {
-                    "name": ":variant",
-                    "propertyType": "game::dev_games::miami::entity::MiamiEntity:::Variant",
-                    "type": "string",
-                    "value": "Player"
-                }
             ],
-            "name": "game::dev_games::miami::entity::MiamiEntity",
+            "name": "game::pathfinder::plugin::PathfinderObstacle",
             "type": "class",
             "useAs": [
                 "property"
             ]
-        },
-        {
-            "id": 17,
-            "name": "game::dev_games::miami::entity::MiamiEntity:::Variant",
-            "storageType": "string",
-            "type": "enum",
-            "values": [
-                "Player",
-                "Dummy",
-                "Endoskeleton",
-                "PurpleGuy",
-                "Freddy"
-            ],
-            "valuesAsFlags": false
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 18,
-            "members": [
-                {
-                    "name": "entity_type",
-                    "propertyType": "game::dev_games::miami::entity::MiamiEntity",
-                    "type": "class",
-                    "value": {
-                    }
-                }
-            ],
-            "name": "game::dev_games::miami::entity::MiamiEntitySpawner",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 19,
-            "members": [
-                {
-                    "name": "weapon_type",
-                    "propertyType": "game::dev_games::miami::weapon::WeaponType",
-                    "type": "class",
-                    "value": {
-                    }
-                }
-            ],
-            "name": "game::dev_games::miami::weapon::MiamiWeaponSpawner",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 20,
-            "members": [
-                {
-                    "name": ":variant",
-                    "propertyType": "game::dev_games::miami::weapon::WeaponType:::Variant",
-                    "type": "string",
-                    "value": "Pistol"
-                }
-            ],
-            "name": "game::dev_games::miami::weapon::WeaponType",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "id": 21,
-            "name": "game::dev_games::miami::weapon::WeaponType:::Variant",
-            "storageType": "string",
-            "type": "enum",
-            "values": [
-                "Pistol",
-                "Axe"
-            ],
-            "valuesAsFlags": false
         }
     ]
 }

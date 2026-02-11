@@ -2,7 +2,7 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::{CameraController, tick_camera};
 use room::Focusable;
 
-use crate::{dev_games::miami::{map::{TilemapShadow, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, on_pickup_weapon_collision, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown}}, prelude::*};
+use crate::{dev_games::miami::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, on_pickup_weapon_collision, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown}}, prelude::*};
 use super::entity::*;
 use crate::miami::shadows::*;
 use crate::miami::player::*;
@@ -15,10 +15,14 @@ pub const NEXT_STATE: AppState = AppState::PacmanEnter;
 pub struct MiamiAssets {
     #[asset(path = "maps/miami/map.tmx")]
     pub map: Handle<TiledMapAsset>,
-    #[asset(path = "maps/miami/pacman.png")]
-    pub character: Handle<Image>,
     #[asset(path = "maps/miami/weapons.png")]
     pub weapons: Handle<Image>,
+    #[asset(path = "maps/miami/pacman.png")]
+    pub character: Handle<Image>,
+    #[asset(path = "maps/miami/endoskeleton.png")]
+    pub endoskeleton: Handle<Image>,
+    #[asset(path = "maps/miami/bonnie.png")]
+    pub bonnie: Handle<Image>,
 }
 
 #[derive(SystemSet, Debug, Hash, PartialEq, Eq, Clone)]
@@ -32,14 +36,15 @@ impl Plugin for MiamiPlugin {
     fn build(&self, app: &mut App) {
         app
         .configure_sets(
-    PhysicsSchedule,
-    ShadowSystems::Update
+            PhysicsSchedule,
+            ShadowSystems::Update
         .after(PhysicsSystems::Last)
         // .after(Systems``::SpatialQuery)
         .after(NarrowPhaseSystems::Last)
         .after(SolverSystems::Finalize)
         .after(avian2d::collision::narrow_phase::CollisionEventSystems)
 )
+
             .register_type::<TilemapShadow>()
             .register_type::<MiamiWeaponSpawner>()
             .register_type::<MiamiEntitySpawner>()
@@ -49,9 +54,13 @@ impl Plugin for MiamiPlugin {
             .add_observer(on_entity_spawnpoint)
             .add_observer(on_thrown_weapon_collision)
             .add_observer(on_pickup_weapon_collision)
+            .add_observer(propagate_obstacles)
             
 
-            .add_systems(OnEnter(STATE), setup)
+            .add_systems(OnEnter(STATE), (
+                setup,
+                // setup_navmesh
+            ))
             .add_systems(PreUpdate, (
                 (cleanup_shadows, setup_shadows).chain(),
                 player_look_at_cursor,
@@ -59,6 +68,7 @@ impl Plugin for MiamiPlugin {
                 update_controllers,
                 (shoot, throw_weapon).chain(),
                 tick_thrown,
+                update_chasers,
                 
                 // update_shadows,
             ).run_if(in_state(STATE)))
@@ -93,6 +103,7 @@ fn setup(
     ))
         ;
     camera_controller.follow_speed = 0.9;
+    camera_controller.target_zoom = 0.9;
 }
 
 
@@ -104,19 +115,24 @@ fn cleanup(
     camera.follow_speed = 0.0;
 }
 
-
 pub fn miami_player_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b1000100, 0b1001111)
+    CollisionLayers::from_bits(0b11000110, 0b11000111)
 }
 pub fn miami_character_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b0000010, 0b0000111)
+    CollisionLayers::from_bits(0b10000010, 0b10000111)
 }
 pub fn miami_dropped_weapon_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b0001000, 0b0000011)
+    CollisionLayers::from_bits(0b00001000, 0b00000011)
 }
 pub fn miami_pickup_weapon_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b1000000, 0b1000000)
+    CollisionLayers::from_bits(0b01000000, 0b01000000)
 }
 pub fn miami_weapon_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b0000000, 0b0000000)
+    CollisionLayers::from_bits(0b00000000, 0b00000000)
 }
+pub fn miami_projectile_damager_layer() -> CollisionLayers {
+    CollisionLayers::from_bits(0b10000001, 0b10000001)
+} 
+pub fn miami_seeker_shapecast_layer() -> CollisionLayers {
+    CollisionLayers::from_bits(0b00000101, 0b00000101)
+} 

@@ -9,6 +9,7 @@ use crate::core::plugin::CorePlugin;
 pub mod prelude;
 pub mod properties;
 pub mod dev_games;
+pub mod pathfinder;
 
 
 fn main() {
@@ -63,6 +64,8 @@ impl Plugin for GamesPlugin {
 #[cfg(not(feature = "yaro"))]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
+        use crate::pathfinder::plugin::PathfinderPlugin;
+
         app
             .insert_resource(LastState::default())
             .insert_resource(LastScreenshot::default())
@@ -84,6 +87,9 @@ impl Plugin for GamesPlugin {
                     .load_collection::<miami::plugin::MiamiAssets>()
             )
             .add_plugins((
+                PathfinderPlugin,
+
+
                 pacman_eat::plugin::PacmanEatPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
                 platformer::plugin::PlatformerPlugin,
@@ -91,6 +97,7 @@ impl Plugin for GamesPlugin {
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
                 miami::plugin::MiamiPlugin,
+                
             ))
             .add_systems(Startup, warmup_screenshot)
             .add_systems(OnEnter(AppState::Defeat), on_defeat)

@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "pacman.tmx",
+    "activeFile": "",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
         "C:/Users/yaro4/Desktop/ads",
@@ -54,8 +54,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 90.25,
-                "y": 180.5
+                "x": 72.75,
+                "y": 172.25
             }
         },
         "rules.tmx": {
@@ -86,8 +86,6 @@
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "openFiles": [
-        "pacman.tmx",
-        "GD tiles.tsx"
     ],
     "project": "безымянный.tiled-project",
     "property.type": "game::games::geometry_dash::plugin::EndCollider",

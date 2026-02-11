@@ -7,6 +7,7 @@ pub fn control_player(
     mut player: Single<(&mut CharacterController), With<Player>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut mouse_button_input_reader: MessageReader<MouseButtonInput>,
+    mut commands: Commands
 ) {
     let (mut c) = player else {return;};
     c.input_dir = Vec2::ZERO;
@@ -30,6 +31,22 @@ pub fn control_player(
         }
         if e.button == MouseButton::Left && e.state  == ButtonState::Pressed {
             c.shoot = true;
+            // commands.spawn((
+            //     NavMeshSettings {
+            //         // Define the outer borders of the navmesh.
+            //         fixed: Triangulation::from_outer_edges(&[
+            //             vec2(0.0, 0.0),
+            //             vec2(1000.0, 0.0),
+            //             vec2(1000.0, 1000.0),
+            //             vec2(0.0, 1000.0),
+            //         ]),
+            //         agent_radius: 5.0,
+            //         simplify: 4.0,
+            //         merge_steps: 1,
+            //         ..default()
+            //     },
+            //     NavMeshUpdateMode::Direct,
+            // ));
         }
     }
 }

@@ -108,7 +108,7 @@ fn collider_from_object<T: TiledPhysicsBackend>(
         if settings.objects_layer_filter.matches(&layer.name)
             && settings.objects_filter.matches(&object.name)
         {
-            collider::spawn_colliders::<T>(
+            collider::spawn_colliders::<T>( // 
                 &settings.backend,
                 &mut commands,
                 &assets,

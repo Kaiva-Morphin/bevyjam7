@@ -22,7 +22,10 @@ pub struct MiamiWeaponSpawner {
 pub enum WeaponType {
     #[default]
     Pistol,
-    Axe
+    Axe,
+    Baguette,
+
+    EnemyFists,
 }
 
 #[derive(Component, Default)]
@@ -43,7 +46,9 @@ pub struct Weapon {
     pub ammo: u32,
     pub cooldown: f32,
     pub anim_time: f32,
-    pub t: f32
+    pub t: f32,
+
+    pub weapon_type: WeaponType
 }
 #[derive(Component)]
 pub struct WeaponComponents {
@@ -63,11 +68,16 @@ pub struct ReadyToPickUpWeapon;
 #[derive(Component)]
 pub struct WeaponSprite;
 
+#[derive(Component)]
+pub struct WeaponProjectile;
+
 
 impl WeaponType {
     pub fn to_weapon(&self) -> Weapon {
         match self {
             WeaponType::Pistol => Weapon {
+                weapon_type: WeaponType::Pistol,
+
                 rect: Rect::new(0.0, 16.0, 16.0, 32.0),
                 held_rect: Rect::new(0.0, 16.0, 16.0, 32.0),
                 held_offset: vec3(-2., -25., -0.05),
@@ -88,14 +98,14 @@ impl WeaponType {
                 ..Default::default()
             },
             WeaponType::Axe => Weapon {
+                weapon_type: WeaponType::Axe,
+
                 rect: Rect::new(32.0, 0.0, 64.0, 16.0),
                 held_rect: Rect::new(0.0, 0.0, 32.0, 16.0),
-                // held_rect: Rect::new(32.0, 16.0, 64.0, 32.0),
                 held_offset: vec3(-5., -6., -0.3),
                 //
                 
                 char_rect: Rect::new(0.0, 32.0, 32.0, 48.0),
-                // char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 char_offset: Vec3::ZERO,
 
                 ammo: u32::MAX,
@@ -108,7 +118,70 @@ impl WeaponType {
                 attack_char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 attack_char_offset: Vec3::ZERO,
                 ..Default::default()
+            },
+            WeaponType::Baguette => Weapon {
+                weapon_type: WeaponType::Baguette,
+
+                rect: Rect::new(0.0, 48.0, 32.0, 64.0),
+                held_rect: Rect::new(0.0, 32.0, 32.0, 48.0),
+                held_offset: vec3(-5., -6., -0.3),
+                //
+                
+                char_rect: Rect::new(0.0, 32.0, 32.0, 48.0),
+                char_offset: Vec3::ZERO,
+
+                ammo: u32::MAX,
+                cooldown: 0.1,
+                anim_time: 0.1,
+
+                attack_rect: Rect::new(32.0, 32.0, 64.0, 48.0),
+                attack_offset: vec3(3., -10.0,  -0.3),
+                
+                attack_char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
+                attack_char_offset: Vec3::ZERO,
+                ..Default::default()
+            },
+
+            WeaponType::EnemyFists => Weapon {
+                weapon_type: WeaponType::EnemyFists,
+
+                rect: Rect::new(0.0, 0.0, 16.0, 16.0),
+                held_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
+                held_offset: Vec3::ZERO,
+                
+                char_rect: Rect::new(0.0, 32.0, 32.0, 64.0),
+                char_offset: vec3(0., -8., 0.),
+
+                ammo: u32::MAX,
+                cooldown: 0.1,
+                anim_time: 0.1,
+
+                attack_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
+                attack_offset: Vec3::ZERO,
+                
+                attack_char_rect: Rect::new(0.0, 64.0, 32.0, 96.0),
+                attack_char_offset: vec3(0., -8., 0.),
+                ..Default::default()
             }
+        }
+    }
+}
+
+impl Weapon {
+    pub fn on_shoot(
+        &self,
+        cmd: &mut Commands,
+        dir: Vec2,
+        is_enemy: bool
+    ) -> Entity {
+        let damage_layer = if is_enemy {} else {};
+        match self.weapon_type {
+            WeaponType::Pistol => {
+                cmd.spawn((
+
+                )).id()
+            },
+            _ => unimplemented!()
         }
     }
 }
@@ -123,18 +196,16 @@ pub fn on_weapon_spawnpoint(
     if state.get() != &STATE {return;}
     let Ok((spawner, transform)) = q.get(point.entity) else {return;};
     let wpn: Weapon = spawner.weapon_type.to_weapon();
-    info!("Spawning weapon!");
-
     let sprite = cmd.spawn((
-            Visibility::default(),
-            WeaponSprite,
-            Transform::default(),
-            Sprite {
-                image: assets.weapons.clone(),
-                rect: Some(wpn.rect.clone()),
-                ..Default::default()
-            },
-        )).id();
+        Visibility::default(),
+        WeaponSprite,
+        Transform::default(),
+        Sprite {
+            image: assets.weapons.clone(),
+            rect: Some(wpn.rect.clone()),
+            ..Default::default()
+        },
+    )).id();
     let w = cmd.spawn((
         Sensor,
         CollisionEventsEnabled,
@@ -157,7 +228,6 @@ pub fn on_weapon_spawnpoint(
     )).id();
     cmd.entity(w).add_child(sprite);
 }
-
 
 
 pub fn on_pickup_weapon_collision(
@@ -194,8 +264,10 @@ pub fn on_pickup_weapon_collision(
     };
 }
 
+
 #[derive(Component)]
 pub struct WeaponOf(Entity);
+
 
 pub fn throw_weapon(
     mut cmd: Commands,
@@ -244,7 +316,7 @@ pub fn tick_thrown(
     mut sprites: Query<&WeaponSprite>,
     mut cmd: Commands,
 ) {
-    for (e, vel, c, w) in thrown.iter() {
+    for (e, vel, c, _w) in thrown.iter() {
         if vel.0.length_squared() < 10.0 {
             cmd.entity(e).remove::<(
                 ThrownWeapon,
@@ -294,9 +366,10 @@ pub fn shoot(
         }
 
         if w.t > 0.0 {w.t -= dt; continue;}
-        // info!("Ready!");
+        if w.ammo <= 0 {continue;}
         if !controller.shoot {continue;};
-        info!("Shooting!");
+        w.ammo -= 1;
+        // info!("Shooting!");
         w.t = w.cooldown;
     }
 }

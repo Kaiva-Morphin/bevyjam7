@@ -67,7 +67,7 @@ fn focus_player(
     let Ok(pt) = spawnpoint_q.get(point.entity) else {return;};
     let pt = pt.translation;
 
-    let collider = Collider::rectangle(16.0, 16.0);
+    let collider = Collider::capsule(8.0, 0.0);
     let mut caster_shape = collider.clone();
         caster_shape.set_scale(Vector::ONE * Vector::new(0.99, 1.01), 10);
     

@@ -1,6 +1,6 @@
 use crate::{prelude::{AppState, LastState}, prelude::*};
 use bevy_asset_loader::asset_collection::AssetCollection;
-use rand::RngExt;
+use rand::Rng;
 
 pub struct FlappyBirdPlugin;
 
@@ -277,10 +277,8 @@ fn tick_game(
             pipes.pipes.push(e);
             e
         };
-        let r = rng.random_range(-FLAPPY_PIPE_SPREAD..=FLAPPY_PIPE_SPREAD);
         cmd.entity(e).insert(
-            // Transform::from_translation(vec3(FLAPPY_WIDTH, rng.random_range(-FLAPPY_PIPE_SPREAD..=FLAPPY_PIPE_SPREAD), 0.0))
-            Transform::from_translation(vec3(FLAPPY_WIDTH, r, 0.0))
+            Transform::from_translation(vec3(FLAPPY_WIDTH, rng.random_range(-FLAPPY_PIPE_SPREAD..=FLAPPY_PIPE_SPREAD), 0.0))
         );
     }
 

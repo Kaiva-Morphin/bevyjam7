@@ -113,7 +113,7 @@ pub(crate) fn spawn_colliders<T: TiledPhysicsBackend>(
     let Some(map_asset) = collider_created.get_map_asset(assets) else {
         return;
     };
-
+    let mut is_object = false;
     let polygons = match collider_created.event.source {
         TiledColliderSource::Object => {
             if let Some(object) = collider_created.get_object(assets) {
@@ -121,6 +121,7 @@ pub(crate) fn spawn_colliders<T: TiledPhysicsBackend>(
                     // If the object does not have a tile, we can create a collider directly from itself
                     None => {
                         let global_transform = &GlobalTransform::default();
+                        is_object = true;
                         TiledObject::from_object_data(&object)
                             .polygon(
                                 global_transform,
@@ -133,6 +134,7 @@ pub(crate) fn spawn_colliders<T: TiledPhysicsBackend>(
                                 map_asset.tiled_offset,
                             )
                             .map(|p| vec![p])
+
                     }
                     // If the object has a tile, we need to handle its collision data
                     Some(object_tile) => object_tile.get_tile().map(|tile| {
@@ -203,8 +205,14 @@ pub(crate) fn spawn_colliders<T: TiledPhysicsBackend>(
         return;
     };
 
+    let polys = if is_object {
+        info!("Object!");
+        TiledPhysicsAvianBackend::Triangulation.spawn_colliders(commands, &collider_created, &polygons)
+    } else {
+        backend.spawn_colliders(commands, &collider_created, &polygons)
+    };
     // Actually spawn our colliders using provided physics backend
-    for entity in backend.spawn_colliders(commands, &collider_created, &polygons) {
+    for entity in polys {
         // Attach collider to its parent and insert additional components
         commands.entity(entity).insert((
             collider_created.event.source,

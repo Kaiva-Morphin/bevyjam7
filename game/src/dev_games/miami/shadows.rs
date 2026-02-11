@@ -23,7 +23,6 @@ pub fn setup_shadows(
     for (e, c, s)  in q.iter() {
         let mut s = s.clone();
         s.color = miami_shadow_color();
-        info!("Spawning shadow for {}", e);
         let shadow = cmd.spawn((
             Name::new("Shadow"),
             s,

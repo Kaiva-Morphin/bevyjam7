@@ -35,10 +35,10 @@ use bevy::prelude::*;
 pub enum TiledPhysicsAvianBackend {
     /// Aggregates all [`geo::LineString`]s into a single collider using [`SharedShape::polyline`].
     Polyline,
-    #[default]
     /// Performs triangulation and produces a single collider by aggregating multiple [`SharedShape::triangle`]s.
     Triangulation,
     /// Produces several linestrip colliders, one for each line string.
+    #[default]
     LineStrip,
 }
 

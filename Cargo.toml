@@ -11,6 +11,9 @@ members = [
 ]
 resolver = "2"
 
+# [patch.crates-io]
+# getrandom = { version = "0.4.1" }
+
 [workspace.dependencies]
 bevy_animation =  { version = "0.18.0" }
 bevy_dylib = { version = "0.18.0" }
