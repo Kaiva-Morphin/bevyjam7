@@ -49,6 +49,8 @@ pub fn update_shadows(
     }
 }
 
+
+
 // pub fn update_shadows(
 //     mut shadow_q: Query<(&mut Sprite, &mut Transform, &ShadowOf), Without<ShadowCaster>>,
 //     caster_q: Query<(&Sprite, &GlobalTransform), With<ShadowCaster>>,

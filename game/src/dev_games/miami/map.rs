@@ -28,7 +28,7 @@ pub fn propagate_obstacles(
         for c in c {
             if c == &e {
                 commands.entity(e).insert(PathfinderObstacle);
-                commands.spawn(((
+                commands.spawn((
                     DespawnOnExit(STATE),
                     Name::new("Navmesh"),
                     NavMeshSettings {
@@ -45,7 +45,7 @@ pub fn propagate_obstacles(
                         ..default()
                     },
                     NavMeshUpdateMode::Direct,
-                )));
+                ));
                 return;
             }
         }

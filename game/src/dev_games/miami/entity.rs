@@ -1,10 +1,11 @@
 use std::f32::consts::PI;
 
 use avian2d::math::Vector;
+use bevy::color::palettes;
 use camera::CameraController;
 use room::Focusable;
 
-use crate::{dev_games::miami::{plugin::{MiamiAssets, STATE, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer}, shadows::ShadowInit}, prelude::*};
+use crate::{dev_games::miami::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}}, prelude::*};
 
 
 #[derive(Component)]
@@ -55,7 +56,6 @@ impl MiamiEntity {
                 foot_rect: Rect::new(0.0, 0.0, 16.0, 16.0),
             },
             _ => todo!()
-
         }
     }
     pub fn to_handle(&self, assets: &Res<MiamiAssets>) -> Handle<Image> {
@@ -73,14 +73,14 @@ impl MiamiEntity {
                 seek_range: 300.0,
                 attention_range: 100.0,
                 origin_point: start,
-                seek_time: 1.0,
+                max_seek_time: 1.0,
                 ..Default::default()
             },  
             MiamiEntity::Bonnie => ChaserAi{
                 seek_range: 300.0,
                 attention_range: 100.0,
                 origin_point: start,
-                seek_time: 20.0,
+                max_seek_time: 20.0,
                 ..Default::default()
             },
             _ => todo!()
@@ -92,27 +92,45 @@ impl CharacterController {
     fn from_type(entity_type: &MiamiEntity) -> Self {
         match entity_type {
             MiamiEntity::Player => Self {
-                speed: 80.0,
-                run_speed: 80.0,
-                walk_speed: 80.0,
+                speed: 120.0,
+                run_speed: 120.0,
+                walk_speed: 120.0,
                 hp: 1.0,
-                max_hp: 1.0,
-                ..Default::default()},
+                prev_hp: 1.0,
+                blood_rects: blood_rects(),
+                blood_color: red_blood(),
+                character: MiamiEntity::Player,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
+                ..Default::default()
+            },
             MiamiEntity::Endoskeleton => Self {
                 speed: 120.0, 
                 run_speed: 120.0, 
                 walk_speed: 60.0,
                 hp: 100.,
-                max_hp: 100.,
+                prev_hp: 100.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: MiamiEntity::Endoskeleton,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
                 ..Default::default()
+
             },
             MiamiEntity::Bonnie => Self {
                 speed: 100.0,
                 run_speed: 100.0,
                 walk_speed: 30.0,
                 hp: 300.,
-                max_hp: 300.,
+                prev_hp: 300.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: MiamiEntity::Bonnie,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
                 ..Default::default()
+
             },
             _ => todo!()
         }
@@ -200,13 +218,18 @@ pub fn on_entity_spawnpoint(
     let id;
     if let MiamiEntity::Player = spawner.entity_type {
         id = c.insert(
-            (Focusable, Player, miami_player_layers())
+            (
+                Focusable,
+                Player,
+                Name::new("Player"),
+                miami_player_layers()
+            )
         ).id();
         camera_controller.focused_entities.push_front(id);
     } else {
         let chaser = spawner.entity_type.to_chaser(transform.translation.truncate());
         let caster = ShapeCaster::new(
-            Collider::circle(4.0),
+            Collider::circle(1.0),
             Vector::ZERO,
             0.0,
             Dir2::NEG_Y
@@ -216,9 +239,33 @@ pub fn on_entity_spawnpoint(
             .with_query_filter(SpatialQueryFilter::from_mask(miami_seeker_shapecast_layer().memberships));
         id = c.insert((
             miami_character_layers(),
+            CharacterInPlace,
+            DummyEntity,
             caster,
             chaser,
         )).id();
+        let weapon = WeaponType::EnemyFists.to_weapon();
+        let sprite = cmd.spawn((
+            Sprite {
+                image: assets.weapons.clone(),
+                rect: Some(weapon.rect.clone()),
+                ..Default::default()
+            },
+            Transform::default(),
+            
+            WeaponSprite
+        )).id();
+        let weapon = cmd.spawn((
+            weapon,
+            Transform::default(),
+            WeaponComponents{sprite},
+            WeaponOf(id),
+        )).add_child(sprite).id();
+        cmd.entity(
+            id
+        ).insert(
+            ArmedCharacter(weapon),
+        ).add_child(weapon);
     }
     cmd.entity(id).add_child(pivot);
 }
@@ -234,11 +281,11 @@ pub struct CharacterSprite {
 }
 
 
-#[derive(Component, Default)]
+#[derive(Component)]
 pub struct CharacterController {
     pub run_speed: f32,
     pub walk_speed: f32,
-    pub max_hp: f32,
+    pub prev_hp: f32,
     
     pub input_dir: Vec2,
     pub speed: f32,
@@ -247,7 +294,43 @@ pub struct CharacterController {
     pub shoot: bool,
     pub throw: bool,
     pub hp: f32,
+
+    pub blood_rects: [Rect; 3],
+    pub blood_color: Color,
+
+    pub character: MiamiEntity,
+    pub front_body_rect: Rect,
+    pub back_body_rect: Rect,
+    pub body_offset: Vec3,
+
+    pub last_impact_back: bool,
+    pub last_impact_dir: Vec2,
 }
+
+impl Default for CharacterController {
+    fn default() -> Self {
+        Self {
+            run_speed: 120.0,
+            walk_speed: 120.0,
+            prev_hp: 1.0,
+            input_dir: Vec2::ZERO,
+            speed: 120.0,
+            look_dir: Vec2::ZERO,
+            shoot: false,
+            throw: false,
+            hp: 1.0,
+            blood_rects: blood_rects(),
+            blood_color: oil_blood(),
+            character: MiamiEntity::Endoskeleton,
+            front_body_rect: front_body_rect(),
+            back_body_rect: back_body_rect(),
+            last_impact_back: false,
+            last_impact_dir: Vec2::NEG_Y,
+            body_offset: vec3(0.0, 22.0, 0.0),
+        }
+    }
+}
+
 
 
 #[derive(Component, Default)]
@@ -255,6 +338,7 @@ pub struct ChaserAi {
     pub seek_range: f32, // from front
     pub attention_range: f32, // from back
     pub last_seen: Option<Vec2>,
+    pub origin_dir: Vec2,
     pub origin_point: Vec2,
     pub seek_time: f32,
     pub max_seek_time: f32,
@@ -277,10 +361,9 @@ pub fn update_controllers(
         velocity.x = i.x * controller.speed;
         velocity.y = i.y * controller.speed;
         let Ok(mut t) = pivots.get_mut(c.pivot) else {continue;};
-        t.rotation = Quat::from_rotation_z(
-            controller.look_dir.to_angle() + std::f32::consts::FRAC_PI_2
-        );
-
+        if controller.look_dir != Vec2::ZERO {
+            t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() + std::f32::consts::FRAC_PI_2);      
+        }
         for (child, mut t, mut f) in foots.iter_mut() {
             if child.0 != c.pivot {continue;}
             if i.x == 0.0 && i.y == 0.0 {continue;}
@@ -293,28 +376,152 @@ pub fn update_controllers(
     }
 }
 
+#[derive(Component)]
+pub struct Path {
+    current: Vec3,
+    next: Vec<Vec3>,
+}
 
 pub fn update_chasers(
-    mut entities: Query<(&mut CharacterController, &mut LinearVelocity, &mut ChaserAi, &GlobalTransform, &ShapeHits, &mut ShapeCaster)>,
+    mut entities: Query<(Entity, &mut CharacterController, &mut ChaserAi, &GlobalTransform, &ShapeHits, &mut ShapeCaster), Without<DummyEntity>>,
     player: Query<(Entity, &GlobalTransform), With<Player>>,
-    // navmeshes: Res<Assets<NavMesh>>,
-    // navmesh: Single<&NavMeshSettings>,
+    navmeshes: Res<Assets<NavMesh>>,
+    navmesh: Query<&ManagedNavMesh>,
+    mut cmd: Commands,
 ) {
+    let Some(mesh) = navmesh.iter().last() else {return;};
+    let Some(navmesh) = navmeshes.get(mesh) else {return;};
     let Some((player, pt)) = player.iter().next() else {return;};
-    for (mut controller, mut velocity, mut chaser, gt, hits, mut caster) in entities.iter_mut() {
-        // let mut target = None;
-        // for hit in hits.iter() {
-        //     if let Ok(e) = entities.get(hit.entity) {target = Some(e.0);break;}
-        // }
-        let d = (pt.translation() - gt.translation());
+    for (e, mut controller, mut chaser, gt, hits, mut caster) in entities.iter_mut() {
+        let d = pt.translation() - gt.translation();
         let nd = d.normalize_or_zero();
         caster.direction = Dir2::from_xy(nd.x, nd.y).expect("Not a dir");
-        chaser.last_seen = None;
+        let mut last_seen = None;
+        let mut max_dist = caster.max_distance;
+        let mut t = gt.translation();
+        if nd.truncate().dot(controller.look_dir) < 0.0 {
+            max_dist = chaser.attention_range;
+        }
         for hit in hits {
-            if hit.entity == player {
+            if hit.entity == player && hit.distance < max_dist {
                 controller.look_dir = nd.truncate();
-                chaser.last_seen = Some(nd.truncate());
+                last_seen = Some(pt.translation().truncate());
             }
+        }
+        // if chaser.last_seen.is_some() {
+        //     controller.shoot = true;
+        // }
+        if let Some(last_seen) = last_seen {
+            if chaser.last_seen != Some(last_seen) { //rebuild path
+                cmd.entity(e).remove::<CharacterInPlace>();
+                t.z = 0.0;
+                let Some(path) = navmesh.transformed_path(t, last_seen.extend(0.0)) else {
+                    continue;
+                };
+                let Some((f, r)) = path.path.split_first() else {continue;};
+                let mut remaining = r.to_vec();
+                chaser.last_seen = Some(last_seen);
+                remaining.reverse();
+                controller.speed = controller.run_speed;
+                cmd.entity(e).insert(
+                    Path {
+                        current: *f,
+                        next: remaining
+                    }
+                );
+            }
+        } else if chaser.seek_time > chaser.max_seek_time {
+            chaser.seek_time = 0.0;
+            chaser.last_seen = None;
+            controller.look_dir = Vec2::ZERO;
+            let Some(path) = navmesh.transformed_path(t, chaser.origin_point.extend(0.0)) else {
+                continue;
+            };
+            let Some((f, r)) = path.path.split_first() else {continue;};
+            let mut remaining = r.to_vec();
+            remaining.reverse();
+            controller.speed = controller.walk_speed;
+            cmd.entity(e).insert(
+                Path {
+                    current: *f,
+                    next: remaining
+                }
+            );
+        }
+        // if let Some(last_seen) = chaser.last_seen {
+        //     if let Some(path) = mesh.transformed_path(gt.translation().truncate(), last_seen) {
+                
+        //     }
+        // } else {
+        //     // tick and back home
+        // }
+        
+    }
+}
+
+
+#[derive(Component)]
+pub struct CharacterInPlace;
+
+
+pub fn chase(
+    mut commands: Commands,
+    mut navigator: Query<(
+        &mut Transform,
+        Option<&mut Path>,
+        &mut ChaserAi,
+        Entity,
+        &mut CharacterController
+    ), (Without<Player>, Without<CharacterInPlace>)>,
+    time: Res<Time>,
+){
+    let dt = time.dt();
+    for (mut transform, mut path, mut chaser, entity, mut controller) in navigator.iter_mut() {
+        let Some(mut path) = path else {
+            controller.input_dir = Vec2::ZERO;
+            // controller.look_dir = Vec2::ZERO;
+            // controller.shoot = false;
+            controller.shoot = false;
+            chaser.seek_time += dt;
+            continue;
+        };
+        let move_direction = path.current - transform.translation;
+        controller.input_dir = move_direction.normalize_or_zero().truncate();
+        if chaser.last_seen.is_none() {
+            controller.look_dir = controller.input_dir;
+        } else {
+            controller.shoot = true;
+        }
+
+        if transform.translation.distance(path.current) < 5.0 {
+            if let Some(next) = path.next.pop() {
+                path.current = next;
+            }
+        }
+        if transform.translation.distance(path.current) < 10.0 && path.next.is_empty() {
+            chaser.seek_time = 0.0;
+            if chaser.origin_point.distance(transform.translation.truncate()) < 10.0 {
+                commands.entity(entity).insert(CharacterInPlace);
+                controller.look_dir = chaser.origin_dir;
+                controller.input_dir = Vec2::ZERO;
+            }
+            commands
+                .entity(entity)
+                .remove::<Path>();
+            continue;
+        }
+    }
+}
+
+
+pub fn display_path(navigator: Query<(&Transform, &Path)>, mut gizmos: Gizmos) {
+    for (transform, path) in &navigator {
+        let mut to_display = path.next.iter().map(|v| v.xy()).collect::<Vec<_>>();
+        to_display.push(path.current.xy());
+        to_display.push(transform.translation.xy());
+        to_display.reverse();
+        if !to_display.is_empty() {
+            gizmos.linestrip_2d(to_display, palettes::tailwind::YELLOW_400);
         }
     }
 }
