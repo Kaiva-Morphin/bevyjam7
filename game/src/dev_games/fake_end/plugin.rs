@@ -39,7 +39,7 @@ pub struct FakeEndPlugin;
 impl Plugin for FakeEndPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_systems(Startup, global_setup)
+        .add_systems(Startup, global_setup.after(camera::setup_camera))
             // .insert_resource(LocalRes::default())
             // .insert_resource(Pipes::default())
             .add_sub_state::<LocalState>()
@@ -64,6 +64,10 @@ fn tick_transition(
 fn global_setup(
     mut cmd: Commands,
     mut images: ResMut<Assets<Image>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    cam: Query<Entity, With<WorldCamera>>,
+    asset_server: Res<AssetServer>
 ) {
     let size = Extent3d {
         width: 512,
@@ -84,26 +88,6 @@ fn global_setup(
         TextureUsages::TEXTURE_BINDING | TextureUsages::COPY_DST | TextureUsages::RENDER_ATTACHMENT;
     
     let image_handle = images.add(image);
-    cmd.insert_resource(JokerTexture {handle: image_handle});
-}
-
-fn setup(
-    mut cmd: Commands,
-    assets: Res<FakeEndAssets>,
-    mut images: ResMut<Assets<Image>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    cam: Query<Entity, With<WorldCamera>>,
-    joker: Res<JokerTexture>
-) {
-    // cmd.spawn((
-    //     DespawnOnExit(STATE),
-    //     Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-    //     Sprite {
-    //         image: image_handle.clone(),
-    //         ..default()
-    //     },
-    // ));
     let cam = cam.iter().next().expect("No cam!");
     cmd.spawn((
         DespawnOnExit(LocalState::Aboba),
@@ -114,42 +98,32 @@ fn setup(
             ..default()
         },
         ImageNode {
-            image: joker.handle.clone(),
+            image: image_handle.clone(),
             ..default()
         },
     ZIndex(100)));
 
-    cmd
-        .spawn((
-            DespawnOnExit(LocalState::Aboba),
-            Camera3d::default(),
-            // Camera2d,
-            Camera {
-                clear_color: ClearColorConfig::Custom(Color::Srgba(Srgba::rgba_u8(0, 0, 0, 0))),
-                order: -2,
-                ..default()
-            },
-            RenderTarget::Image(joker.handle.clone().into()),
-            RenderLayers::layer(3),
-            Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-        ));
-
-    // Lighting
     cmd.spawn((
         DespawnOnExit(LocalState::Aboba),
-        DirectionalLight {
-            illuminance: 10000.0,
+        Camera3d::default(),
+        Camera {
+            clear_color: ClearColorConfig::Custom(Color::Srgba(Srgba::rgba_u8(0, 0, 0, 0))),
+            order: -2,
             ..default()
         },
-        Transform::from_rotation(Quat::from_euler(EulerRot::XYZ, -0.5, 0.5, 0.0)),
+        RenderTarget::Image(image_handle.clone().into()),
+        RenderLayers::layer(3),
+        Transform::from_xyz(0.0, 0.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
-
+    
     let mesh = meshes.add(Mesh::from(Rectangle {
         half_size: Vec2::splat(RECT_HS),
     }));
+
+    let text = asset_server.load("yaroholder.png");
     
     let material = materials.add(StandardMaterial {
-        base_color_texture: Some(assets.text.clone()),
+        base_color_texture: Some(text.clone()),
         ..default()
     });
     
@@ -158,12 +132,20 @@ fn setup(
         DespawnOnExit(LocalState::Aboba),
         Mesh3d(mesh),
         MeshMaterial3d(material),
-        Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+        Transform::from_translation(Vec3::new(0.0, 5.05, 0.0)),
         RenderLayers::layer(3),
         TextureRect,
     ));
+    cmd.insert_resource(JokerTexture {handle: image_handle});
+}
 
+fn setup(
+    mut cmd: Commands,
+    joker: Res<JokerTexture>,
+    mut joker_rect: Query<&mut Transform, With<TextureRect>>
+) {
     cmd.insert_resource(FallStart {start: false, num: 0, timer: 0.});
+    *joker_rect.single_mut().expect("NO JOKER") = Transform::from_translation(Vec3::new(0.0, 0.0, 0.0));
 }
 
 #[derive(Resource)]
@@ -179,8 +161,8 @@ fn monke_fall(
     mut state: ResMut<NextState<LocalState>>,
     time: Res<Time>,
 ) {
-    // fall_start.timer += time.delta_secs();
-    // if fall_start.timer >= 0.0 {
+    fall_start.timer += time.delta_secs();
+    // if fall_start.timer >= 2.0 {
     //     fall_start.start = true;
     // }
     const DEGPF: f32 = -0.01;

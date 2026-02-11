@@ -8,7 +8,7 @@ use crate::novel::engine::*;
 
 
 const STATE: AppState = AppState::Novel;
-const NEXT_STATE: AppState = AppState::PacmanEnter;
+const NEXT_STATE: AppState = AppState::FakeEnd;
 
 const CHARS_PER_SECOND : f32 = 20.0;
 
