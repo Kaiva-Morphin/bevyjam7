@@ -41,7 +41,7 @@ pub struct ViewportCanvas {
     pub size: Vec2,
 }
 
-fn setup_camera(
+pub fn setup_camera(
     mut commands: Commands,
     mut images: ResMut<Assets<Image>>,
 ) {
