@@ -1,10 +1,8 @@
 use avian2d::math::Vector;
-use bevy::input::mouse::MouseButtonInput;
 use bevy::prelude::*;
-use bevy_inspector_egui::bevy_egui::input::write_pointer_button_messages_system;
 use games::prelude::AppState;
 use rand::Rng;
-use crate::dev_games::miami::entity::{CharacterController, CharacterPivotPoint, CharacterSprite, Player};
+use crate::dev_games::miami::entity::{CharacterComponents, CharacterController, CharacterPivotPoint, CharacterSprite, Player};
 use crate::dev_games::miami::plugin::{miami_dropped_weapon_layers, miami_pickup_weapon_layers};
 use crate::dev_games::miami::shadows::ShadowCaster;
 use crate::prelude::*;
@@ -44,15 +42,17 @@ pub struct Weapon {
 
     pub ammo: u32,
     pub cooldown: f32,
+    pub anim_time: f32,
+    pub t: f32
 }
 #[derive(Component)]
-pub struct WeaponComponent{
+pub struct WeaponComponents {
     pub sprite: Entity,
 }
 
 
 #[derive(Component)]
-pub struct ArmedCharacter;
+pub struct ArmedCharacter(Entity);
 
 #[derive(Component)]
 pub struct ThrownWeapon;
@@ -77,6 +77,7 @@ impl WeaponType {
 
                 ammo: 30,
                 cooldown: 0.2,
+                anim_time: 0.2,
 
                 attack_char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
                 attack_char_offset: vec3(0., -3., 0.),
@@ -89,13 +90,23 @@ impl WeaponType {
             WeaponType::Axe => Weapon {
                 rect: Rect::new(32.0, 0.0, 64.0, 16.0),
                 held_rect: Rect::new(0.0, 0.0, 32.0, 16.0),
+                // held_rect: Rect::new(32.0, 16.0, 64.0, 32.0),
                 held_offset: vec3(-5., -6., -0.3),
+                //
                 
                 char_rect: Rect::new(0.0, 32.0, 32.0, 48.0),
+                // char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 char_offset: Vec3::ZERO,
 
                 ammo: u32::MAX,
                 cooldown: 0.2,
+                anim_time: 0.2,
+
+                attack_rect: Rect::new(32.0, 16.0, 64.0, 32.0),
+                attack_offset: vec3(3., -10.0,  -0.3),
+                
+                attack_char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
+                attack_char_offset: Vec3::ZERO,
                 ..Default::default()
             }
         }
@@ -141,7 +152,7 @@ pub fn on_weapon_spawnpoint(
             GravityScale(0.0),
             Transform::from_translation(transform.translation),
         ),
-        WeaponComponent{sprite},
+        WeaponComponents{sprite},
         wpn,
     )).id();
     cmd.entity(w).add_child(sprite);
@@ -160,18 +171,13 @@ pub fn on_pickup_weapon_collision(
     mut cmd: Commands
 ){
     if state.get() != &STATE {return;}
-    info!("Pickup weapon collision!");
     let weapon_entity = event.collider1;
     let Ok((weapon, weapon_children)) = pickupable.get(event.collider1) else {return;};
-    info!("Pickable!");
     let Ok(children) = characters.get(event.collider2) else {return;};
-    info!("Character!");
     for maybe_pivot in children.iter() {
         let Ok(c) = pivots.get(maybe_pivot) else {continue;};
-        info!("Pivot!");
         for c in c.iter() {
             let Ok((mut t, mut sprite)) = sprite.get_mut(c) else {continue;};
-            info!("Sprite!");
             sprite.rect = Some(weapon.char_rect.clone());
             t.translation = weapon.char_offset.clone();
         }
@@ -182,21 +188,21 @@ pub fn on_pickup_weapon_collision(
         }
         let w = cmd.entity(weapon_entity)
             .remove::<(ReadyToPickUpWeapon, Sensor)>()
-            .insert((Transform::from_translation(weapon.held_offset), ArmedWeapon(event.collider2))).id();
+            .insert((Transform::from_translation(weapon.held_offset), WeaponOf(event.collider2))).id();
         cmd.entity(maybe_pivot).add_child(w);
-        cmd.entity(event.collider2).insert(ArmedCharacter);
+        cmd.entity(event.collider2).insert(ArmedCharacter(w));
     };
 }
 
 #[derive(Component)]
-pub struct ArmedWeapon(Entity);
+pub struct WeaponOf(Entity);
 
 pub fn throw_weapon(
     mut cmd: Commands,
     characters: Query<(&Children, &CharacterController), With<ArmedCharacter>>,
     pivots: Query<&Children, With<CharacterPivotPoint>>,
     mut sprites: Query<(&mut Transform, &mut Sprite, &CharacterSprite), Without<WeaponSprite>>,
-    weapons: Query<(Entity, &ArmedWeapon, &Weapon, &Children)>,
+    weapons: Query<(Entity, &WeaponOf, &Weapon, &Children)>,
     mut weapon_sprites: Query<&mut Sprite, (With<WeaponSprite>, Without<CharacterSprite>)>,
 ) {
     let mut r = rand::rng();
@@ -216,7 +222,7 @@ pub fn throw_weapon(
                 sprite.rect = Some(character.default_rect.clone());
                 // let vel = ;
                 cmd.entity(wpn).remove::<
-                    ArmedWeapon
+                    WeaponOf
                 >().insert((
                     RigidBody::Dynamic,
                     ThrownWeapon,
@@ -259,10 +265,40 @@ pub fn tick_thrown(
 }
 
 pub fn shoot(
-    characters: Query<(&Children, &CharacterController), With<ArmedCharacter>>,
-
+    characters: Query<(&Children, &CharacterController, &CharacterComponents, &ArmedCharacter)>,
+    mut weapons: Query<(&mut Weapon, &mut Transform, &WeaponComponents), Without<CharacterSprite>>,
+    mut weapon_sprite: Query<(&mut Sprite), (With<WeaponSprite>, Without<CharacterSprite>)>,
+    mut char_sprite: Query<(&mut Sprite, &mut Transform), (With<CharacterSprite>, Without<WeaponSprite>, Without<WeaponComponents>)>,
+    mut cmd: Commands,
+    time: Res<Time>,
 ){
+    let dt = time.dt();
+    for (child, controller, cc, a) in characters.iter() {
+        let Ok((mut w,mut w_transform, wc)) = weapons.get_mut(a.0) else {continue;};
+        // info!("Weapon!");
+        let Ok((mut w_sprite)) = weapon_sprite.get_mut(wc.sprite) else {continue;};
+        // info!("Weapon sprite!");
+        let Ok((mut c_sprite, mut c_transform)) = char_sprite.get_mut(cc.sprite) else {continue;};
+        // info!("Character sprite!");
 
+        if w.t > w.cooldown - w.anim_time {
+            w_sprite.rect = Some(w.attack_rect.clone());
+            w_transform.translation = w.attack_offset.clone();
+            c_sprite.rect = Some(w.attack_char_rect.clone());
+            c_transform.translation = w.attack_char_offset.clone();
+        } else {
+            w_sprite.rect = Some(w.held_rect.clone());
+            w_transform.translation = w.held_offset.clone();
+            c_sprite.rect = Some(w.char_rect.clone());
+            c_transform.translation = w.char_offset.clone();
+        }
+
+        if w.t > 0.0 {w.t -= dt; continue;}
+        // info!("Ready!");
+        if !controller.shoot {continue;};
+        info!("Shooting!");
+        w.t = w.cooldown;
+    }
 }
 
 pub fn on_thrown_weapon_collision(

@@ -1,4 +1,4 @@
-use bevy::input::mouse::MouseButtonInput;
+use bevy::input::{ButtonState, mouse::MouseButtonInput};
 
 use crate::{dev_games::miami::entity::*, prelude::*};
 
@@ -25,10 +25,10 @@ pub fn control_player(
         c.input_dir.y -= 1.0;
     }
     for e in mouse_button_input_reader.read() {
-        if e.button == MouseButton::Right {
+        if e.button == MouseButton::Right && e.state == ButtonState::Pressed {
             c.throw = true;
         }
-        if e.button == MouseButton::Left {
+        if e.button == MouseButton::Left && e.state  == ButtonState::Pressed {
             c.shoot = true;
         }
     }

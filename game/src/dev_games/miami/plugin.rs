@@ -57,9 +57,8 @@ impl Plugin for MiamiPlugin {
                 player_look_at_cursor,
                 control_player,
                 update_controllers,
-                throw_weapon,
+                (shoot, throw_weapon).chain(),
                 tick_thrown,
-                shoot,
                 
                 // update_shadows,
             ).run_if(in_state(STATE)))
