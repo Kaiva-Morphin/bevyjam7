@@ -1,19 +1,16 @@
 use bevy_asset_loader::loading_state::{LoadingState, LoadingStateAppExt};
 use bevy_asset_loader::loading_state::config::ConfigureLoadingState;
 
-use crate::games::*;
-use crate::games::plugin::*;
+use crate::dev_games::*;
+use crate::dev_games::plugin::*;
 use crate::prelude::*;
 
 use crate::core::plugin::CorePlugin;
-pub mod character;
-pub mod core;
-pub mod tilemap;
 pub mod prelude;
 pub mod properties;
-pub mod games;
-pub mod tween;
-pub mod fake_end;
+pub mod dev_games;
+pub mod pathfinder;
+
 
 fn main() {
     App::new()
@@ -66,41 +63,18 @@ impl Plugin for GamesPlugin {
 }
 
 
-#[cfg(feature="kaiv")]
-impl Plugin for GamesPlugin {
-    fn build(&self, app: &mut App) {
-        app
-            .insert_resource(LastState::default())
-            .init_state::<AppState>()
-            .add_loading_state(
-                LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
-                    .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
-                    .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
-                    .load_collection::<platformer::plugin::PlatformerAssets>()
-            )
-            .add_plugins((
-                pacman_eat::plugin::PacmanEatPlugin,
-                flappy_bird::plugin::FlappyBirdPlugin,
-                platformer::plugin::PlatformerPlugin,
-            ))
-            .add_systems(OnEnter(AppState::Defeat), on_defeat)
-            .add_systems(Update, bevy::dev_tools::states::log_transitions::<AppState>)
-        ;
-    }
-}
-
-#[cfg(not(feature = "kaiv"))]
 #[cfg(not(feature = "yaro"))]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
+        use crate::pathfinder::plugin::PathfinderPlugin;
+
         app
             .insert_resource(LastState::default())
             .insert_resource(LastScreenshot::default())
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Novel)
+                    .continue_to_state(AppState::Miami)
                     .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
@@ -112,15 +86,22 @@ impl Plugin for GamesPlugin {
                     .load_collection::<novel::plugin::NovelSoundEffectsAssets>()
                     .load_collection::<fake_end::plugin::FakeEndAssets>()
                     .load_collection::<fnaf::plugin::FNAFAssets>()
+                    .load_collection::<miami::plugin::MiamiAssets>()
             )
             .add_plugins((
+                PathfinderPlugin,
+
+
                 pacman_eat::plugin::PacmanEatPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
                 platformer::plugin::PlatformerPlugin,
                 novel::plugin::NovelPlugin,
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
+                miami::plugin::MiamiPlugin,
+                
             ))
+            .add_systems(Startup, warmup_screenshot)
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
             .add_systems(Update, (
                 bevy::dev_tools::states::log_transitions::<AppState>,

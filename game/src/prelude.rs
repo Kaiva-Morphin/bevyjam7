@@ -7,3 +7,5 @@ pub use utils::*;
 pub use bevy_ecs_tiled::prelude::*;
 pub use bevy_tweening::*;
 pub use bevy_tweening::lens::*;
+pub use games::properties::*;
+pub use vleue_navigator::prelude::*;

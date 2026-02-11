@@ -7,8 +7,12 @@ members = [
     "libs/.dynamic/room", 
     "libs/.static/bevy_ecs_tiled",
     "libs/.static/debug_utils",
+    "libs/games",
 ]
 resolver = "2"
+
+# [patch.crates-io]
+# getrandom = { version = "0.4.1" }
 
 [workspace.dependencies]
 bevy_animation =  { version = "0.18.0" }

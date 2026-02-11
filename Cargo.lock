@@ -1997,6 +1997,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5dd9dc738b7a8311c7ade152424974d8115f2cdad61e8dab8dac9f2362298510"
 
 [[package]]
+name = "bvh2d"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2a56b2e919a2fadaedb1fc194ca730d9adbf030e9e9f26bb9e7d3621c4f6622"
+dependencies = [
+ "glam 0.30.10",
+]
+
+[[package]]
 name = "bytemuck"
 version = "1.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3005,6 +3014,7 @@ dependencies = [
  "bevy_tweening",
  "camera",
  "debug_utils",
+ "games",
  "getrandom 0.2.17",
  "kaiv_utils",
  "log",
@@ -3015,6 +3025,27 @@ dependencies = [
  "thiserror 2.0.18",
  "tiled",
  "use",
+ "utils",
+ "vleue_navigator",
+]
+
+[[package]]
+name = "games"
+version = "0.1.0"
+dependencies = [
+ "avian2d",
+ "bevy",
+ "bevy-inspector-egui",
+ "bevy_asset_loader",
+ "bevy_ecs_tiled",
+ "bevy_tweening",
+ "camera",
+ "debug_utils",
+ "kaiv_utils",
+ "paste",
+ "properties",
+ "rand 0.9.2",
+ "room",
  "utils",
 ]
 
@@ -3457,6 +3488,7 @@ version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
 dependencies = [
+ "allocator-api2",
  "equivalent",
  "foldhash 0.2.0",
  "serde",
@@ -4903,6 +4935,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "polyanya"
+version = "0.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a1cb0a84a11080ff93d943a023e9e386c34d3dcc3c988bc6785f990b1964277"
+dependencies = [
+ "bvh2d",
+ "geo",
+ "glam 0.30.10",
+ "hashbrown 0.16.1",
+ "log",
+ "rerecast",
+ "smallvec",
+ "spade",
+ "thiserror 2.0.18",
+]
+
+[[package]]
 name = "portable-atomic"
 version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5241,6 +5290,21 @@ name = "renderdoc-sys"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19b30a45b0cd0bcca8037f3d0dc3421eaf95327a17cad11964fb8179b4fc4832"
+
+[[package]]
+name = "rerecast"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "743dec299d7c17317a33978487718186c30db69a178a3caccdca74b9258d921c"
+dependencies = [
+ "anyhow",
+ "bevy_reflect",
+ "bitflags 2.10.0",
+ "glam 0.30.10",
+ "slotmap",
+ "thiserror 2.0.18",
+ "tracing",
+]
 
 [[package]]
 name = "robust"
@@ -6134,6 +6198,19 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
+
+[[package]]
+name = "vleue_navigator"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "50c0ffab1d042cfda27adc4c1ce39cc6db9967ab134f32d76b8a9cd6b9c4fa4c"
+dependencies = [
+ "avian2d",
+ "bevy",
+ "itertools 0.14.0",
+ "log",
+ "polyanya",
+]
 
 [[package]]
 name = "walkdir"

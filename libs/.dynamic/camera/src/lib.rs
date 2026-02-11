@@ -19,7 +19,7 @@ impl Default for CameraPlugin {
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Startup, setup_camera)
+            .add_systems(PreStartup, setup_camera)
             .insert_resource(CameraController{target_zoom: self.initial_target_zoom, ..default()})
             .add_systems(Update, window_resize)
             // .add_systems(PhysicsSchedule, tick_camera)
@@ -39,6 +39,7 @@ pub struct WorldUiRoot;
 pub struct ViewportCanvas {
     pub image: Handle<Image>,
     pub size: Vec2,
+    pub window_size: Vec2
 }
 
 pub fn setup_camera(
@@ -69,14 +70,15 @@ pub fn setup_camera(
 
 
     let image_handle = images.add(canvas);
-    let cam = commands.spawn((
+    commands.spawn((
         Name::new("WorldCamera"),
         Camera2d,
         WorldCamera,
         Msaa::Off,
         Camera {
             order: 0,
-            clear_color: ClearColorConfig::Custom(Color::linear_rgb(0.0, 0.0, 0.0)),
+            // clear_color: ClearColorConfig::Custom(Color::linear_rgb(0.0, 0.0, 0.0)),
+            clear_color: ClearColorConfig::Custom(Color::linear_rgba(0.0, 0.0, 0.0, 0.0)),
             ..Default::default()
         },
         RenderTarget::Image(ImageRenderTarget{ handle: image_handle.clone(), scale_factor: 1.0 }),
@@ -93,21 +95,24 @@ pub fn setup_camera(
             area: Rect::new(-1.0, -1.0, 1.0, 1.0),
         }),
         WORLD_LAYERS,
-    )).id();
+    ));
 
     commands.insert_resource(
         ViewportCanvas {
             image: image_handle.clone(),
             size: Vec2::new(TARGET_WIDTH as f32, TARGET_HEIGHT as f32),
+            window_size: Vec2::new(TARGET_WIDTH as f32, TARGET_HEIGHT as f32),
         }
     );
+
     commands.spawn((
         Name::new("HighresCamera"),
         HIGHRES_LAYERS,
         Camera2d,
+        HighresCamera,
         Msaa::Off,
         Camera {
-            order: 1,
+            order: 2,
             is_active: true,
             clear_color: ClearColorConfig::Custom(Color::linear_rgb(0.1, 0.0, 0.1)),
             ..Default::default()
@@ -141,8 +146,8 @@ fn window_resize(
         scale.0 = th as f32 / TARGET_HEIGHT as f32;
     }
     img.resize(Extent3d{width: tw, height: th, ..Default::default()});
-    info!("scale: {}", 1.0 / scale.0);
     canvas.size = Vec2::new(tw as f32, th as f32);
+    canvas.window_size = Vec2::new(w, h);
 }
 
 
@@ -184,7 +189,6 @@ impl Default for CameraController {
     }
 }
 
-// todo!: initial room
 fn focus_player(
     player: On<Add, Focusable>,
     pq: Query<&GlobalTransform, (With<Focusable>, Without<WorldCamera>)>,
@@ -201,7 +205,7 @@ fn focus_player(
 }
 
 
-fn tick_camera(
+pub fn tick_camera(
     time: Res<Time>,
     mut camera: Query<(&Camera, &mut Projection, &mut Transform, &GlobalTransform), With<WorldCamera>>,
     mut camera_controller: ResMut<CameraController>,   
@@ -278,7 +282,7 @@ fn tick_camera(
         }
     }
     
-    t.translation = target; // t.translation.exp_decay(target, follow_speed, dt);
+    t.translation = if camera_controller.follow_speed <= 0.0 { target } else {t.translation.exp_decay(target, follow_speed, dt)};
     p.scale = p.scale.exp_decay(target_zoom, zoom_speed, dt);
 }
 

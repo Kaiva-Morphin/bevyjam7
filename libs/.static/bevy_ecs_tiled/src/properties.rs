@@ -5,6 +5,7 @@ use std::{
 
 use bevy::log::info;
 
+#[cfg(feature = "wasm")]
 macro_rules! maps {
     ($path:ident => $($map_path:expr)*$(;)?) => {
         match $path {
@@ -15,7 +16,8 @@ macro_rules! maps {
         }
     };
 }
-/// 
+
+#[cfg(feature = "wasm")]
 pub fn map_matcher(path: &Path) -> Box<dyn Read + 'static> {
     let path = path.to_str().expect("Invalid path").replace("\\", "/");
     let p = path.as_str();
@@ -28,5 +30,7 @@ pub fn map_matcher(path: &Path) -> Box<dyn Read + 'static> {
         "maps/platformer/tilemap.tsx"
         "maps/GD/pacman.tmx"
         "maps/GD/GD tiles.tsx"
+        "maps/miami/map.tmx"
+        "maps/miami/miami.tsx"
     )
 }
