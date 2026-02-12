@@ -4,51 +4,57 @@
  <layer id="10" name="white_back" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjYBgFIMBMJh7VTx39o2BgAAA5JgD9
+   eJxjYBgegJlMPKp/cOgfBQMDALwSASc=
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
-   eJxjYBjZgHkUDygeBQMLAI5eASE=
+   eJxjYBjagHkUD2k8CgYWAAAkzQFR
   </chunk>
    <chunk x="16" y="0" width="16" height="16">
-   eJxjYBjZgBmKR/UPjP5RMLAAAFk4ACU=
+   eJxjYBjagBkJj+ofevpHwcACAKCEAEA=
   </chunk>
    <chunk x="-16" y="16" width="16" height="16">
-   eJxjYIAAZjIxw6h+qugfBaNgIAAANTUA/Q==
+   eJxjYKAMMI/iAcWjYBRQAgBmbQEh
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
-   eJxjZmBgYB7FA4ZHwSgYSAAArm0BIQ==
+   eJxjYKAMMI/iAcWjYBRQAgBmbQEh
   </chunk>
    <chunk x="16" y="16" width="16" height="16">
-   eJxjZmBgYGYgHzCP6qdI/ygYBQMJAH04ACU=
+   eJxjYKAMMGPB5Oin1P6Rqn8UjAJKAACVjAAu
   </chunk>
   </data>
  </layer>
  <layer id="9" name="yellow_back" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjYBgFo2BwACYy8Kh+yvQDAHaQAJ0=
+   eJxjYBgFo2DgANMoHlAMAJWAAME=
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
    eJxjYBgFo2DgANMoHlAMAJWAAME=
   </chunk>
    <chunk x="16" y="0" width="16" height="16">
-   eJxjYBgFo2DgABMSHtVPf/0AIvAAJQ==
+   eJxjYBgFo2DgABMWPKqffvoBNqAAPQ==
   </chunk>
    <chunk x="-16" y="16" width="16" height="16">
-   eJxjYBgFgwEwkYlHwSigBAAARkgAHQ==
+   eJxjYmBgYKIAj4KBBZTE3Wj8jQIAxIAAQQ==
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
-   eJxjYBgFAwmYKMSjYBRQAgBQQAAh
+   eJxjYmBgYKIAj4KBBZTE3Wj8jQIAxIAAQQ==
   </chunk>
    <chunk x="16" y="16" width="16" height="16">
-   eJxjYBgFAwmYkPAoGAX0BgAS6AAH
+   eJxjYmBgYELDo2DogNF4GwWUAAA5GAAR
   </chunk>
   </data>
  </layer>
  <layer id="14" name="white_aboba" width="30" height="20">
   <data encoding="base64" compression="zlib">
+   <chunk x="-16" y="0" width="16" height="16">
+   eJxjYBgFo2DgAfOo/gHRDwATMAAT
+  </chunk>
    <chunk x="16" y="0" width="16" height="16">
-   eJxjYBgFIMA8qn9A9Y+CgQEALjAAEw==
+   eJxjYBg+gHlU/5DWPwroDwA3hAAW
+  </chunk>
+   <chunk x="-16" y="16" width="16" height="16">
+   eJxjYIAAZoZRMApGwUgDAA/oAAQ=
   </chunk>
   </data>
  </layer>
@@ -57,40 +63,55 @@
    <chunk x="-16" y="0" width="16" height="16">
    eJxjYBgFo2DgAdOo/gHRDwAOIAAN
   </chunk>
+   <chunk x="-16" y="16" width="16" height="16">
+   eJxjYIAAJoZRMApGwUgDAAvwAAM=
+  </chunk>
   </data>
  </layer>
  <layer id="16" name="white_end" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="16" y="16" width="16" height="16">
-   eJxjYIAAZgbKwKj+UTAKhh4AAEAwABM=
+   eJxjYBgcgHlU/ygYBXQHADCIABA=
   </chunk>
   </data>
  </layer>
  <layer id="13" name="white_front" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjYBgFo2AU0BIwI2Fqm0upfgAKMAAQ
+   eJxjYBgFo2AUDGbAjISpbS4AByQADQ==
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
-   eJxjYBgFo2AUDBbADMX45Ck1HxkAAAe0AA0=
+   eJxjYBgFo2AUDGfAjEcOAARUAAQ=
+  </chunk>
+   <chunk x="-16" y="16" width="16" height="16">
+   eJxjYCAfMFOgdxSMglEw8AAAD0wABA==
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   eJxjYCAMmIlQMwpGwSgYegAAD5QABA==
   </chunk>
   </data>
  </layer>
  <layer id="12" name="yellow_front" width="30" height="20">
   <data encoding="base64" compression="zlib">
    <chunk x="-16" y="0" width="16" height="16">
-   eJxjYBgFowA/YBpg/aOAdgAACvAABQ==
+   eJxjYBgFo4A4wDTA+kcB9QEACtAABQ==
   </chunk>
    <chunk x="0" y="0" width="16" height="16">
-   eJxjYBgFww0wQTEpagipJ8bOUTD0AAAcIAAN
+   eJxjYBgFwxEwQTGx8vjUEmvfKBh6AAAcEAAN
   </chunk>
    <chunk x="16" y="0" width="16" height="16">
    eJxjYBgFQxkwDbQDRsGQBgAIgAAD
   </chunk>
+   <chunk x="-16" y="16" width="16" height="16">
+   eJxjYBgF5AImMtQRq2cUjAJ6AAAT4AAH
+  </chunk>
+   <chunk x="0" y="16" width="16" height="16">
+   eJxjYBjZgIkEdTBMbbNppX8UjAJCAAAlCAAN
+  </chunk>
   </data>
  </layer>
  <objectgroup id="4" name="spawners">
-  <object id="1" x="-198.25" y="131">
+  <object id="1" x="169.25" y="149.5">
    <properties>
     <property name="SpawnPoint" type="class" propertytype="game::dev_games::geometry_dash::plugin::SpawnPoint"/>
    </properties>
