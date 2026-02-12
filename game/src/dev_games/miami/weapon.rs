@@ -1,10 +1,13 @@
+use std::f32::consts::PI;
+
 use avian2d::math::Vector;
 use bevy::prelude::*;
 use games::prelude::AppState;
 use rand::Rng;
 use crate::dev_games::miami::entity::{CharacterComponents, CharacterController, CharacterPivotPoint, CharacterSprite, Player};
-use crate::dev_games::miami::plugin::{miami_dropped_weapon_layers, miami_pickup_weapon_layers};
+use crate::dev_games::miami::plugin::{BLOOD_Z_TRANSLATION, BODY_Z_TRANSLATION, THROWN_DAMAGE_MULTIPLIER, miami_dropped_weapon_layers, miami_pickup_weapon_layers, miami_projectile_damager_layer};
 use crate::dev_games::miami::shadows::ShadowCaster;
+use crate::pathfinder::plugin::PathfinderObstacle;
 use crate::prelude::*;
 use crate::dev_games::miami::{plugin::{MiamiAssets, STATE}, shadows::ShadowInit};
 
@@ -48,6 +51,14 @@ pub struct Weapon {
     pub anim_time: f32,
     pub t: f32,
 
+    pub damage: f32,
+    pub ttl: f32,
+    pub piercing: u32,
+
+    pub projectile_speed: f32,
+
+    pub throw_damage: f32,
+
     pub weapon_type: WeaponType
 }
 #[derive(Component)]
@@ -57,7 +68,7 @@ pub struct WeaponComponents {
 
 
 #[derive(Component)]
-pub struct ArmedCharacter(Entity);
+pub struct ArmedCharacter(pub Entity);
 
 #[derive(Component)]
 pub struct ThrownWeapon;
@@ -95,6 +106,12 @@ impl WeaponType {
                 attack_offset: vec3(-2., -25., -0.05),
                 attack_rect: Rect::new(16.0, 16.0, 32.0, 32.0),
 
+                damage: 100.0,
+                ttl: 5.0,
+                piercing: 1,
+                projectile_speed: 500.0,
+                throw_damage: 100.0,
+
                 ..Default::default()
             },
             WeaponType::Axe => Weapon {
@@ -117,6 +134,12 @@ impl WeaponType {
                 
                 attack_char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 attack_char_offset: Vec3::ZERO,
+
+                damage: 200.0,
+                ttl: 0.01,
+                piercing: 128,
+                throw_damage: 50.0,
+
                 ..Default::default()
             },
             WeaponType::Baguette => Weapon {
@@ -125,7 +148,6 @@ impl WeaponType {
                 rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 held_rect: Rect::new(0.0, 32.0, 32.0, 48.0),
                 held_offset: vec3(-5., -6., -0.3),
-                //
                 
                 char_rect: Rect::new(0.0, 32.0, 32.0, 48.0),
                 char_offset: Vec3::ZERO,
@@ -139,22 +161,29 @@ impl WeaponType {
                 
                 attack_char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 attack_char_offset: Vec3::ZERO,
+
+                damage: 300.0,
+                piercing: 128,
+                ttl: 0.5,
+                
+                throw_damage: 500.0,
+
                 ..Default::default()
             },
 
             WeaponType::EnemyFists => Weapon {
                 weapon_type: WeaponType::EnemyFists,
 
-                rect: Rect::new(0.0, 0.0, 16.0, 16.0),
+                rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 held_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 held_offset: Vec3::ZERO,
                 
-                char_rect: Rect::new(0.0, 32.0, 32.0, 64.0),
-                char_offset: vec3(0., -8., 0.),
+                char_rect: Rect::new(0.0, 16.0, 32.0, 32.0),
+                char_offset: vec3(0., 0., 0.),
 
                 ammo: u32::MAX,
-                cooldown: 0.1,
-                anim_time: 0.1,
+                cooldown: 0.3,
+                anim_time: 0.3,
 
                 attack_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 attack_offset: Vec3::ZERO,
@@ -171,20 +200,83 @@ impl Weapon {
     pub fn on_shoot(
         &self,
         cmd: &mut Commands,
-        dir: Vec2,
-        is_enemy: bool
+        weapon: &Weapon,
+        look_dir: Vec2,
+        sprite: Entity,
+        pos: Vec3,
+        is_enemy: bool,
+        assets: &Res<MiamiAssets>,
     ) -> Entity {
-        let damage_layer = if is_enemy {} else {};
+        let damage_layer = if is_enemy {
+
+        } else {
+
+        };
         match self.weapon_type {
             WeaponType::Pistol => {
+                let mut t = Transform::from_translation(pos);
+                t.rotation = Quat::from_rotation_z(look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
                 cmd.spawn((
-
+                    DespawnOnExit(STATE),
+                    Name::new("Projectile"),
+                    miami_projectile_damager_layer(),
+                    Sprite{
+                        rect: Some(Rect::new(0., 0., 1., 16.)),
+                        image: assets.projectiles.clone(),
+                        ..Default::default()
+                    },
+                    Collider::circle(0.5),
+                    LinearVelocity(look_dir * weapon.projectile_speed),
+                    LinearDamping(0.0),
+                    GravityScale(0.0),
+                    CollisionEventsEnabled,
+                    RigidBody::Dynamic,
+                    // Friction(0.0),
+                    Sensor,
+                    t.clone(),
+                    Projectile {
+                        damage: weapon.damage,
+                        lifetime: weapon.ttl+1000.,
+                        collided: Vec::new(),
+                        piercing: weapon.piercing
+                    }
                 )).id()
             },
+            WeaponType::Axe | WeaponType::Baguette => {
+                let mut t = Transform::from_xyz(0.0, -6.0, 0.0);
+                let e = cmd.spawn((
+                    DespawnOnExit(STATE),
+                    miami_projectile_damager_layer(),
+                    t,
+                    Sensor,
+                    CollisionEventsEnabled,
+                    Collider::capsule_endpoints(5.,Vector::new(-5.0, 0.0), Vector::new(3.0, 0.0)),
+                    Projectile {
+                        damage: weapon.damage,
+                        lifetime: weapon.ttl,
+                        collided: Vec::new(),
+                        piercing: weapon.piercing
+                    }
+                )).id();
+                
+                cmd.entity(sprite).add_child(e);
+                // cmd.spawn((
+                // ));
+                e
+            }
             _ => unimplemented!()
         }
     }
 }
+
+#[derive(Component)]
+pub struct Projectile {
+    pub damage: f32,
+    pub lifetime: f32,
+    pub collided: Vec<Entity>,
+    pub piercing: u32,
+}
+
 
 pub fn on_weapon_spawnpoint(
     point: On<Add, MiamiWeaponSpawner>,
@@ -197,6 +289,7 @@ pub fn on_weapon_spawnpoint(
     let Ok((spawner, transform)) = q.get(point.entity) else {return;};
     let wpn: Weapon = spawner.weapon_type.to_weapon();
     let sprite = cmd.spawn((
+        DespawnOnExit(STATE),
         Visibility::default(),
         WeaponSprite,
         Transform::default(),
@@ -207,11 +300,11 @@ pub fn on_weapon_spawnpoint(
         },
     )).id();
     let w = cmd.spawn((
+        DespawnOnExit(STATE),
         Sensor,
         CollisionEventsEnabled,
         Collider::circle(8.0),
         Name::new("Weapon"),
-        DespawnOnExit(STATE),
         ReadyToPickUpWeapon,
         Visibility::default(),
         GlobalTransform::default(),
@@ -266,7 +359,7 @@ pub fn on_pickup_weapon_collision(
 
 
 #[derive(Component)]
-pub struct WeaponOf(Entity);
+pub struct WeaponOf(pub Entity);
 
 
 pub fn throw_weapon(
@@ -337,18 +430,19 @@ pub fn tick_thrown(
 }
 
 pub fn shoot(
-    characters: Query<(&Children, &CharacterController, &CharacterComponents, &ArmedCharacter)>,
+    characters: Query<(&Children, &CharacterController, &CharacterComponents, &ArmedCharacter, Option<&Player>)>,
     mut weapons: Query<(&mut Weapon, &mut Transform, &WeaponComponents), Without<CharacterSprite>>,
-    mut weapon_sprite: Query<(&mut Sprite), (With<WeaponSprite>, Without<CharacterSprite>)>,
+    mut weapon_sprite: Query<(&mut Sprite, &GlobalTransform), (With<WeaponSprite>, Without<CharacterSprite>)>,
     mut char_sprite: Query<(&mut Sprite, &mut Transform), (With<CharacterSprite>, Without<WeaponSprite>, Without<WeaponComponents>)>,
     mut cmd: Commands,
     time: Res<Time>,
+    assets: Res<MiamiAssets>,
 ){
     let dt = time.dt();
-    for (child, controller, cc, a) in characters.iter() {
+    for (child, controller, cc, a, p) in characters.iter() {
         let Ok((mut w,mut w_transform, wc)) = weapons.get_mut(a.0) else {continue;};
         // info!("Weapon!");
-        let Ok((mut w_sprite)) = weapon_sprite.get_mut(wc.sprite) else {continue;};
+        let Ok((mut w_sprite, sprite_transform)) = weapon_sprite.get_mut(wc.sprite) else {continue;};
         // info!("Weapon sprite!");
         let Ok((mut c_sprite, mut c_transform)) = char_sprite.get_mut(cc.sprite) else {continue;};
         // info!("Character sprite!");
@@ -371,15 +465,167 @@ pub fn shoot(
         w.ammo -= 1;
         // info!("Shooting!");
         w.t = w.cooldown;
+        w.on_shoot(&mut cmd, &w, controller.look_dir, wc.sprite, sprite_transform.translation(), p.is_none(), &assets);
     }
 }
 
 pub fn on_thrown_weapon_collision(
     event: On<CollisionStart>,
     state: Res<State<AppState>>,
-    dropped: Query<&GlobalTransform, With<ThrownWeapon>>,
+    mut dropped: Query<(&mut LinearVelocity, &GlobalTransform, &Weapon),  With<ThrownWeapon>>,
+    mut character: Query<(Entity, &mut CharacterController, &GlobalTransform)>,
+    mut cmd: Commands,
 ) {
     if state.get() != &STATE {return;}
-    let Ok(d) = dropped.get(event.collider2) else {return;};
-    // info!("Dropped weapon collision!");
+    let Ok((mut lv, dt, w)) = dropped.get_mut(event.collider2) else {return;};
+    let Ok((e, mut c, ct)) = character.get_mut(event.collider1) else {return;};
+    let d = dt.translation() - ct.translation();
+    let ld = if c.look_dir == Vec2::ZERO {
+        Vec2::new(0.0, -1.0)
+    } else {
+        c.look_dir
+    };
+    c.last_impact_back = d.truncate().dot(ld) < 0.0;
+    
+    c.last_impact_dir = d.truncate();
+
+    c.hp -= THROWN_DAMAGE_MULTIPLIER * lv.length() * w.throw_damage;
+    info!("damage: {}", THROWN_DAMAGE_MULTIPLIER * lv.length() * w.throw_damage);
+    lv.x = lv.x * 0.5;
+    lv.y = lv.y * 0.5;
+    if c.hp <= 0.0 {
+        cmd.entity(e).remove::<RigidBody>();
+    }
+    info!("Dropped weapon collision!");
+}
+
+pub fn health_watcher(
+    mut character: Query<(Entity, &Transform, &CharacterComponents, &mut CharacterController)>,
+    mut sprite: Query<&GlobalTransform, With<CharacterSprite>>,
+    mut cmd: Commands,
+    assets: Res<MiamiAssets>,
+) {
+    let mut rng = rand::rng();
+    for (e, t, components, mut controller) in character.iter_mut() {
+        let dmg = controller.hp - controller.prev_hp;
+        let Ok(s) = sprite.get(components.sprite) else {continue;};
+        if dmg == 0.0 {continue;}
+        let mut b = Transform::from_translation(s.translation());
+        b.translation.z += BLOOD_Z_TRANSLATION;
+        let mut t = Transform::from_translation(s.translation());
+        t.translation.z += BODY_Z_TRANSLATION;
+
+        // t.rotation.z = controller.last_impact_dir.normalize_or_zero().to_angle();
+        // t.translation.z += BODY_Z_TRANSLATION;
+        // b.translation.z += BLOOD_Z_TRANSLATION;
+        let up = (if controller.look_dir == Vec2::ZERO {Vec2::new(0.0, -1.0)} else {controller.look_dir}).normalize_or_zero();
+        let right = Vec2::new(up.y, -up.x);
+        
+        let world_offset = right * controller.body_offset.x
+                 + up    * controller.body_offset.y;
+        t.translation.x += world_offset.x;
+        t.translation.y += world_offset.y;
+        // t.scale = Vec3::ONE;
+        // b.scale = Vec3::ONE;
+        let idx;
+        if dmg <= 20.0 {
+            idx = 0;
+        } else if dmg <= 40.0 {
+            idx = 1;
+        } else {
+            idx = 2;
+        }
+        // t.rotation.z = rng.random_range(0.0..std::f32::consts::PI * 2.0);
+        let rect;
+        if controller.last_impact_back {
+            rect = controller.back_body_rect;
+        } else {
+            rect = controller.front_body_rect;
+        };
+        controller.prev_hp = controller.hp;
+        if controller.hp <= 0.0 {
+            cmd.spawn((
+                DespawnOnExit(STATE),
+                t,
+                Name::new("Body"),
+                GlobalTransform::IDENTITY,
+                Sprite {
+                    image: controller.character.to_handle(&assets),
+                    rect: Some(rect),
+                    ..Default::default()
+                }
+            ));
+            cmd.spawn((
+                DespawnOnExit(STATE),
+                b,
+                Name::new("Blood"),
+                GlobalTransform::IDENTITY,
+                Sprite {
+                    image: assets.decals.clone(),
+                    color: controller.blood_color,
+                    rect: Some(controller.blood_rects[2].clone()),
+                    ..Default::default()
+                }
+            ));
+            cmd.entity(e).despawn();
+        } else {
+            cmd.spawn((
+                DespawnOnExit(STATE),
+                b,
+                Name::new("Blood"),
+                Sprite {
+                    image: assets.decals.clone(),
+                    color: controller.blood_color,
+                    rect: Some(controller.blood_rects[idx].clone()),
+                    ..Default::default()
+                }
+            ));
+        };
+    }
+}
+
+pub fn on_projectile_hit(
+    event: On<CollisionStart>,
+    mut projectile: Query<(Entity, &mut Projectile , &mut Transform)>,
+    mut controllers : Query<(&mut CharacterController, &GlobalTransform)>,
+    q : Query<(), With<PathfinderObstacle>>,
+    state: Res<State<AppState>>,
+    mut cmd: Commands,
+){
+    if state.get() != &STATE {return;};
+    let Ok((e, mut projectile, mut t)) = projectile.get_mut(event.collider1) else {return;};
+    if let Ok(()) = q.get(event.collider2) {
+        cmd.entity(e).despawn();
+        return;
+    }
+    let Ok((mut c, gt)) = controllers.get_mut(event.collider2) else {return;};
+    if projectile.piercing <= 0 {
+        cmd.entity(e).despawn();
+        return;
+    };
+    let d = gt.translation() - t.translation;
+    let ld = if c.look_dir == Vec2::ZERO {
+        Vec2::new(0.0, -1.0)
+    } else {
+        c.look_dir
+    };
+    c.last_impact_back = d.truncate().dot(ld) < 0.0;
+
+    projectile.piercing -= 1;
+    c.hp -= projectile.damage;
+}
+
+pub fn update_projectile(
+    mut projectile: Query<(&mut Projectile, Entity)>,
+    mut cmd: Commands,
+    time: Res<Time>,
+) {
+    let dt = time.dt();
+    for (mut projectile, e) in projectile.iter_mut() {
+        projectile.lifetime -= dt;
+        if projectile.lifetime <= 0.0 {
+            cmd.entity(e).despawn();
+            continue;
+        }
+    }
 }

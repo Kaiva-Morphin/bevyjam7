@@ -14,7 +14,7 @@ impl Plugin for PathfinderPlugin {
                 VleueNavigatorPlugin,
                 NavmeshUpdaterPlugin::<Collider, PathfinderObstacle>::default(),
             ))
-            .insert_resource(NavMeshesDebug(bevy::color::palettes::tailwind::RED_800.into()))
+            // .insert_resource(NavMeshesDebug(bevy::color::palettes::tailwind::RED_800.into()))
             ;
     }
 }
