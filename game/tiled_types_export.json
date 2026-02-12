@@ -275,7 +275,7 @@
   },
   {
     "id": 16,
-    "name": "game::pathfinder::plugin::PathfinderObstacle",
+    "name": "game::dev_games::platformer::plugin::NextTrigger",
     "type": "class",
     "useAs": [
       "property"
@@ -286,7 +286,7 @@
   },
   {
     "id": 17,
-    "name": "games::platformer::plugin::NextTrigger",
+    "name": "game::dev_games::platformer::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
       "property"
@@ -297,7 +297,7 @@
   },
   {
     "id": 18,
-    "name": "games::platformer::plugin::SpawnPoint",
+    "name": "game::dev_games::platformer::plugin::StopTrigger",
     "type": "class",
     "useAs": [
       "property"
@@ -308,7 +308,7 @@
   },
   {
     "id": 19,
-    "name": "games::platformer::plugin::StopTrigger",
+    "name": "game::pathfinder::plugin::PathfinderObstacle",
     "type": "class",
     "useAs": [
       "property"

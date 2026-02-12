@@ -215,6 +215,15 @@
                     "type": "class",
                     "value": {
                     }
+                },
+                {
+                    "name": "look_dir",
+                    "propertyType": "glam::Vec2",
+                    "type": "class",
+                    "value": {
+                        "x": 0,
+                        "y": 0
+                    }
                 }
             ],
             "name": "game::dev_games::miami::entity::MiamiEntitySpawner",
@@ -288,6 +297,18 @@
         {
             "color": "#ff000000",
             "drawFill": true,
+            "id": 22,
+            "members": [
+            ],
+            "name": "game::pathfinder::plugin::PathfinderObstacle",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
             "id": 13,
             "members": [
             ],
@@ -341,10 +362,56 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 22,
+            "id": 23,
             "members": [
             ],
-            "name": "game::pathfinder::plugin::PathfinderObstacle",
+            "name": "game::dev_games::platformer::plugin::NextTrigger",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 24,
+            "members": [
+            ],
+            "name": "game::dev_games::platformer::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 25,
+            "members": [
+            ],
+            "name": "game::dev_games::platformer::plugin::StopTrigger",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 26,
+            "members": [
+                {
+                    "name": "x",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "y",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "glam::Vec2",
             "type": "class",
             "useAs": [
                 "property"

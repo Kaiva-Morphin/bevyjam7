@@ -1,4 +1,6 @@
-use crate::{properties::{AppState, LastScreenshot, LastState}, prelude::*};
+// use crate::{properties::{AppState, LastScreenshot, LastState}, prelude::*};
+use crate::prelude::*;
+
 use avian2d::math::Vector;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use room::{Focusable, RoomController, on_room_spawned};
@@ -50,7 +52,7 @@ pub struct PlatformerAssets {
     tilemap: Handle<TiledMapAsset>,
     #[asset(path = "maps/platformer/character.png")]
     character: Handle<Image>,
-    #[asset(texture_atlas_layout(tile_size_x = 16, tile_size_y = 16, columns = 4, rows = 1))]
+    #[asset(texture_atlas_layout(tile_size_x = 80, tile_size_y = 96, columns = 2, rows = 4))]
     character_layout: Handle<TextureAtlasLayout>,
 }
 
@@ -67,7 +69,7 @@ fn focus_player(
     let Ok(pt) = spawnpoint_q.get(point.entity) else {return;};
     let pt = pt.translation;
 
-    let collider = Collider::capsule(8.0, 0.0);
+    let collider = Collider::capsule(32.0, 32.0);
     let mut caster_shape = collider.clone();
         caster_shape.set_scale(Vector::ONE * Vector::new(0.99, 1.01), 10);
     
@@ -134,13 +136,10 @@ fn tick (
     >,
     sensors: Query<&Sensor>,
     mut t: Local<f32>,
-    // mut q: Query<(&mut Sprite, &mut Transform), With<Pacman>>,
 ) {
     let dt = time.dt();
     let mut grounded = false;
     for (_entity, mut linvel, hits, mut sprite) in &mut query {
-        // The character is grounded if the shape caster has a hit with a normal
-        // that isn't too steep.
         for hit in hits {
             if sensors.get(hit.entity).is_err() {
                 grounded = true;
@@ -150,33 +149,34 @@ fn tick (
         if keyboard_input.pressed(KeyCode::Space) && grounded {
             linvel.y = PLATFORMER_JUMP_FORCE;
         }
-
         let s = if grounded {PLATFORMER_GROUND_GAIN} else {PLATFORMER_AIR_GAIN};
         let mut target = 0.0;
         if keyboard_input.pressed(KeyCode::KeyA) {
             target -= PLATFORMER_MAX_SPEED;
             sprite.flip_x = true;
-            *t += dt;
         }
         if keyboard_input.pressed(KeyCode::KeyD) {
             target += PLATFORMER_MAX_SPEED;
             sprite.flip_x = false;
-            *t += dt;
         }
-
-        if grounded && *t < PLATFORMER_ANIM_DELAY * 2.0 && let Some(ta) = &mut sprite.texture_atlas {
-            let i = (*t / PLATFORMER_ANIM_DELAY).floor() as usize;
-            ta.index = i;
-            
-        }
-        if *t > PLATFORMER_ANIM_DELAY * 2.0 {
+        *t += dt;
+        if *t > PLATFORMER_ANIM_DELAY * 4.0 {
             *t = 0.0;
+        }
+        if grounded && let Some(ta) = &mut sprite.texture_atlas {
+            if linvel.x.abs() < 2.0 {
+                let i = (*t / (PLATFORMER_ANIM_DELAY * 2.0)).floor() as usize * 2;
+                ta.index = i;
+            } else {
+                let i = (*t / (PLATFORMER_ANIM_DELAY)).floor() as usize * 2 + 1;
+                ta.index = i;
+            }
         }
         if !grounded && let Some(ta) = &mut sprite.texture_atlas {
             if linvel.y > 0.0 {
-                ta.index = 2;
+                ta.index = 4;
             } else {
-                ta.index = 3;
+                ta.index = 6;
             }
         }
         if grounded || target != 0.0 {

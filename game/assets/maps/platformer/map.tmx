@@ -56,7 +56,7 @@
   </properties>
   <object id="7" x="118" y="237.5">
    <properties>
-    <property name="r" type="class" propertytype="games::platformer::plugin::SpawnPoint"/>
+    <property name="r" type="class" propertytype="game::dev_games::platformer::plugin::SpawnPoint"/>
    </properties>
    <point/>
   </object>
@@ -86,7 +86,7 @@
      </properties>
     </property>
     <property name="se" type="class" propertytype="avian2d::collision::collider::Sensor"/>
-    <property name="st" type="class" propertytype="games::platformer::plugin::StopTrigger"/>
+    <property name="st" type="class" propertytype="game::dev_games::platformer::plugin::StopTrigger"/>
    </properties>
   </object>
   <object id="17" x="160" y="800" width="32" height="32">
@@ -96,7 +96,7 @@
       <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
      </properties>
     </property>
-    <property name="n" type="class" propertytype="games::platformer::plugin::NextTrigger"/>
+    <property name="n" type="class" propertytype="game::dev_games::platformer::plugin::NextTrigger"/>
     <property name="s" type="class" propertytype="avian2d::collision::collider::Sensor"/>
    </properties>
   </object>

@@ -51,11 +51,11 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 1,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 248.5,
-                "y": 272
+                "x": -52.833333333333314,
+                "y": 223.66666666666663
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx": {

@@ -1,10 +1,8 @@
-use bevy::input::{ButtonState, mouse::MouseButtonInput};
-
 use crate::{dev_games::miami::entity::*, prelude::*};
 
 
 pub fn control_player(
-    mut player: Single<&mut CharacterController, With<Player>>,
+    player: Single<&mut CharacterController, With<Player>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mouse_input: Res<ButtonInput<MouseButton>>,
 ) {
@@ -36,25 +34,8 @@ pub fn control_player(
     }
 }
 
-// pub fn player_look_at_cursor(
-//     mut player: Single<(&mut CharacterController, &GlobalTransform), (With<Player>, Without<Camera>)>,
-//     window: Single<&Window>,
-//     outer_camera_q: Single<(&Camera, &GlobalTransform), With<HighresCamera>,>,
-//     world_camera_q: Single<&GlobalTransform, With<WorldCamera>,>,
-// ) {
-//     let (camera, camera_transform) = *outer_camera_q;
-
-//     if let Some(cursor_position) = window.cursor_position()
-//         && let Ok(cursor_world_pos) = camera.viewport_to_world_2d(camera_transform, cursor_position)
-//     {
-//         let p = cursor_world_pos + world_camera_q.translation().truncate();
-//         let (c, t) = &mut *player;
-//         c.look_dir = (p - t.translation().truncate()).normalize_or_zero();
-//     }
-// }
-
 pub fn player_look_at_cursor(
-    mut player: Single<(&mut CharacterController, &GlobalTransform), With<Player>>,
+    player: Single<(&mut CharacterController, &GlobalTransform), With<Player>>,
     window: Single<&Window>,
     camera_q: Query<(&Camera, &GlobalTransform), With<WorldCamera>>,
     canvas: Res<camera::ViewportCanvas>,
@@ -79,11 +60,8 @@ pub fn player_look_at_cursor(
     };
     match camera.viewport_to_world_2d(cam_transform, viewport_pos) {
         Ok(world_pos) => {
-            info!("cursor world pos: {:?}", world_pos);
             c.look_dir = (world_pos - gt.translation().truncate()).normalize_or_zero();
         }
-        Err(err) => {
-            warn!("viewport_to_world_2d failed: {:?}", err);
-        }
+        _ => {}
     }
 }

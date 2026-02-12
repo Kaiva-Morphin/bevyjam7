@@ -1,4 +1,4 @@
-use crate::{dev_games::miami::{entity::CharacterPivotPoint, plugin::STATE}, prelude::*};
+use crate::{dev_games::miami::plugin::STATE, prelude::*};
 
 
 #[derive(Component)]
@@ -49,29 +49,6 @@ pub fn update_shadows(
         sprite.rect = s.rect.clone();
     }
 }
-
-
-
-// pub fn update_shadows(
-//     mut shadow_q: Query<(&mut Sprite, &mut Transform, &ShadowOf), Without<ShadowCaster>>,
-//     caster_q: Query<(&Sprite, &GlobalTransform), With<ShadowCaster>>,
-// ) {
-//     for (mut sprite, mut transform, shadow) in shadow_q {
-//         let Ok((caster_sprite, caster_global)) = caster_q.get(shadow.0) else {
-//             continue;
-//         };
-
-//         // let local_offset =
-//         //     caster_global.rotation().inverse() * MIAMI_SHADOW_OFFSET;
-
-//         let local_offset =
-//             caster_global.rotation() * MIAMI_SHADOW_OFFSET;
-
-//         transform.translation = local_offset;
-//         sprite.rect = caster_sprite.rect.clone();
-//     }
-// }
-
 
 
 pub fn cleanup_shadows(
