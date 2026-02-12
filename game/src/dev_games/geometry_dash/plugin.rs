@@ -45,6 +45,11 @@ pub struct PlayerEntity {
 }
 
 #[derive(Resource)]
+pub struct FollowerEntity {
+    entity: Entity,
+}
+
+#[derive(Resource)]
 pub struct IsLeft {
     is: bool,
 }
@@ -61,9 +66,9 @@ impl Plugin for GeometryDashPlugin {
             .add_systems(OnEnter(STATE), setup)
             .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
             .add_systems(OnEnter(LocalState::Game), begin_game)
-            .add_systems(Update, (fix_casters, controller).chain().run_if(in_state(LocalState::Game)))
-            .add_systems(Update, tick_defeat.run_if(in_state(LocalState::Defeat)))
-            .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
+            .add_systems(Update, (follow, controller).chain().run_if(in_state(LocalState::Game)))
+            .add_systems(Update, defeat.run_if(in_state(LocalState::Defeat)))
+            .add_systems(Update, win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
             ;
     }
@@ -91,7 +96,9 @@ fn setup(
     ));
 
     cmd.insert_resource(PlayerEntity {entity: Entity::PLACEHOLDER});
+    cmd.insert_resource(FollowerEntity {entity: Entity::PLACEHOLDER});
     cmd.insert_resource(IsLeft {is: false});
+    cmd.insert_resource(FunnyTimer(None));
 }
 fn begin_game (
     mut state: ResMut<NextState<LocalState>>
@@ -113,6 +120,9 @@ pub enum CastDir {
     NEGY,
 }
 
+#[derive(Component)]
+pub struct Follower;
+
 fn spawnpoint_handler(
     event: On<Add, SpawnPoint>,
     mut cmd: Commands,
@@ -120,6 +130,7 @@ fn spawnpoint_handler(
     assets: Res<GeometryDashAssets>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
     mut player_entity: ResMut<PlayerEntity>,
+    mut follower_entity: ResMut<FollowerEntity>,
     mut proj: Query<&mut Projection, With<WorldCamera>>
 ) {
     match &mut *proj.single_mut().expect("nocam") {
@@ -136,14 +147,11 @@ fn spawnpoint_handler(
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     
     let collider = Collider::rectangle(16.0, 16.0);
-    
-    let mut caster_shape = collider.clone();
-    caster_shape.set_scale(Vector::ONE * Vector::new(0.95, 0.95), 10);
-    
     let layers = CollisionLayers::new(
         CollisionLayer::Default,
         [CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End],
     );
+
     player_entity.entity = cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Pacman"),
@@ -158,14 +166,26 @@ fn spawnpoint_handler(
             ..default()
         },
         Cube,
-        collider,
+        collider.clone(),
         RigidBody::Dynamic,
+        GravityScale(GRAVITY_SCALE),
+        layers,
+        CollisionEventsEnabled,
+    )).id();
+    
+    let mut caster_shape = collider.clone();
+    caster_shape.set_scale(Vector::ONE * Vector::new(0.9, 0.9), 10);
+
+    follower_entity.entity = cmd.spawn((
+        DespawnOnExit(STATE),
+        Follower,
+        Transform::IDENTITY,
         children![
             (
                 ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::X)
                     .with_max_distance(10.)
                     .with_ignore_self(true)
-                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End]))
+                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow]))
                     .with_max_hits(1),
                 CastDir::X,
             ),
@@ -173,7 +193,7 @@ fn spawnpoint_handler(
                 ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_X)
                     .with_max_distance(10.)
                     .with_ignore_self(true)
-                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End]))
+                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow]))
                     .with_max_hits(1),
                 CastDir::NEGX,
             ),
@@ -181,7 +201,7 @@ fn spawnpoint_handler(
                 ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::Y)
                     .with_max_distance(10.)
                     .with_ignore_self(true)
-                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End]))
+                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow]))
                     .with_max_hits(1),
                 CastDir::Y,
             ),
@@ -189,14 +209,11 @@ fn spawnpoint_handler(
                 ShapeCaster::new(caster_shape.clone(), Vector::ZERO, 0.0, Dir2::NEG_Y)
                     .with_max_distance(10.)
                     .with_ignore_self(true)
-                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End]))
+                    .with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow]))
                     .with_max_hits(1),
                 CastDir::NEGY,
             ),
         ],
-        GravityScale(0.),
-        layers,
-        CollisionEventsEnabled,
     )).id();
 }
 
@@ -300,7 +317,19 @@ fn camera_handler(
     camera_t.translation = center_transform.translation;
 }
 
-const MS : f32 = 0.0;
+const MS : f32 = 90.0;
+
+fn follow(
+    mut follower_transform_q: Query<&mut Transform, (With<Follower>, Without<Cube>)>,
+    player_transform_q: Query<&Transform, (With<Cube>, Without<Follower>)>,
+) {
+    let mut follower_transform = follower_transform_q.single_mut().expect("no follower");
+    let player_transform = player_transform_q.single().expect("no cube");
+    follower_transform.translation = player_transform.translation;
+}
+
+#[derive(Resource)]
+pub struct FunnyTimer(Option<f32>);
 
 fn controller(
     mut cube_vel_q: Query<&mut LinearVelocity, With<Cube>>,
@@ -317,7 +346,8 @@ fn controller(
     mut just_jumped: Local<bool>,
     mut cube_transform_q: Query<&mut Transform, With<Cube>>,
     aboba: Query<&Aboba>,
-    mut collision_reader: MessageReader<CollisionStart>
+    mut collision_reader: MessageReader<CollisionStart>,
+    mut funny_timer: ResMut<FunnyTimer>,
 ) {
     let mut on_ground = false;
     let mut hit_aboba = false;
@@ -325,8 +355,8 @@ fn controller(
         for hit in hits.iter() {
             match castdir {
                 &CastDir::NEGY => {
-                    if hit.entity != player_entity.entity && hit.distance < 0.5 {
-                        // println!("FLOOR {} {} {:?}", hit.distance, hit.entity, castdir);
+                    if hit.entity != player_entity.entity && hit.distance < 1.5 {
+                        // println!("FLOOR {} {} {:?} {:?} {:?}", hit.distance, hit.entity, castdir, hit.normal1, hit.normal2);
                         on_ground = true;
                         if *inair {
                             println!("{:?}", (time.elapsed() - *t).as_millis());
@@ -339,8 +369,8 @@ fn controller(
                     }
                 },
                 _ => {
-                    // println!("WALLS {} {} {:?}", hit.distance, hit.entity, castdir);
-                    if hit.entity != player_entity.entity && hit.distance <= 0.4 && hit.distance > 0.1 {
+                    if hit.entity != player_entity.entity && hit.distance < 0.9 && hit.distance > 0.1 {
+                        // println!("WALLS {} {} {:?} {:?} {:?}", hit.distance, hit.entity, castdir, hit.normal1, hit.normal2);
                         state.set(LocalState::Defeat);
                     }
                 }
@@ -348,7 +378,6 @@ fn controller(
         }
     }
     for event in collision_reader.read() {
-        println!("{} and {} started colliding", event.collider1, event.collider2);
         if let Ok(_) = aboba.get(event.collider2) {
             hit_aboba = true;
             break;
@@ -356,26 +385,42 @@ fn controller(
             state.set(LocalState::Win);
             return;
         }
+        if let Ok(_) = aboba.get(event.collider1) {
+            hit_aboba = true;
+            break;
+        } else if let Ok(_) = end_q.get(event.collider1) {
+            state.set(LocalState::Win);
+            return;
+        }
     }
-    if hit_aboba {
-        println!("HIT ABOBA");
+    if hit_aboba && funny_timer.0.is_none() {
+        funny_timer.0 = Some(0.);
         let (mut pos, mut layers) = cube_pos_q.single_mut().expect("no cube");
         let mut to_white = true;
         is_left.is = !is_left.is;
         *pos = Position::from_xy(pos.x, pos.y + -1. * 6. * 16.);
         if layers.filters == LayerMask::from([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End]) {
+            println!("lol");
             layers.filters = LayerMask::from([CollisionLayer::White, CollisionLayer::Aboba, CollisionLayer::End]);
         } else {
-            layers.filters = LayerMask::from([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End]);
+            println!("kek");
+            layers.filters = LayerMask::from([CollisionLayer::Yellow, CollisionLayer::End]);
             to_white = false;
-            
         }
         for (mut caster, _hits, _) in shapecast_q {
             if to_white {
-                *caster = caster.clone().with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::White, CollisionLayer::Aboba, CollisionLayer::End]));
+                *caster = caster.clone().with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::White]));
             } else {
-                *caster = caster.clone().with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow, CollisionLayer::Aboba]));
+                *caster = caster.clone().with_query_filter(SpatialQueryFilter::from_mask([CollisionLayer::Yellow]));
             }
+        }
+    }
+
+    if funny_timer.0.is_some() {
+        if funny_timer.0.unwrap() > 0.3 {
+            funny_timer.0 = None
+        } else {
+            funny_timer.0 = Some(funny_timer.0.unwrap() + time.delta_secs());
         }
     }
 
@@ -401,57 +446,22 @@ fn controller(
     }
 }
 
-fn fix_casters(
-    mut casters: Query<(&mut ShapeCaster, &CastDir)>,
-    parent_q: Query<&Transform, With<Cube>>,
-) {
-    let parent_transform = parent_q.single().expect("no cube(");
-    let parent_angle = parent_transform.rotation.to_euler(EulerRot::XYZ).2;
-    let reverse_rotation = Vec2::from_angle(-parent_angle);
-    for (mut caster, cast_dir) in casters.iter_mut() {
-        let world_goal;
-        match cast_dir {
-            CastDir::X => {
-                world_goal = Vec2::X;
-            },
-            CastDir::Y => {
-                world_goal = Vec2::Y;
-            },
-            CastDir::NEGX => {
-                world_goal = Vec2::NEG_X;
-            },
-            CastDir::NEGY => {
-                world_goal = Vec2::NEG_Y;
-            },
-        }
-
-        let local_direction = world_goal.rotate(reverse_rotation);
-        caster.direction = Dir2::new(local_direction).unwrap_or(Dir2::X);
-        caster.shape_rotation = -parent_angle;
-    }
-}
-
-fn tick_defeat(
+fn defeat(
     mut cmd: Commands,
-    mut t: Local<f32>,
     time: Res<Time>,
     mut state: ResMut<NextState<AppState>>,
     mut screenshot: ResMut<LastScreenshot>,
     canvas: Res<camera::ViewportCanvas>,
 ){
-    let dt = time.delta_secs().min(MAX_DT);
-    *t += dt;
-    if *t >= DEATH_DELAY {
-        if screenshot.awaiting == false {
-            cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
-                .observe(await_screenshot_and_translate(AppState::Defeat));
-            screenshot.awaiting = true;
-        }
-        state.set(AppState::Defeat);
+    if screenshot.awaiting == false {
+        cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
+            .observe(await_screenshot_and_translate(AppState::Defeat));
+        screenshot.awaiting = true;
     }
+    state.set(AppState::Defeat);
 }
 
-fn tick_win(
+fn win(
     mut state: ResMut<NextState<AppState>>,
 ) {
     state.set(NEXT_STATE);
@@ -471,4 +481,5 @@ fn cleanup(
     cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
     cmd.remove_resource::<PlayerEntity>();
     cmd.remove_resource::<IsLeft>();
+    cmd.remove_resource::<FunnyTimer>();
 }

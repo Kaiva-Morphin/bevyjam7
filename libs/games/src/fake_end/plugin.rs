@@ -1,4 +1,4 @@
-use std::{f32::consts::PI, time::Duration};
+use std::f32::consts::PI;
 
 use bevy::{asset::RenderAssetUsages, camera::{RenderTarget, visibility::RenderLayers}, render::render_resource::{Extent3d, TextureDimension, TextureFormat, TextureUsages}};
 use bevy_asset_loader::asset_collection::AssetCollection;
@@ -6,7 +6,7 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use crate::prelude::*;
 
 const STATE: AppState = AppState::FakeEnd;
-const NEXT_STATE: AppState = AppState::Platformer;
+// const NEXT_STATE: AppState = AppState::Platformer;
 
 const RECT_HS: f32 = 3.;
 #[derive(Component)]
@@ -14,8 +14,10 @@ struct TextureRect;
 
 #[derive(AssetCollection, Resource)]
 pub struct FakeEndAssets {
-    #[asset(path = "yaroholder.png")]
-    text: Handle<Image>,
+    #[asset(path = "sounds/creak1.mp3")]
+    creek1: Handle<AudioSource>,
+    #[asset(path = "sounds/creak2.mp3")]
+    creek2: Handle<AudioSource>,
 }
 
 #[derive(Resource)]
@@ -30,8 +32,6 @@ enum LocalState {
     #[default]
     InitialAnim,
     Game,
-    Defeat,
-    Win,
     Aboba,
 }
 
@@ -39,7 +39,7 @@ pub struct FakeEndPlugin;
 impl Plugin for FakeEndPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_systems(Startup, global_setup.after(camera::setup_camera))
+        .add_systems(Startup, global_setup.after(crate::novel::plugin::setup))
             // .insert_resource(LocalRes::default())
             // .insert_resource(Pipes::default())
             .add_sub_state::<LocalState>()
@@ -141,11 +141,15 @@ fn global_setup(
 
 fn setup(
     mut cmd: Commands,
-    joker: Res<JokerTexture>,
     mut joker_rect: Query<&mut Transform, With<TextureRect>>
 ) {
     cmd.insert_resource(FallStart {start: false, num: 0, timer: 0.});
-    *joker_rect.single_mut().expect("NO JOKER") = Transform::from_translation(Vec3::new(0.0, 0.0, 0.0));
+    cmd.insert_resource(ClimbStart {climbed: false, num: 0, timer: 0.});
+    let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
+    let q = Quat::from_axis_angle(Vec3::X, PI / 2.);
+    let mut t = joker_rect.single_mut().expect("NO JOKER");
+    *t = Transform::from_translation(Vec3::new(0.0, 0.0, 0.0));
+    t.rotate_around(pivot_point, q);
 }
 
 #[derive(Resource)]
@@ -155,24 +159,63 @@ pub struct FallStart {
     pub timer: f32,
 }
 
+#[derive(Resource)]
+pub struct ClimbStart {
+    pub num: usize,
+    pub timer: f32,
+    pub climbed: bool,
+}
+
 fn monke_fall(
+    mut cmd: Commands,
     mut transform_q: Query<&mut Transform, With<TextureRect>>,
     mut fall_start: ResMut<FallStart>,
+    mut climb_start: ResMut<ClimbStart>,
     mut state: ResMut<NextState<LocalState>>,
     time: Res<Time>,
+    fake_assets: Res<FakeEndAssets>,
 ) {
-    fall_start.timer += time.delta_secs();
-    // if fall_start.timer >= 2.0 {
-    //     fall_start.start = true;
-    // }
     const DEGPF: f32 = -0.01;
-    if fall_start.num as f32 * -DEGPF > PI {
-        state.set(LocalState::Aboba);
+    if climb_start.num as f32 * -DEGPF > PI / 2. {
+        climb_start.timer += time.delta_secs();
+        if climb_start.timer >= 2.0 {
+            fall_start.start = true;
+        }
+    } else {
+        if climb_start.num == 0 {
+            cmd.spawn((
+                DespawnOnExit(STATE),
+                AudioPlayer(fake_assets.creek1.clone()),
+                PlaybackSettings {
+                    mode: bevy::audio::PlaybackMode::Once,
+                    ..default()
+                },
+            ));
+        }
+        let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
+        let q = Quat::from_axis_angle(Vec3::X, DEGPF);
+        transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
+        climb_start.num += 1;
     }
-    let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
-    let q = Quat::from_axis_angle(Vec3::X, DEGPF);
-    transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
-    fall_start.num += 1;
+    if fall_start.start {
+        if fall_start.num == 0 {
+            cmd.spawn((
+                DespawnOnExit(STATE),
+                AudioPlayer(fake_assets.creek2.clone()),
+                PlaybackSettings {
+                    mode: bevy::audio::PlaybackMode::Once,
+                    ..default()
+                },
+            ));
+        }
+        if fall_start.num as f32 * -DEGPF > PI {
+            state.set(LocalState::Aboba);
+        }
+        let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
+        let q = Quat::from_axis_angle(Vec3::X, DEGPF);
+        transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
+        fall_start.num += 1;
+    }
 }
 
 fn cleanup(
@@ -181,4 +224,5 @@ fn cleanup(
 ) {
     cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
     cmd.remove_resource::<FallStart>();
+    cmd.remove_resource::<ClimbStart>();
 }

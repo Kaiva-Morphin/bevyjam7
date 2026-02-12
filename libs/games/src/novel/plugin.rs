@@ -67,16 +67,22 @@ backgrounds! {
     BedroomNight => "images/novel/bg/Bedroom_Night_Dark.png",
     KitchenNight => "images/novel/bg/Kitchen_Night.png",
     GroveStreet => "images/novel/bg/grove.jpg",
-    Computer => "images/novel/bg/supercomputer.jpg",
+    Computer => "images/novel/bg/supercomputer.png",
 }
 
 sound_effects! {
-    PipeFall => "sounds/novel/metal-pipe-falling-sound.mp3"
+    PipeFall => "sounds/novel/metal-pipe-falling-sound.mp3",
+    Ur => "sounds/novel/ur.mp3",
+    Ururur => "sounds/novel/ururur.mp3",
+    Sip => "sounds/novel/252274__reitanna__sipping2.wav",
 }
 
 novel_music! {
     Journey => "sounds/novel/poopie pack_journey.wav",
     Battle => "sounds/novel/poopie pack_boss battle.wav",
+    Silence => "sounds/novel/silence.mp3",
+    AssasinoBattle => "sounds/novel/Overhaul.mp3",
+    MyOnlyLove => "sounds/novel/My Only Love.mp3",
 }
 
 const LEFT : Transform = Transform::from_translation(Vec3::new(-150.0, 0.0, 0.0));
@@ -92,34 +98,34 @@ impl Default for NovelState {
             current_stage: 0,
             stages: stages! {
                 StreetAutumnNight Journey {
-                    => "What a nice evening!" (PipeFall)
+                    => "What a nice evening!"
                 },
                 StreetAutumnNight Journey {=> "I think I should walk around a bit more..."},
                 GroveStreet Battle {
                     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                    => ("CJ") "Aye, whatcha doin here man?" (PipeFall)
+                    => ("CJ") "Aye, whatcha doin here man?"
                 },
-                GroveStreet Journey {
+                GroveStreet Battle {
                     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                    => "This ain't your hood"
+                    => ("CJ") "This ain't your hood"
                 },
-                GroveStreet Journey {
+                GroveStreet Battle {
                     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                    => "Looking for trouble?"
+                    => ("CJ") "Looking for trouble?"
                 },
                 GroveStreet Journey {
                     CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
                     Bob (transform = LEFT),
-                    => "Chill mate, guy buys stuff from me \nLet him off the hook"
+                    => ("Bobby") "Chill mate, guy buys stuff from me \nLet him off the hook"
                 },
                 GroveStreet Journey {
                     CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
                     Bob (transform = LEFT),
-                    => "Fine Bobby, but only this time"
+                    => ("CJ") "Fine Bobby, but only this time"
                 },
                 GroveStreet Journey {
                     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                    => "Now get the hell outa here"
+                    => ("CJ") "Now get the hell outta here"
                 },
                 StreetAutumnNight Journey {=> "Well, that was one hell of an encounter"},
                 StreetAutumnNight Journey {=> "I'd better head home..."},
@@ -127,86 +133,87 @@ impl Default for NovelState {
                     =>
                     "Gotta get some coffee..."
                 },
-                LivingroomDark Journey {
+                LivingroomDark Silence {
                     =>
-                    "What's that sound?"
+                    "What's that sound?" (Ur)
                 },
-                LivingroomDark Journey {
+                LivingroomDark Silence {
                     Freddy
-                    => ("Freddy") "ur ur \n urur"
+                    => ("Freddy") "ur ur \n urur" (Ururur)
                 },
-                LivingroomDark Journey {
+                LivingroomDark Silence {
                     Freddy (flip_x = true)
                     => ""
                 },
-                LivingroomDark Journey {
+                LivingroomDark Silence {
                     Freddy (flip_x = true, transform = RIGHT)
                     => ""
                 },
-                LivingroomDark Journey {
+                LivingroomDark Silence {
                     => ""
                 },
-                LivingroomDark Journey {
+                LivingroomDark Silence {
                     => "..."
                 },
                 KitchenNight Journey {
-                    => "What coffee do I have here?\nOh right, these two"
+                    => "Anyway... What coffee do I have here?"
                 },
-                KitchenNight Journey {
+                KitchenNight AssasinoBattle {
+                    => "Oh right, these two"
+                },
+                KitchenNight AssasinoBattle {
                     Bal (transform = RIGHT.with_scale(Vec3::splat(0.3))),
                     Ass (transform = LEFT.with_scale(Vec3::splat(0.2))),
-                    => "Oh no, darling...\nHe's here for us..."
+                    => ("Ballerina Cappuccina") "Oh no, darling...\nHe's here for us..."
                 },
-                KitchenNight Journey {
+                KitchenNight AssasinoBattle {
                     Bal (transform = RIGHT.with_scale(Vec3::splat(0.3))),
                     Ass (transform = LEFT.with_scale(Vec3::splat(0.2))),
-                    => "No, my love, I can't lose you!\nYou're the love of my life!"
+                    => ("Ballerina Cappuccina") "No, my love, I can't lose you!\nYou're the love of my life!"
                 },
-                KitchenNight Journey {
+                KitchenNight AssasinoBattle {
                     Bal2 (transform = RIGHT.with_scale(Vec3::splat(0.3))),
                     Ass2 (transform = LEFT.with_scale(Vec3::splat(0.2))),
-                    => "I have to let him drink me, so you can live another day...\nGoodbye my love..."
+                    => ("Cappuccino Assassino") "I have to let him drink me, so you can live another day...\nGoodbye my love..."
                 },
-                KitchenNight Journey {
+                KitchenNight AssasinoBattle {
                     Bal2 (transform = RIGHT.with_scale(Vec3::splat(0.3))),
-                    => "NOOOOOOOO"
+                    => ("Ballerina Cappuccina") "NOOOOOOOO" (Sip)
                 },
-                Computer Journey {
+                Computer Silence {
                     => "Hmm, I guess I should do some work..."
                 },
-                Computer Journey {
-                    Time,
+                Computer MyOnlyLove {
+                    Time (transform = Transform::from_xyz(0., 35., 0.).with_scale(Vec3::splat(0.15))),
                     => "Oh yes, it's time for bevy jam!"
                 },
-                Computer Journey {
+                Computer MyOnlyLove {
                     => "Let's see what's the topic this time"
                 },
-                Computer Journey {
+                Computer MyOnlyLove {
                     => "..."
                 },
-                Computer Battle {
-                    => "Bevy editor from another world"
+                Computer MyOnlyLove {
+                    => "Bevy editor from another world!"
+                },
+                Computer MyOnlyLove {
+                    => "What an interesting choice!\nI guess any game engine needs an editor..."
+                },
+                Computer MyOnlyLove {
+                    => "But Rust is hard...\nShould I even study rust?"
                 },
                 Computer Battle {
-                    => "What an interesting choice.\nI guess any game engine needs an editor..."
+                    Rust (transform = Transform::from_xyz(115., 30., 0.).with_scale(Vec3::splat(0.25))),
+                    Go (transform = Transform::from_xyz(-130., 15., 0.).with_scale(Vec3::splat(0.3)), flip_x = true),
+                    => ("Go") "There's no point in rust\nBackend can be done with kotlin or golang"
                 },
                 Computer Battle {
-                    => "But Rust is hard...\nshould I even study rust?"
+                    Rust (transform = Transform::from_xyz(115., 30., 0.).with_scale(Vec3::splat(0.25))),
+                    Go (transform = Transform::from_xyz(-130., 15., 0.).with_scale(Vec3::splat(0.3)), flip_x = true),
+                    => ("Rust") "Rust is definitely faster\nGo even has a garbage collector\nKotlin has a ton of legacy code behind it"
                 },
-                Computer Battle {
-                    Rust (transform = RIGHT),
-                    Go (transform = LEFT),
-                    => "There's no point in rust\nBackend can be done with kotlin or golang"
-                },
-                Computer Battle {
-                    Rust (transform = RIGHT),
-                    Go (transform = LEFT),
-                    => "Rust is definitely faster\nGo even has a garbage collector\nKotlin has a ton of legacy code behind it"
-                },
-                Computer Battle {
-                    Rust (transform = RIGHT), // todo: rotate
-                    Go (transform = LEFT),
-                    => "So what did you choose?"
+                Computer Silence {
+                    => "So what did YOU choose?"
                 },
             },
         }
@@ -287,7 +294,7 @@ struct TextNode;
 #[derive(Component)]
 struct ActorSprite;
 
-fn setup(
+pub fn setup(
     mut cmd: Commands,
     mut latest: ResMut<LastState>,
     novel: Res<NovelAssets>,

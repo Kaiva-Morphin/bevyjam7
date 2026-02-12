@@ -7,3 +7,4 @@ pub mod prelude;
 pub mod tilemap;
 pub mod core;
 pub mod shaders;
+pub mod fake_end;

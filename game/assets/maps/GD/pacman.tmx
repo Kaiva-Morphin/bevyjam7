@@ -10,7 +10,7 @@
    eJxjYBjagHkUD2k8CgYWAAAkzQFR
   </chunk>
    <chunk x="16" y="0" width="16" height="16">
-   eJxjYBjagBkJj+ofevpHwcACAKCEAEA=
+   eJxjYBjagBkLHtU/dPSPgoEFAAdHAGo=
   </chunk>
    <chunk x="-16" y="16" width="16" height="16">
    eJxjYKAMMI/iAcWjYBRQAgBmbQEh
@@ -103,7 +103,7 @@
    eJxjYBgFQxkwDbQDRsGQBgAIgAAD
   </chunk>
    <chunk x="-16" y="16" width="16" height="16">
-   eJxjYBgF5AImMtQRq2cUjAJ6AAAT4AAH
+   eJxjYBgF5AImKqsbBaOA3gAADsAABQ==
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
    eJxjYBjZgIkEdTBMbbNppX8UjAJCAAAlCAAN
@@ -111,7 +111,7 @@
   </data>
  </layer>
  <objectgroup id="4" name="spawners">
-  <object id="1" x="169.25" y="149.5">
+  <object id="1" x="-204.25" y="132.5">
    <properties>
     <property name="SpawnPoint" type="class" propertytype="game::dev_games::geometry_dash::plugin::SpawnPoint"/>
    </properties>
