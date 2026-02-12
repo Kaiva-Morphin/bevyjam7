@@ -1,6 +1,7 @@
 use crate::{prelude::{AppState, LastState}, prelude::*};
 use bevy_asset_loader::asset_collection::AssetCollection;
 use rand::Rng;
+use crate::global_music::plugin::NewBgMusic;
 
 pub struct FlappyBirdPlugin;
 
@@ -49,6 +50,10 @@ pub struct FlappyBirdAssets {
     bg: Handle<Image>,
     #[asset(texture_atlas_layout(tile_size_x = 792, tile_size_y = 1000, columns = 2, rows = 1))]
     layout: Handle<TextureAtlasLayout>,
+    #[asset(path = "sounds/flappy/woosh.ogg")]
+    woosh: Handle<AudioSource>,
+    #[asset(path = "sounds/flappy/20 - Ccc- looptober-2021-variety-pack.ogg")]
+    bg_music: Handle<AudioSource>,
 }
 
 
@@ -73,6 +78,10 @@ fn setup(
     mut state: ResMut<LastState>,
 ) {
     state.state = STATE;
+
+    cmd.spawn((
+        NewBgMusic{handle: Some(assets.bg_music.clone()), instant_translation: false},
+    ));
 
     cmd.spawn((
         DespawnOnExit(STATE),
@@ -150,6 +159,9 @@ fn begin_game (
     mut cmd: Commands,
     q: Query<Entity, With<Pacman>>
 ) {
+    cmd.spawn((
+
+    ));
     cmd.entity(q.iter().next().expect("No pacman!")).insert(GravityScale(FLAPPY_GRAVITY_AFFECT));
 }
 
@@ -226,6 +238,7 @@ fn spawn_pipe(
     )).id()
 }
 
+
 fn tick_game(
     mut state: ResMut<NextState<LocalState>>,
     mut pacman: Query<(&mut Transform, &mut LinearVelocity, &mut Sprite), (With<Pacman>, Without<Pipe>)>,
@@ -245,6 +258,10 @@ fn tick_game(
     if keys.just_pressed(KeyCode::Space) {
         v.y = FLAPPY_BIRD_JUMP_STRENGTH;
         *at = 0.3;
+        cmd.spawn((
+            DespawnOnEnter(NEXT_STATE),
+            AudioPlayer::new(assets.woosh.clone()),
+        ));
     }
     t.translation += dt * FLAPPY_BIRD_PROGRESS_SPEED;
     let Some(a) = &mut s.texture_atlas else {return;};

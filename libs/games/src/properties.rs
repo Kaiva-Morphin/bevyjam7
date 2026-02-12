@@ -9,6 +9,7 @@ pub enum AppState {
     Defeat,
 
     #[default]
+    LoadingScreen,
     // via asset_collections
     LoadingAssets,
     // other useful systems ?
@@ -65,6 +66,7 @@ pub fn await_screenshot_and_translate(
     }
 }
 
+pub const MUSIC_INTERPOLATION : f32 = 0.6;
 
 pub const PACMAN_EAT_PATH_HALF : f32 = 280.0;
 pub const PACMAN_EAT_SCALE : f32 = 4.0;

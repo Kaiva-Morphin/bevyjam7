@@ -35,7 +35,7 @@
     ]
   },
   {
-    "id": 21,
+    "id": 23,
     "name": "avian2d::collision::collider::layers::LayerMask",
     "type": "class",
     "useAs": [
@@ -82,7 +82,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 22,
+    "id": 24,
     "name": "bevy_color::color::Color",
     "type": "class",
     "useAs": [
@@ -274,30 +274,37 @@
     "valuesAsFlags": false
   },
   {
-    "id": 16,
-    "name": "game::pathfinder::plugin::PathfinderObstacle",
+    "id": 17,
+    "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer",
     "type": "class",
     "useAs": [
       "property"
     ],
     "color": "#000000",
     "drawFill": true,
-    "members": []
+    "members": [
+      {
+        "name": ":variant",
+        "propertyType": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
+        "type": "class",
+        "value": "Yellow"
+      }
+    ]
   },
   {
-    "id": 17,
-    "name": "games::platformer::plugin::NextTrigger",
-    "type": "class",
-    "useAs": [
-      "property"
+    "id": 16,
+    "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
+    "type": "enum",
+    "storageType": "string",
+    "values": [
+      "Yellow",
+      "White"
     ],
-    "color": "#000000",
-    "drawFill": true,
-    "members": []
+    "valuesAsFlags": false
   },
   {
     "id": 18,
-    "name": "games::platformer::plugin::SpawnPoint",
+    "name": "game::dev_games::platformer::plugin::NextTrigger",
     "type": "class",
     "useAs": [
       "property"
@@ -308,7 +315,7 @@
   },
   {
     "id": 19,
-    "name": "games::platformer::plugin::StopTrigger",
+    "name": "game::dev_games::platformer::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
       "property"
@@ -318,7 +325,29 @@
     "members": []
   },
   {
-    "id": 23,
+    "id": 20,
+    "name": "game::dev_games::platformer::plugin::StopTrigger",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 21,
+    "name": "game::pathfinder::plugin::PathfinderObstacle",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 25,
     "name": "glam::Vec2",
     "type": "class",
     "useAs": [
@@ -340,7 +369,7 @@
     ]
   },
   {
-    "id": 20,
+    "id": 22,
     "name": "room::MapRoom",
     "type": "class",
     "useAs": [

@@ -206,7 +206,6 @@ pub(crate) fn spawn_colliders<T: TiledPhysicsBackend>(
     };
 
     let polys = if is_object {
-        info!("Object!");
         TiledPhysicsAvianBackend::Triangulation.spawn_colliders(commands, &collider_created, &polygons)
     } else {
         backend.spawn_colliders(commands, &collider_created, &polygons)

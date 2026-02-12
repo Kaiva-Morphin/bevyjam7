@@ -95,8 +95,8 @@ impl CharacterController {
                 speed: 120.0,
                 run_speed: 120.0,
                 walk_speed: 120.0,
-                hp: 1.0,
-                prev_hp: 1.0,
+                hp: 1200.0,
+                prev_hp: 1200.0,
                 blood_rects: blood_rects(),
                 blood_color: red_blood(),
                 character: MiamiEntity::Player,
@@ -240,7 +240,7 @@ pub fn on_entity_spawnpoint(
         id = c.insert((
             miami_character_layers(),
             CharacterInPlace,
-            DummyEntity,
+            // DummyEntity,
             caster,
             chaser,
         )).id();
@@ -252,7 +252,6 @@ pub fn on_entity_spawnpoint(
                 ..Default::default()
             },
             Transform::default(),
-            
             WeaponSprite
         )).id();
         let weapon = cmd.spawn((
@@ -409,11 +408,8 @@ pub fn update_chasers(
                 last_seen = Some(pt.translation().truncate());
             }
         }
-        // if chaser.last_seen.is_some() {
-        //     controller.shoot = true;
-        // }
         if let Some(last_seen) = last_seen {
-            if chaser.last_seen != Some(last_seen) { //rebuild path
+            if chaser.last_seen != Some(last_seen) {
                 cmd.entity(e).remove::<CharacterInPlace>();
                 t.z = 0.0;
                 let Some(path) = navmesh.transformed_path(t, last_seen.extend(0.0)) else {
@@ -449,14 +445,6 @@ pub fn update_chasers(
                 }
             );
         }
-        // if let Some(last_seen) = chaser.last_seen {
-        //     if let Some(path) = mesh.transformed_path(gt.translation().truncate(), last_seen) {
-                
-        //     }
-        // } else {
-        //     // tick and back home
-        // }
-        
     }
 }
 
@@ -477,7 +465,7 @@ pub fn chase(
     time: Res<Time>,
 ){
     let dt = time.dt();
-    for (mut transform, mut path, mut chaser, entity, mut controller) in navigator.iter_mut() {
+    for (transform, path, mut chaser, entity, mut controller) in navigator.iter_mut() {
         let Some(mut path) = path else {
             controller.input_dir = Vec2::ZERO;
             // controller.look_dir = Vec2::ZERO;

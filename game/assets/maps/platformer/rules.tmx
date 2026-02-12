@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="3" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="5" nextobjectid="1">
  <tileset firstgid="1" source="tilemap.tsx"/>
- <layer id="1" name="input_base" width="16" height="16">
+ <tileset firstgid="1025" source=":/automap-tiles.tsx"/>
+ <layer id="3" name="input_white" width="16" height="16">
   <data encoding="base64" compression="zlib">
    <chunk x="0" y="0" width="16" height="16">
-   eJxjZRgFo2AUjFQAABgAAAY=
+   eJxjYBjagBWI2SjQrwrEalRyyygYBUMNAAAIHwBX
   </chunk>
   </data>
  </layer>
- <layer id="2" name="output_second" width="16" height="16">
+ <layer id="4" name="output_yellow" width="16" height="16">
   <data encoding="base64" compression="zlib">
    <chunk x="0" y="0" width="16" height="16">
-   eJzjYBgFo2AUjFQAACQAAAk=
+   eJxjYBjawBWI3SjQnwrEaVRyyygYBUMNAAAmTAFX
+  </chunk>
+  </data>
+ </layer>
+ <layer id="1" name="input_yellow" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjZ2Bg4GAgH6gDsQYF+kfBKBgFAwcAZ48AXw==
+  </chunk>
+  </data>
+ </layer>
+ <layer id="2" name="output_white" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxzZ2Bg8GAgH6QDcQYF+kfBKBgFAwcARcsBXw==
   </chunk>
   </data>
  </layer>

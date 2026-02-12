@@ -10,6 +10,7 @@ pub mod prelude;
 pub mod properties;
 pub mod dev_games;
 pub mod pathfinder;
+pub mod hints;
 
 
 fn main() {
@@ -59,7 +60,6 @@ impl Plugin for GamesPlugin {
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
                 miami::plugin::MiamiPlugin,
-                
             ))
             .add_systems(Startup, warmup_screenshot)
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
@@ -77,16 +77,24 @@ impl Plugin for GamesPlugin {
 #[cfg(not(feature = "yaro"))]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
-        use crate::pathfinder::plugin::PathfinderPlugin;
+        use bevy::asset::embedded_asset;
+
+        use crate::{hints::{HintAssets, update_hints}, pathfinder::plugin::PathfinderPlugin};
+        let omit_prefix = "";
+        embedded_asset!(app, omit_prefix, "../assets/images/loading_screen.jpg");
 
         app
             .insert_resource(LastState::default())
             .insert_resource(LastScreenshot::default())
             .init_state::<AppState>()
+            .add_systems(Update, update_hints)
+            .add_systems(Startup, setup_loading_screen)
+            .add_systems(OnExit(AppState::LoadingAssets), cleanup_loading_screen)
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Miami)
+                    .continue_to_state(AppState::Platformer)
                     .load_collection::<GameAssets>()
+                    .load_collection::<HintAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
                     .load_collection::<platformer::plugin::PlatformerAssets>()
@@ -110,7 +118,6 @@ impl Plugin for GamesPlugin {
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
                 miami::plugin::MiamiPlugin,
-                
             ))
             .add_systems(Startup, warmup_screenshot)
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
@@ -119,5 +126,30 @@ impl Plugin for GamesPlugin {
                 animate_screenshot
             ))
         ;
+    }
+}
+
+#[derive(Component)]
+struct LoadingScreen;
+
+fn setup_loading_screen(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut state: ResMut<NextState<AppState>>,
+) {
+    let path = std::path::Path::new("game").join("../assets/images/loading_screen.jpg");
+    let source = bevy::asset::io::AssetSourceId::from("embedded");
+    let asset_path = bevy::asset::AssetPath::from_path(&path).with_source(source);
+
+    commands.spawn((Sprite::from_image(asset_server.load(asset_path)), LoadingScreen));
+    state.set(AppState::LoadingAssets);
+}
+
+fn cleanup_loading_screen(
+    mut commands: Commands,
+    q: Query<Entity, With<LoadingScreen>>,
+) {
+    for e in q.iter() {
+        commands.entity(e).despawn();
     }
 }

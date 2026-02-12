@@ -3,12 +3,16 @@
  <image source="tileset.png" width="576" height="576"/>
  <tile id="0">
   <objectgroup draworder="index" id="2">
-   <object id="1" x="14" y="14" width="4" height="4"/>
+   <object id="3" x="13.5" y="18">
+    <polygon points="0,0 4.5,-4.5 4.5,0"/>
+   </object>
   </objectgroup>
  </tile>
  <tile id="1">
   <objectgroup draworder="index" id="2">
-   <object id="1" x="0" y="14" width="4" height="4"/>
+   <object id="2" x="0" y="18">
+    <polygon points="0,0 4.5,0 0,-4.5"/>
+   </object>
   </objectgroup>
  </tile>
  <tile id="2">
@@ -25,12 +29,16 @@
  </tile>
  <tile id="32">
   <objectgroup draworder="index" id="2">
-   <object id="1" x="14" y="0" width="4" height="4"/>
+   <object id="2" x="13.5" y="0">
+    <polygon points="0,0 4.5,4.5 4.5,0"/>
+   </object>
   </objectgroup>
  </tile>
  <tile id="33">
   <objectgroup draworder="index" id="2">
-   <object id="1" x="0" y="0" width="4" height="4"/>
+   <object id="2" x="-4.5" y="0">
+    <polygon points="9,0 4.5,4.5 4.5,0"/>
+   </object>
   </objectgroup>
  </tile>
  <tile id="34">

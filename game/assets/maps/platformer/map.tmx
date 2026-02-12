@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="13" nextobjectid="24">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="16" tileheight="16" infinite="1" nextlayerid="14" nextobjectid="24">
  <editorsettings>
   <chunksize width="32" height="32"/>
  </editorsettings>
@@ -18,7 +18,7 @@
    eJztz8kNgDAQBEFzJAI4EY5EwOQfgzsEtPtC6pL6Mc8pRZIk6ZuBRppoTuyohVbaqCZ21E4HnXQldtRNDzV6EzvK//73v//9/+//HV/+U7E=
   </chunk>
    <chunk x="0" y="0" width="32" height="32">
-   eJztj7kNwDAMxJxnkSReJM8iibP/DL5GrQTVJgEWBK65UgAAAGA0FrnKSc5OG9Eu24escpO700a0y/YtH3nKy2kj2mW7yV++8nPaiHbZ5j//+c9//o/5vwPJPYvR
+   eJztj7kNwDAMxJxnkSReJM8iibP/DL5SEKBKpUmABYFrrhQAAAAYjUWucpKz6Qi/y/Yhq9zkbjrC77J9y0ee8jId4XfZbvKXr/xMR/hdtvnPf/7zn/9j/u/NMnkx
   </chunk>
    <chunk x="32" y="0" width="32" height="32">
    eJztz7kRgDAQBEHxJAIoEZ5EQOQfgyaAc8/STFUba24pZmZmNloTZixYg53dhh0HarCzO3HhxhPs7F58aPiDnZ3//e9///t/zP8dXDQlQQ==
@@ -27,7 +27,7 @@
    eJztz7kNADAMw0CvlmeRPPvPEM5gVwEogIXKi8itUadBs/CzW7Tp0C387PTr169fv379+vXr169fv/6f/A+PQblh
   </chunk>
    <chunk x="0" y="32" width="32" height="32">
-   eJztz7kNACAMBEG3xtMIT/81cIlDHodIi7TBSQ6YYmZVJZVV2Wx/t7voHmqqpvph+7vdRffrP/Hjx48fP378+PHjx48fP/6f/QtsUTWw
+   eJztzzsKACAMBNFcTeNF/Nz/DG5hIYFUdjLCFAspfG5mTRVVlZ+dvXj3uqdaqqtx7ezFu9ed/Qs/fvz48ePHjx8/fvz48eP/yb8B4L8McA==
   </chunk>
    <chunk x="32" y="32" width="32" height="32">
    eJztz7sNACAMA9GsFmARPvvPgOuI1lRn6QqXLyOiqa6GyvLdm2qprc7ju1e9+PHjx48fP37/8OPHjx8/fvz//RdPYFKB
@@ -36,15 +36,86 @@
    eJztz7sNACAMA9GsxmcRCPvPgGdwKsQ96QqXjvA01dVQs7BdS22V6hS2i//85z//+f/nfwAAgFdd4gdRGw==
   </chunk>
    <chunk x="0" y="64" width="32" height="32">
-   eJztj7kNACAMxLIazyI8+8/ANZQ8acGWXJyUIk5mlmWQUabFnpzuvLvJLousmz053Xn37Z/0008//fS/1Q8AAADwGwN/GYd3
+   eJztj7kNACAMxLIazyI8+8/AFRQIKVU6sCUXJ6WIi5lVmWSWZW+P+y66h5yyyX5sj/suur2/6Keffvrpf7sfAAAA4DcWV0x1aw==
   </chunk>
    <chunk x="32" y="64" width="32" height="32">
    eJztz7ENACAMA8GsFmARCPvPgOuINlX+JBcu381saFNbmqdfbWtHC+1+frXcSz/99NNPf49+AACAbh6hOCQZ
   </chunk>
   </data>
  </layer>
- <layer id="12" name="Слой тайлов 2" width="16" height="16">
-  <data encoding="base64" compression="zlib"/>
+ <layer id="12" name="white" width="16" height="16">
+  <properties>
+   <property name="s" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+    <properties>
+     <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+    </properties>
+   </property>
+   <property name="v" type="class" propertytype="avian2d::collision::collider::layers::CollisionLayers">
+    <properties>
+     <property name="filters" type="class" propertytype="avian2d::collision::collider::layers::LayerMask">
+      <properties>
+       <property name="0" type="int" value="16"/>
+      </properties>
+     </property>
+     <property name="memberships" type="class" propertytype="avian2d::collision::collider::layers::LayerMask">
+      <properties>
+       <property name="0" type="int" value="16"/>
+      </properties>
+     </property>
+    </properties>
+   </property>
+   <property name="v2" type="class" propertytype="game::dev_games::platformer::map::PlatformerSwitchableLayer">
+    <properties>
+     <property name=":variant" propertytype="game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant" value="White"/>
+    </properties>
+   </property>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   <chunk x="-32" y="-32" width="32" height="32">
+   eJztz7ENACAMA8FsB5vA/hOQEdykQLqTvnHnKgAAAPjb6nawTTndDbYpyf8HWYID2w==
+  </chunk>
+   <chunk x="-32" y="0" width="32" height="32">
+   eJxjYKAdSAfiDCLE6AncgdhjAO0fLP4fqHCA+X+gw2EUjAJqAlYgZsNC0wuoArEaFnoUjIJRMApGwSgYBaNgFIwCZAAAYf8Guw==
+  </chunk>
+   <chunk x="0" y="0" width="32" height="32">
+   eJztz7EJACAQQ1Eb3URX0U10/wm85pqrxQj+ByFlSEpQ6pYh3J+WJdzHe7KlCPerpQn3f/vvf2Pf4n9jAwAA4LwNcGQDDQ==
+  </chunk>
+  </data>
+ </layer>
+ <layer id="13" name="yellow" width="16" height="16" opacity="0.74">
+  <properties>
+   <property name="2" type="class" propertytype="avian2d::collision::collider::layers::CollisionLayers">
+    <properties>
+     <property name="filters" type="class" propertytype="avian2d::collision::collider::layers::LayerMask">
+      <properties>
+       <property name="0" type="int" value="32"/>
+      </properties>
+     </property>
+     <property name="memberships" type="class" propertytype="avian2d::collision::collider::layers::LayerMask">
+      <properties>
+       <property name="0" type="int" value="32"/>
+      </properties>
+     </property>
+    </properties>
+   </property>
+   <property name="s" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
+    <properties>
+     <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
+    </properties>
+   </property>
+   <property name="v" type="class" propertytype="game::dev_games::platformer::map::PlatformerSwitchableLayer"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   <chunk x="-32" y="-32" width="32" height="32">
+   eJztz7ENACAMA8F0sAnsPyEZwU0KpDvpG3euAgAAgL+tbgfblNPdYJuS/H+RZADb
+  </chunk>
+   <chunk x="-32" y="0" width="32" height="32">
+   eJxjYKAdUAdiDSLEaAVYgZgNTYwdiDnoZL8qEKuhiQ0W/9MjHPD5n57hMApGAa2BKxC7YaHpBVKBOA0LPQpGwSgYBaNgFIyCUTAKRgEyAAA60AZn
+  </chunk>
+   <chunk x="0" y="0" width="32" height="32">
+   eJztz7EJACAQQ1E73UQX0U10/xG85pqrxQj+ByFlSEpQypYi3K+WJtzHe7plCPenZQn3f/vvf2Pf4n9jAwAA4LwNno8HDQ==
+  </chunk>
+  </data>
  </layer>
  <objectgroup id="2" name="Слой объектов 1">
   <properties>
@@ -54,9 +125,9 @@
     </properties>
    </property>
   </properties>
-  <object id="7" x="118" y="237.5">
+  <object id="7" x="-166.667" y="62.8333">
    <properties>
-    <property name="r" type="class" propertytype="games::platformer::plugin::SpawnPoint"/>
+    <property name="r" type="class" propertytype="game::dev_games::platformer::plugin::SpawnPoint"/>
    </properties>
    <point/>
   </object>
@@ -78,7 +149,7 @@
     </property>
    </properties>
   </object>
-  <object id="15" x="176" y="80" width="16" height="192">
+  <object id="15" x="144" y="80" width="48" height="192">
    <properties>
     <property name="rb" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
@@ -86,17 +157,17 @@
      </properties>
     </property>
     <property name="se" type="class" propertytype="avian2d::collision::collider::Sensor"/>
-    <property name="st" type="class" propertytype="games::platformer::plugin::StopTrigger"/>
+    <property name="st" type="class" propertytype="game::dev_games::platformer::plugin::StopTrigger"/>
    </properties>
   </object>
-  <object id="17" x="160" y="800" width="32" height="32">
+  <object id="17" x="96" y="800" width="96" height="32">
    <properties>
     <property name="asd" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
       <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
      </properties>
     </property>
-    <property name="n" type="class" propertytype="games::platformer::plugin::NextTrigger"/>
+    <property name="n" type="class" propertytype="game::dev_games::platformer::plugin::NextTrigger"/>
     <property name="s" type="class" propertytype="avian2d::collision::collider::Sensor"/>
    </properties>
   </object>

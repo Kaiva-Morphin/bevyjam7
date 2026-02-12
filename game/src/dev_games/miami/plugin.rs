@@ -1,7 +1,5 @@
 use bevy_asset_loader::asset_collection::AssetCollection;
-use camera::{CameraController, tick_camera};
-use rand::rand_core::le;
-use room::Focusable;
+use camera::CameraController;
 
 use crate::{dev_games::miami::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}}, prelude::*};
 use super::entity::*;
@@ -111,35 +109,22 @@ fn tick(
 
 fn cleanup(
     mut controller: ResMut<CameraController>,
-    mut camera: Query<(&mut Transform, &mut Projection), With<WorldCamera>>,
+    mut camera: Query<&mut Transform, With<WorldCamera>>,
 ){
     controller.follow_speed = 0.0;
     controller.target_zoom = 0.8;
-    let Ok((mut t, mut p)) = camera.single_mut() else {return;};
+    let Ok(mut t) = camera.single_mut() else {return;};
     t.rotation.z = 0.0;
 }
 
-pub fn miami_player_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b11000110, 0b11000111)
-}
-pub fn miami_character_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b10010010, 0b10010111)
-}
-pub fn miami_dropped_weapon_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b00011000, 0b00010011)
-}
-pub fn miami_pickup_weapon_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b01000000, 0b01000000)
-}
-pub fn miami_weapon_layers() -> CollisionLayers {
-    CollisionLayers::from_bits(0b00000000, 0b00000000)
-}
-pub fn miami_projectile_damager_layer() -> CollisionLayers {
-    CollisionLayers::from_bits(0b10000001, 0b10000001)
-} 
-pub fn miami_seeker_shapecast_layer() -> CollisionLayers {
-    CollisionLayers::from_bits(0b00000101, 0b00000101)
-} 
+pub fn miami_player_layers() ->            CollisionLayers {CollisionLayers::from_bits(0b101000110, 0b101000111)}
+pub fn miami_character_layers() ->         CollisionLayers {CollisionLayers::from_bits(0b010010010, 0b010010111)}
+pub fn miami_dropped_weapon_layers() ->    CollisionLayers {CollisionLayers::from_bits(0b000011000, 0b000010011)}
+pub fn miami_pickup_weapon_layers() ->     CollisionLayers {CollisionLayers::from_bits(0b001000000, 0b001000000)}
+pub fn miami_weapon_layers() ->            CollisionLayers {CollisionLayers::from_bits(0b000000000, 0b000000000)}
+pub fn miami_projectile_damager_layer() -> CollisionLayers {CollisionLayers::from_bits(0b010000001, 0b010000001)} 
+pub fn miami_projectile_player_layer() ->  CollisionLayers {CollisionLayers::from_bits(0b100000001, 0b100000001)} 
+pub fn miami_seeker_shapecast_layer() ->   CollisionLayers {CollisionLayers::from_bits(0b000000101, 0b000000101)} 
 
 
 pub fn red_blood() -> Color {Color::Srgba(Srgba::rgba_u8(200, 32, 61, 255))}
