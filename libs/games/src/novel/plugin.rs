@@ -91,67 +91,67 @@ impl Default for NovelState {
             t: Timer::from_seconds(1.0 / CHARS_PER_SECOND, TimerMode::Repeating),
             current_stage: 0,
             stages: stages! {
-                // StreetAutumnNight Journey {
-                //     => "What a nice evening!" (PipeFall)
-                // },
-                // StreetAutumnNight Journey {=> "I think I should walk around a bit more..."},
-                // GroveStreet Battle {
-                //     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                //     => ("CJ") "Aye, whatcha doin here man?" (PipeFall)
-                // },
-                // GroveStreet Journey {
-                //     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                //     => "This ain't your hood"
-                // },
-                // GroveStreet Journey {
-                //     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                //     => "Looking for trouble?"
-                // },
-                // GroveStreet Journey {
-                //     CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
-                //     Bob (transform = LEFT),
-                //     => "Chill mate, guy buys stuff from me \nLet him off the hook"
-                // },
-                // GroveStreet Journey {
-                //     CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
-                //     Bob (transform = LEFT),
-                //     => "Fine Bobby, but only this time"
-                // },
-                // GroveStreet Journey {
-                //     CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
-                //     => "Now get the hell outa here"
-                // },
-                // StreetAutumnNight Journey {=> "Well, that was one hell of an encounter"},
-                // StreetAutumnNight Journey {=> "I'd better head home..."},
-                // LivingroomDark Journey {
-                //     =>
-                //     "Gotta get some coffee..."
-                // },
-                // LivingroomDark Journey {
-                //     =>
-                //     "What's that sound?"
-                // },
-                // LivingroomDark Journey {
-                //     Freddy
-                //     => ("Freddy") "ur ur \n urur"
-                // },
-                // LivingroomDark Journey {
-                //     Freddy (flip_x = true)
-                //     => ""
-                // },
-                // LivingroomDark Journey {
-                //     Freddy (flip_x = true, transform = RIGHT)
-                //     => ""
-                // },
-                // LivingroomDark Journey {
-                //     => ""
-                // },
-                // LivingroomDark Journey {
-                //     => "..."
-                // },
-                // KitchenNight Journey {
-                //     => "What coffee do I have here?\nOh right, these two"
-                // },
+                StreetAutumnNight Journey {
+                    => "What a nice evening!" (PipeFall)
+                },
+                StreetAutumnNight Journey {=> "I think I should walk around a bit more..."},
+                GroveStreet Battle {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => ("CJ") "Aye, whatcha doin here man?" (PipeFall)
+                },
+                GroveStreet Journey {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => "This ain't your hood"
+                },
+                GroveStreet Journey {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => "Looking for trouble?"
+                },
+                GroveStreet Journey {
+                    CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
+                    Bob (transform = LEFT),
+                    => "Chill mate, guy buys stuff from me \nLet him off the hook"
+                },
+                GroveStreet Journey {
+                    CJ (transform = RIGHT.with_scale(Vec3::splat(0.5))),
+                    Bob (transform = LEFT),
+                    => "Fine Bobby, but only this time"
+                },
+                GroveStreet Journey {
+                    CJ (flip_x = true, transform = Transform::from_scale(Vec3::splat(0.5)))
+                    => "Now get the hell outa here"
+                },
+                StreetAutumnNight Journey {=> "Well, that was one hell of an encounter"},
+                StreetAutumnNight Journey {=> "I'd better head home..."},
+                LivingroomDark Journey {
+                    =>
+                    "Gotta get some coffee..."
+                },
+                LivingroomDark Journey {
+                    =>
+                    "What's that sound?"
+                },
+                LivingroomDark Journey {
+                    Freddy
+                    => ("Freddy") "ur ur \n urur"
+                },
+                LivingroomDark Journey {
+                    Freddy (flip_x = true)
+                    => ""
+                },
+                LivingroomDark Journey {
+                    Freddy (flip_x = true, transform = RIGHT)
+                    => ""
+                },
+                LivingroomDark Journey {
+                    => ""
+                },
+                LivingroomDark Journey {
+                    => "..."
+                },
+                KitchenNight Journey {
+                    => "What coffee do I have here?\nOh right, these two"
+                },
                 KitchenNight Journey {
                     Bal (transform = RIGHT.with_scale(Vec3::splat(0.3))),
                     Ass (transform = LEFT.with_scale(Vec3::splat(0.2))),

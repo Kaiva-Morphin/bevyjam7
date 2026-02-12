@@ -70,7 +70,7 @@ pub fn on_defeat(
 ) {
     for e in h_q.iter() {cmd.entity(e).despawn();}
     let Some(new_handle) = last_screenshot.image.clone() else {
-        return;
+        state.set(res.state);return;
     };
     // cmd.spawn((
     //     Name::new("Screenshot"),
@@ -81,7 +81,7 @@ pub fn on_defeat(
     //     },
     //     ScreenshotEntity::default(),
     // ));
-    if! h_q.is_empty() {return;}
+    if! h_q.is_empty() {state.set(res.state);return;}
     let tween1 = Tween::new(
         // Use a quadratic easing on both endpoints.
         // EaseFunction::CircularOut,

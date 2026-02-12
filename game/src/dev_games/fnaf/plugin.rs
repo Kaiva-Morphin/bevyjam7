@@ -1,3 +1,4 @@
+use bevy::color::palettes::css::RED;
 use bevy_asset_loader::asset_collection::AssetCollection;
 
 use crate::prelude::*;
@@ -22,10 +23,10 @@ enum LocalState {
 pub struct FNAFAssets {
     #[asset(path = "images/fnaf/room.png")]
     room: Handle<Image>,
-    #[asset(path = "images/fnaf/button.png")]
-    button: Handle<Image>,
-    #[asset(path = "images/fnaf/button1.png")]
-    button1: Handle<Image>,
+    #[asset(path = "images/fnaf/white.png")]
+    white_button: Handle<Image>,
+    #[asset(path = "images/fnaf/red.png")]
+    red_button: Handle<Image>,
     #[asset(path = "images/fnaf/door.png")]
     door: Handle<Image>,
     #[asset(path = "images/fnaf/window.png")]
@@ -41,13 +42,13 @@ impl Plugin for FNAFPlugin {
             // .add_observer(spawnpoint_handler)
             // .add_observer(camera_handler)
             // .add_observer(on_collider_spawned)
-            .add_systems(OnEnter(STATE), setup)
+            .add_systems(OnEnter(STATE), (setup, init_rects))
             .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
             // .add_systems(OnEnter(LocalState::Game), begin_game)
             .add_systems(Update, (update_mouse_pos).run_if(in_state(LocalState::Game)))
             // .add_systems(Update, tick_defeat.run_if(in_state(LocalState::Defeat)))
             // .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
-            // .add_systems(OnExit(STATE), cleanup)
+            .add_systems(OnExit(STATE), cleanup)
             ;
     }
 }
@@ -58,28 +59,55 @@ pub struct MousePos(pub Option<Vec2>);
 #[derive(Component)]
 pub struct DbgSprite;
 
+#[derive(Resource)]
+pub struct Rects {
+    pub red_right: Rect,
+    pub red_left: Rect,
+    pub white_right: Rect,
+    pub white_left: Rect,
+    pub faz: Rect,
+}
+
+// 0 0 - top left; LR 53 528, 121 410; LW 52 673, 122 570; faz 713 386, 730 373
+// 1728x972
+
+const SPRITE_XSIZE: f32 = 1728.;
+const SPRITE_YSIZE: f32 = 972.;
+
+fn init_rects(
+    mut cmd: Commands,
+) {
+    let rects = Rects {
+        red_left: Rect::from_corners(
+            Vec2::new(-809.5165, -36.752216),
+            Vec2::new(-744.71643, 67.70151),
+        ),
+        red_right: Rect::from_corners(
+            Vec2::new(749.5523, -35.7851),
+            Vec2::new(813.3852, 75.4388),
+        ),
+        white_left: Rect::from_corners(
+            Vec2::new(-807.5821, -185.69551),
+            Vec2::new(-745.68365, -93.814964),
+        ),
+        white_right: Rect::from_corners(
+            Vec2::new(750.5195, -180.85966),
+            Vec2::new(803.7135, -90.91342),
+        ),
+        faz: Rect::from_corners(
+            Vec2::new(-156.68054, 95.74923),
+            Vec2::new(-127.665634, 116.0597),
+        ),
+    };
+    cmd.insert_resource(rects);
+}
+
 fn update_mouse_pos(
     window: Single<&Window>,
-    outer_camera_q: Single<(&Camera, &GlobalTransform), With<HighresCamera>,>,
-    world_camera_q: Single<&GlobalTransform, With<WorldCamera>,>,
     camera_q: Query<(&Camera, &GlobalTransform), With<WorldCamera>>,
-    mut sp: Local<Option<Entity>>,
-    mut cmd: Commands,
-    asset_server: Res<AssetServer>,
-    ui: Res<UiScale>,
     canvas: Res<camera::ViewportCanvas>,
+    mut pos: ResMut<MousePos>,
 ) {
-    let Some(e) = *sp else {
-        info!("Spawned!");
-        *sp = Some(cmd.spawn((
-            Name::new("ABOBA"),
-            Sprite {
-                image: asset_server.load("placeholder.jpg"),
-                ..default()
-            }
-        )).id());
-        return;
-    };
     let window = *window;
     let Some(cursor_win) = window.cursor_position() else { return; }; // top-left origin (Bevy >= 0.11)
     let (camera, cam_transform) = match camera_q.single() {
@@ -105,14 +133,21 @@ fn update_mouse_pos(
     match camera.viewport_to_world_2d(cam_transform, viewport_pos) {
         Ok(world_pos) => {
             info!("cursor world pos: {:?}", world_pos);
-            cmd.entity(e).insert(
-                Transform::from_translation(world_pos.extend(0.0))
-            );
-            // use world_pos here...
+            pos.0 = Some(world_pos)
         }
         Err(err) => {
             warn!("viewport_to_world_2d failed: {:?}", err);
         }
+    }
+}
+
+fn handle_rects(
+    rects: Res<Rects>,
+    mouse_pos: Res<MousePos>,
+    gizmos: Gizmos,
+) {
+    for rect in rects {
+        gizmos.rect_2d(rect.center(), rect.size(), Color::Srgba(RED));
     }
 }
 
@@ -122,22 +157,119 @@ fn tick_transition(
     state.set(LocalState::Game);
 }
 
+#[derive(Component)]
+pub enum Environment {
+    Room,
+    LDoor,
+    RDoor,
+    LWhitelight,
+    RWhitelight,
+    LRedlight,
+    RRedlight,
+    LWindow,
+    RWindow,
+    Faz,
+}
+
 fn setup(
     mut cmd: Commands,
-    mut fnaf_assets: ResMut<FNAFAssets>,
-    mut world_camera: Query<&mut Projection, With<WorldCamera>>
+    fnaf_assets: Res<FNAFAssets>,
+    mut proj: Query<&mut Projection, With<WorldCamera>>
 ) {
-    let mut w = world_camera.single_mut().unwrap();
-    let Projection::Orthographic(p) = &mut *w else {return;};
-    p.scale = 1.0;
-    // cmd.insert_resource(MousePos {0: None});
-    // cmd.spawn((
-    //     DespawnOnExit(STATE),
-    //     Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-    //     Sprite {
-    //         image: fnaf_assets.room.clone(),
-    //         ..default()
-    //     },
-    // )).observe(|mut event: On<Pointer<Click>>|{info!("Click: {:?}", event)});
+    match &mut *proj.single_mut().expect("nocam") {
+        Projection::Orthographic(proj) => {
+            proj.scale = 3.0;
+        },
+        _ => {}
+    }
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.room.clone(),
+            ..default()
+        },
+        Environment::Room,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.door.clone(),
+            ..default()
+        },
+        Environment::LDoor,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.door.clone(),
+            flip_x: true,
+            ..default()
+        },
+        Environment::RDoor,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.white_button.clone(),
+            ..default()
+        },
+        Environment::LWhitelight,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.white_button.clone(),
+            flip_x: true,
+            ..default()
+        },
+        Environment::RWhitelight,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.red_button.clone(),
+            ..default()
+        },
+        Environment::LRedlight,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.red_button.clone(),
+            flip_x: true,
+            ..default()
+        },
+        Environment::RRedlight,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.red_button.clone(),
+            ..default()
+        },
+        Environment::LWindow,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.red_button.clone(),
+            flip_x: true,
+            ..default()
+        },
+        Environment::RWindow,
+    ));
+}
 
+fn cleanup(
+    mut cmd: Commands,
+    mut proj: Query<&mut Projection, With<WorldCamera>>
+) {
+    match &mut *proj.single_mut().expect("nocam") {
+        Projection::Orthographic(proj) => {
+            proj.scale = 0.8;
+        },
+        _ => {}
+    }
+    cmd.remove_resource::<MousePos>();
+    cmd.remove_resource::<Rects>();
 }

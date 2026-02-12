@@ -26,13 +26,15 @@ struct GamesPlugin;
 #[cfg(feature="yaro")]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
+        use crate::pathfinder::plugin::PathfinderPlugin;
+
         app
             .insert_resource(LastState::default())
             .insert_resource(LastScreenshot::default())
             .init_state::<AppState>()
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
+                    .continue_to_state(AppState::Miami)
                     .load_collection::<GameAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
@@ -44,15 +46,22 @@ impl Plugin for GamesPlugin {
                     .load_collection::<novel::plugin::NovelSoundEffectsAssets>()
                     .load_collection::<fake_end::plugin::FakeEndAssets>()
                     .load_collection::<fnaf::plugin::FNAFAssets>()
+                    .load_collection::<miami::plugin::MiamiAssets>()
+                    .load_collection::<geometry_dash::plugin::GeometryDashAssets>()
             )
             .add_plugins((
+                PathfinderPlugin,
                 pacman_eat::plugin::PacmanEatPlugin,
+                geometry_dash::plugin::GeometryDashPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
                 platformer::plugin::PlatformerPlugin,
                 novel::plugin::NovelPlugin,
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
+                miami::plugin::MiamiPlugin,
+                
             ))
+            .add_systems(Startup, warmup_screenshot)
             .add_systems(OnEnter(AppState::Defeat), on_defeat)
             .add_systems(Update, (
                 bevy::dev_tools::states::log_transitions::<AppState>,
@@ -61,6 +70,8 @@ impl Plugin for GamesPlugin {
         ;
     }
 }
+
+
 
 
 #[cfg(not(feature = "yaro"))]
@@ -87,12 +98,12 @@ impl Plugin for GamesPlugin {
                     .load_collection::<fake_end::plugin::FakeEndAssets>()
                     .load_collection::<fnaf::plugin::FNAFAssets>()
                     .load_collection::<miami::plugin::MiamiAssets>()
+                    .load_collection::<geometry_dash::plugin::GeometryDashAssets>()
             )
             .add_plugins((
                 PathfinderPlugin,
-
-
                 pacman_eat::plugin::PacmanEatPlugin,
+                geometry_dash::plugin::GeometryDashPlugin,
                 flappy_bird::plugin::FlappyBirdPlugin,
                 platformer::plugin::PlatformerPlugin,
                 novel::plugin::NovelPlugin,
