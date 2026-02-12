@@ -8,6 +8,7 @@ use debug_utils::{
     inspector::plugin::SwitchableEguiInspectorPlugin,
 };
 use room::RoomPlugin;
+use crate::global_music::plugin::GlobalMusicPlugin;
 
 use crate::{shaders::bg::BGPlugin, tilemap::plugin::MapPlugin};
 
@@ -38,6 +39,7 @@ impl Plugin for CorePlugin {
                 EguiPlugin::default(),
                 CameraPlugin{initial_target_zoom: 1.0},
                 RoomPlugin::uninited(),
+                GlobalMusicPlugin,
                 // CharacterPlugin,
                 SwitchableEguiInspectorPlugin::default(),
                 DebugOverlayPlugin::default(),

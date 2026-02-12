@@ -33,6 +33,7 @@ impl Plugin for MapPlugin {
                 r"^.*::MiamiSpawnPoint$",
                 r"^.*::TiledPhysicsAvianBackend$",
                 r"^.*::TiledPhysicsBackend$",
+                r"^.*::TiledPhysicsSettings$",
                 
             ])
             .expect("Wrong regex"),

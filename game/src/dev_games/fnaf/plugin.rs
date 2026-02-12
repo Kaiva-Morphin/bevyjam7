@@ -45,7 +45,7 @@ impl Plugin for FNAFPlugin {
             .add_systems(OnEnter(STATE), (setup, init_rects))
             .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
             // .add_systems(OnEnter(LocalState::Game), begin_game)
-            .add_systems(Update, (update_mouse_pos).run_if(in_state(LocalState::Game)))
+            .add_systems(Update, (update_mouse_pos, handle_rects).run_if(in_state(LocalState::Game)))
             // .add_systems(Update, tick_defeat.run_if(in_state(LocalState::Defeat)))
             // .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
@@ -146,9 +146,10 @@ fn handle_rects(
     mouse_pos: Res<MousePos>,
     gizmos: Gizmos,
 ) {
-    for rect in rects {
-        gizmos.rect_2d(rect.center(), rect.size(), Color::Srgba(RED));
-    }
+    // let r = * rects;
+    // for rect in r {
+    //     gizmos.rect_2d(rect.center(), rect.size(), Color::Srgba(RED));
+    // }
 }
 
 fn tick_transition(

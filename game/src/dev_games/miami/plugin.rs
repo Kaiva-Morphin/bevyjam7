@@ -109,11 +109,11 @@ fn tick(
 
 fn cleanup(
     mut controller: ResMut<CameraController>,
-    mut camera: Query<(&mut Transform, &mut Projection), With<WorldCamera>>,
+    mut camera: Query<&mut Transform, With<WorldCamera>>,
 ){
     controller.follow_speed = 0.0;
     controller.target_zoom = 0.8;
-    let Ok((mut t, mut p)) = camera.single_mut() else {return;};
+    let Ok(mut t) = camera.single_mut() else {return;};
     t.rotation.z = 0.0;
 }
 

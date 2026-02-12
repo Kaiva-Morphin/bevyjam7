@@ -20,10 +20,10 @@ pub fn setup_shadows(
     mut cmd: Commands,
     q: Query<(Entity, &ChildOf, &Sprite), With<ShadowInit>>
 ) {
-    for (e, c, s)  in q.iter() {
+    for (e, _c, s)  in q.iter() {
         let mut s = s.clone();
         s.color = miami_shadow_color();
-        let shadow = cmd.spawn((
+        let _shadow = cmd.spawn((
             DespawnOnExit(STATE),
             Name::new("Shadow"),
             s,
@@ -32,7 +32,7 @@ pub fn setup_shadows(
         )).id();
         cmd.entity(e).remove::<ShadowInit>()
             .insert((ShadowCaster, Name::new("ShadowCaster")));
-        ;
+        
         // cmd.entity(c.parent()).add_child(shadow);
     }
 }
@@ -43,7 +43,7 @@ pub fn update_shadows(
     caster_q: Query<(&Sprite, &Transform, &GlobalTransform), (With<ShadowCaster>, Without<ShadowOf>)>,
 ){
     for (mut sprite, mut transform, shadow) in shadow_q {
-        let Ok((s, t, g)) = caster_q.get(shadow.0) else {continue};
+        let Ok((s, _t, g)) = caster_q.get(shadow.0) else {continue};
         transform.translation = g.translation() + MIAMI_SHADOW_OFFSET;
         transform.rotation = g.rotation();
         sprite.rect = s.rect.clone();

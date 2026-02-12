@@ -1,5 +1,3 @@
-use std::f32::consts::PI;
-
 use avian2d::math::Vector;
 use bevy::prelude::*;
 use games::prelude::AppState;
@@ -252,7 +250,7 @@ impl Weapon {
                 )).id()
             },
             WeaponType::Axe | WeaponType::Baguette => {
-                let mut t = Transform::from_xyz(0.0, -6.0, 0.0);
+                let t = Transform::from_xyz(0.0, -6.0, 0.0);
                 let e = cmd.spawn((
                     DespawnOnExit(STATE),
                     layer,
@@ -283,7 +281,7 @@ impl Weapon {
                 cmd.entity(sprite).add_child(e);
                 e
             }
-            _ => unimplemented!()
+            // _ => unimplemented!()
         }
     }
 }
@@ -460,7 +458,7 @@ pub fn shoot(
     assets: Res<MiamiAssets>,
 ){
     let dt = time.dt();
-    for (child, controller, cc, a, p) in characters.iter() {
+    for (_child, controller, cc, a, p) in characters.iter() {
         let Ok((mut w,mut w_transform, wc)) = weapons.get_mut(a.0) else {continue;};
         // info!("Weapon!");
         let Ok((mut w_sprite, sprite_transform)) = weapon_sprite.get_mut(wc.sprite) else {continue;};
@@ -522,14 +520,14 @@ pub fn on_thrown_weapon_collision(
 
 pub fn health_watcher(
     mut character: Query<(Entity, &GlobalTransform, &CharacterComponents, &mut CharacterController)>,
-    mut sprite: Query<&GlobalTransform, With<CharacterSprite>>,
+    sprite: Query<&GlobalTransform, With<CharacterSprite>>,
     mut cmd: Commands,
     assets: Res<MiamiAssets>,
 ) {
-    let mut rng = rand::rng();
+    let mut _rng = rand::rng();
     for (e, t, components, mut controller) in character.iter_mut() {
         let dmg = controller.hp - controller.prev_hp;
-        let Ok(s) = sprite.get(components.sprite) else {continue;};
+        let Ok(_s) = sprite.get(components.sprite) else {continue;};
         if dmg == 0.0 {continue;}
         let mut b = Transform::from_translation(t.translation());
         b.translation.z += BLOOD_Z_TRANSLATION;
@@ -614,12 +612,12 @@ pub fn on_projectile_hit(
     mut cmd: Commands,
 ){
     if state.get() != &STATE {return;};
-    let Ok((e, mut projectile, mut t)) = projectile.get_mut(event.collider1) else {return;};
+    let Ok((e, mut projectile, t)) = projectile.get_mut(event.collider1) else {return;};
     if let Ok(()) = q.get(event.collider2) && projectile.despawn_on_wall {
         cmd.entity(e).despawn();
         return;
     }
-    let Ok((mut c, gt, p)) = controllers.get_mut(event.collider2) else {return;};
+    let Ok((mut c, gt, _p)) = controllers.get_mut(event.collider2) else {return;};
     // if p.is_none() && !projectile.from_player {return;} 
     if projectile.piercing <= 0 {
         cmd.entity(e).despawn();
@@ -634,7 +632,6 @@ pub fn on_projectile_hit(
     c.last_impact_back = d.truncate().dot(ld) < 0.0;
 
     projectile.piercing -= 1;
-    info!("Damaging: {} to {}", projectile.damage, c.hp);
     c.hp -= projectile.damage;
 }
 

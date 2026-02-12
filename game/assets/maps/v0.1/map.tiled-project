@@ -297,6 +297,42 @@
         {
             "color": "#ff000000",
             "drawFill": true,
+            "id": 23,
+            "members": [
+            ],
+            "name": "game::dev_games::platformer::plugin::NextTrigger",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 24,
+            "members": [
+            ],
+            "name": "game::dev_games::platformer::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 25,
+            "members": [
+            ],
+            "name": "game::dev_games::platformer::plugin::StopTrigger",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
             "id": 22,
             "members": [
             ],
@@ -345,59 +381,6 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 12,
-            "members": [
-                {
-                    "name": "zoom",
-                    "type": "float",
-                    "value": 0
-                }
-            ],
-            "name": "room::MapRoom",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 23,
-            "members": [
-            ],
-            "name": "game::dev_games::platformer::plugin::NextTrigger",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 24,
-            "members": [
-            ],
-            "name": "game::dev_games::platformer::plugin::SpawnPoint",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 25,
-            "members": [
-            ],
-            "name": "game::dev_games::platformer::plugin::StopTrigger",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
             "id": 26,
             "members": [
                 {
@@ -416,6 +399,52 @@
             "useAs": [
                 "property"
             ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 12,
+            "members": [
+                {
+                    "name": "zoom",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "room::MapRoom",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 27,
+            "members": [
+                {
+                    "name": ":variant",
+                    "propertyType": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
+                    "type": "string",
+                    "value": "Yellow"
+                }
+            ],
+            "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "id": 28,
+            "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Yellow",
+                "White"
+            ],
+            "valuesAsFlags": false
         }
     ]
 }
