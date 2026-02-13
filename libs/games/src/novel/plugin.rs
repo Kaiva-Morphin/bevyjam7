@@ -8,7 +8,7 @@ use crate::novel::engine::*;
 
 
 const STATE: AppState = AppState::Novel;
-const NEXT_STATE: AppState = AppState::FakeEnd;
+const NEXT_STATE: AppState = AppState::Novel2Fnaf;
 
 const CHARS_PER_SECOND : f32 = 20.0;
 
@@ -68,6 +68,7 @@ backgrounds! {
     KitchenNight => "images/novel/bg/Kitchen_Night.png",
     GroveStreet => "images/novel/bg/grove.jpg",
     Computer => "images/novel/bg/supercomputer.png",
+    ComputerWithBevy => "images/novel/bg/supercomputer&bevy.png",
 }
 
 sound_effects! {
@@ -214,6 +215,12 @@ impl Default for NovelState {
                 },
                 Computer Silence {
                     => "So what did YOU choose?"
+                },
+                ComputerWithBevy Silence {
+                    => "?"
+                },
+                ComputerWithBevy Silence {
+                    => "..."
                 },
             },
         }
@@ -524,7 +531,9 @@ fn tick(
     let pressed = keyboard_input.just_pressed(KeyCode::Space);
     if state.is_finished() {
         if pressed {
-            next.set(NEXT_STATE);
+            info!("DONBASS");
+            cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
+                .observe(await_screenshot_and_translate(NEXT_STATE));
         }
         return;
     }
