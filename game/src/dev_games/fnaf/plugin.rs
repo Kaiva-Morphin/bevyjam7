@@ -790,7 +790,6 @@ fn defeat(
     mut lobster: Query<&mut Visibility, With<Lobster>>,
     time: Res<Time>,
     mut screenshot: ResMut<LastScreenshot>,
-    canvas: Res<camera::ViewportCanvas>,
     mut lobster_timer: ResMut<LobsterTimer>,
 ) {
     let mut visibility = lobster.single_mut().unwrap();

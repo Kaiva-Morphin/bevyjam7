@@ -5,7 +5,6 @@ pub mod platformer;
 
 pub use games::*;
 pub mod plugin;
-pub mod geometry_dash;
 pub mod bevy_editor;
 pub mod fnaf;
 pub mod miami;

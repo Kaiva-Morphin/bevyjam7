@@ -10,8 +10,6 @@ pub mod prelude;
 pub mod properties;
 pub mod dev_games;
 // pub mod pathfinder;
-pub mod hints;
-
 
 fn main() {
     App::new()
@@ -42,7 +40,7 @@ impl Plugin for GamesPlugin {
             .add_systems(OnExit(AppState::LoadingAssets), cleanup_loading_screen)
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::PacmanEnter)
+                    .continue_to_state(AppState::Geometry)
                     .load_collection::<GameAssets>()
                     .load_collection::<HintAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
