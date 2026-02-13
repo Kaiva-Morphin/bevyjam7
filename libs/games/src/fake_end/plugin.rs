@@ -31,30 +31,35 @@ pub struct JokerTexture {
 enum LocalState {
     #[default]
     Game,
-    Aboba,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug, Default, States)]
+enum SuperLocalState {
+    #[default]
+    Setup,
+    Game,
+    JokerUp,
+    JokerDown,
 }
 
 #[derive(Resource, PartialEq, Eq)]
-enum SuperLocalState {
-    Setup,
-    Game,
-    Aboba,
-}
+pub struct JokerSetUp(bool);
 
 pub struct FakeEndPlugin;
 impl Plugin for FakeEndPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_systems(Startup, global_setup.after(camera::setup_camera)) // .after(crate::||  ||::plugin::setup) todo:!!
-            .insert_resource(SuperLocalState::Setup)
-            // .insert_resource(Pipes::default())
+            .init_state::<SuperLocalState>()
             .add_sub_state::<LocalState>()
+            .insert_resource(JokerSetUp(false))
             .add_systems(OnEnter(STATE), setup)
             // .add_systems(OnEnter(LocalState::Game), begin_game)
-            .add_systems(Update, (monke_fall, paste_screenshot).after(setup).run_if(resource_equals(SuperLocalState::Game)))
+            .add_systems(Update, 
+                (monke_fall, paste_screenshot).run_if(not(in_state(SuperLocalState::JokerDown))).run_if(resource_equals(JokerSetUp(true))))
             // .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
             // .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
-            .add_systems(Update, cleanup.run_if(resource_equals(SuperLocalState::Aboba)))
+            .add_systems(Update, cleanup.run_if(in_state(SuperLocalState::JokerDown)))
             // .add_observer(collision_handler)
             ;
     }
@@ -65,7 +70,7 @@ fn global_setup(
     mut images: ResMut<Assets<Image>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
-    cam: Query<Entity, With<WorldCamera>>,
+    cam: Query<Entity, With<HighresCamera>>,
     asset_server: Res<AssetServer>
 ) {
     let size = Extent3d {
@@ -89,7 +94,7 @@ fn global_setup(
     let image_handle = images.add(image);
     let cam = cam.iter().next().expect("No cam!");
     cmd.spawn((
-        DespawnOnEnter(LocalState::Aboba),
+        DespawnOnEnter(SuperLocalState::JokerDown),
         UiTargetCamera(cam),
         Node{
             width: Val::Percent(100.0),
@@ -103,7 +108,7 @@ fn global_setup(
     ZIndex(10000)));
 
     cmd.spawn((
-        DespawnOnEnter(LocalState::Aboba),
+        DespawnOnEnter(SuperLocalState::JokerDown),
         Camera3d::default(),
         Camera {
             clear_color: ClearColorConfig::Custom(Color::Srgba(Srgba::rgba_u8(0, 0, 0, 0))),
@@ -125,15 +130,18 @@ fn global_setup(
         base_color_texture: Some(text.clone()),
         ..default()
     });
-    
+    let mut t = Transform::from_translation(Vec3::new(0.0, 0., -2.));
+    let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
+    let q = Quat::from_axis_angle(Vec3::X, PI / 2.);
+    t.rotate_around(pivot_point, q);
     cmd.spawn((
         Name::new("Texture rect"),
-        DespawnOnEnter(LocalState::Aboba),
+        DespawnOnEnter(SuperLocalState::JokerDown),
         Mesh3d(mesh),
         MeshMaterial3d(material),
-        Transform::from_translation(Vec3::new(0.0, 5.05, -2.)),
         RenderLayers::layer(3),
         TextureRect,
+        t,
     ));
     cmd.insert_resource(JokerTexture {handle: image_handle});
 }
@@ -141,9 +149,11 @@ fn global_setup(
 fn setup(
     mut cmd: Commands,
     mut joker_rect: Query<&mut Transform, With<TextureRect>>,
-    mut super_local_state: ResMut<SuperLocalState>,
+    mut super_local_state: ResMut<NextState<SuperLocalState>>,
+    mut joker_set_up: ResMut<JokerSetUp>,
 ) {
-    *super_local_state = SuperLocalState::Game;
+    joker_set_up.0 = true;
+    super_local_state.set(SuperLocalState::Game);
     cmd.insert_resource(FallStart {start: false, num: 0, timer: 0.});
     cmd.insert_resource(ClimbStart {climbed: false, num: 0, timer: 0.});
     let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
@@ -170,95 +180,104 @@ pub struct ClimbStart {
 fn monke_fall(
     mut cmd: Commands,
     mut transform_q: Query<&mut Transform, With<TextureRect>>,
-    mut fall_start: ResMut<FallStart>,
-    mut climb_start: ResMut<ClimbStart>,
+    fall_start: Option<ResMut<FallStart>>,
+    climb_start: Option<ResMut<ClimbStart>>,
     time: Res<Time>,
-    fake_assets: Res<FakeEndAssets>,
-    mut super_local_state: ResMut<SuperLocalState>,
+    fake_assets: Option<Res<FakeEndAssets>>,
+    mut super_local_state: ResMut<NextState<SuperLocalState>>,
     mut appstate: ResMut<NextState<AppState>>,
 ) {
-    const DEGPF: f32 = -0.01;
-    if climb_start.num as f32 * -DEGPF > PI / 2. {
-        climb_start.timer += time.delta_secs();
-        if climb_start.timer >= 2.0 {
-            fall_start.start = true;
+    if let Some(mut fall_start) = fall_start {
+        let mut climb_start = climb_start.unwrap();
+        let fake_assets = fake_assets.unwrap();
+        const DEGPF: f32 = -0.01;
+        if climb_start.num as f32 * -DEGPF > PI / 2. {
+            climb_start.timer += time.delta_secs();
+            if climb_start.timer >= 2.0 {
+                fall_start.start = true;
+            }
+        } else {
+            if climb_start.num == 0 {
+                cmd.spawn((
+                    DespawnOnEnter(SuperLocalState::JokerDown),
+                    AudioPlayer(fake_assets.creek1.clone()),
+                    PlaybackSettings {
+                        mode: bevy::audio::PlaybackMode::Once,
+                        ..default()
+                    },
+                ));
+            }
+            let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
+            let q = Quat::from_axis_angle(Vec3::X, DEGPF);
+            transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
+            climb_start.num += 1;
         }
-    } else {
-        if climb_start.num == 0 {
-            cmd.spawn((
-                DespawnOnEnter(LocalState::Aboba),
-                AudioPlayer(fake_assets.creek1.clone()),
-                PlaybackSettings {
-                    mode: bevy::audio::PlaybackMode::Once,
-                    ..default()
-                },
-            ));
+        if fall_start.start {
+            if fall_start.num == 0 {
+                appstate.set(NEXT_STATE);
+                super_local_state.set(SuperLocalState::JokerUp);
+                cmd.spawn((
+                    DespawnOnEnter(SuperLocalState::JokerDown),
+                    AudioPlayer(fake_assets.creek2.clone()),
+                    PlaybackSettings {
+                        mode: bevy::audio::PlaybackMode::Once,
+                        ..default()
+                    },
+                ));
+            }
+            if fall_start.num as f32 * -DEGPF > PI {
+                super_local_state.set(SuperLocalState::JokerDown);
+            }
+            let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
+            let q = Quat::from_axis_angle(Vec3::X, DEGPF);
+            transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
+            fall_start.num += 1;
         }
-        let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
-        let q = Quat::from_axis_angle(Vec3::X, DEGPF);
-        transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
-        climb_start.num += 1;
-    }
-    if fall_start.start {
-        if fall_start.num == 0 {
-            cmd.spawn((
-                DespawnOnEnter(LocalState::Aboba),
-                AudioPlayer(fake_assets.creek2.clone()),
-                PlaybackSettings {
-                    mode: bevy::audio::PlaybackMode::Once,
-                    ..default()
-                },
-            ));
-        }
-        if fall_start.num as f32 * -DEGPF > PI {
-            *super_local_state = SuperLocalState::Aboba;
-            appstate.set(AppState::Novel);
-        }
-        let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
-        let q = Quat::from_axis_angle(Vec3::X, DEGPF);
-        transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
-        fall_start.num += 1;
     }
 }
 
 fn paste_screenshot(
     last: Res<LastScreenshot>,
     mut cmd: Commands,
-    cam: Query<Entity, With<WorldCamera>>,
+    cam: Query<Entity, With<HighresCamera>>,
     mut ran: Local<bool>
 ) {
     if !*ran {
-        *ran = true;
-        let img = last.image.clone().unwrap();
-        let cam = cam.iter().next().expect("No cam!");
-        cmd.spawn((
-            Name::new("Screenshot"),
-            DespawnOnEnter(LocalState::Aboba),
-            Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-            // RenderLayers::layer(3),
-            UiTargetCamera(cam),
-            ImageNode {
-                image: img,
-                ..default()
-            },
-            Node {
-                position_type: PositionType::Absolute,
-                width: Val::Percent(100.),
-                height: Val::Percent(100.),
-                ..default()
-            },
-            ZIndex(1000),
-        ));
+        if let Some(img) = last.image.clone() {
+            println!("ASDSASDSD");
+            *ran = true;
+            let cam = cam.iter().next().expect("No cam!");
+            cmd.spawn((
+                Name::new("Screenshot"),
+                DespawnOnEnter(SuperLocalState::JokerUp),
+                Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+                // RenderLayers::layer(3),
+                UiTargetCamera(cam),
+                ImageNode {
+                    image: img,
+                    ..default()
+                },
+                Node {
+                    position_type: PositionType::Absolute,
+                    width: Val::Percent(100.),
+                    height: Val::Percent(100.),
+                    ..default()
+                },
+                ZIndex(1000),
+            ));
+        }
     }
 }
 
 fn cleanup(
     mut cmd: Commands,
     mut cam: Query<&mut Transform, With<WorldCamera>>,
-    mut state: ResMut<NextState<LocalState>>,
+    mut ran: Local<bool>
 ) {
-    state.set(LocalState::Aboba);
-    cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
-    cmd.remove_resource::<FallStart>();
-    cmd.remove_resource::<ClimbStart>();
+    if !*ran {
+        *ran = true;
+        cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
+        cmd.remove_resource::<FallStart>();
+        cmd.remove_resource::<ClimbStart>();
+    }
 }

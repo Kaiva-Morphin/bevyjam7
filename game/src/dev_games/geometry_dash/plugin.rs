@@ -79,7 +79,7 @@ pub struct GeometryDashAssets {
     cube_layout: Handle<TextureAtlasLayout>,
     #[asset(path = "sounds/170144__timgormly__8-bit-explosion2.mp3")]
     explosion: Handle<AudioSource>,
-    #[asset(path = "sounds/170144__timgormly__8-bit-explosion2.mp3")]
+    #[asset(path = "sounds/novel/silence.mp3")]
     bg_music: Handle<AudioSource>,
 }
 
@@ -459,7 +459,6 @@ fn defeat(
     mut cmd: Commands,
     mut state: ResMut<NextState<AppState>>,
     mut screenshot: ResMut<LastScreenshot>,
-    canvas: Res<camera::ViewportCanvas>,
     assets: Res<GeometryDashAssets>,
 ){
     cmd.spawn((

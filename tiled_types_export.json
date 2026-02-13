@@ -35,7 +35,7 @@
     ]
   },
   {
-    "id": 23,
+    "id": 22,
     "name": "avian2d::collision::collider::layers::LayerMask",
     "type": "class",
     "useAs": [
@@ -82,7 +82,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 24,
+    "id": 23,
     "name": "bevy_color::color::Color",
     "type": "class",
     "useAs": [
@@ -336,18 +336,7 @@
     "members": []
   },
   {
-    "id": 21,
-    "name": "game::pathfinder::plugin::PathfinderObstacle",
-    "type": "class",
-    "useAs": [
-      "property"
-    ],
-    "color": "#000000",
-    "drawFill": true,
-    "members": []
-  },
-  {
-    "id": 25,
+    "id": 24,
     "name": "glam::Vec2",
     "type": "class",
     "useAs": [
@@ -369,7 +358,7 @@
     ]
   },
   {
-    "id": 22,
+    "id": 21,
     "name": "room::MapRoom",
     "type": "class",
     "useAs": [

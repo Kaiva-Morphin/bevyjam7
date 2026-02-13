@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use crate::{actors, backgrounds, properties::{AppState, LastState}, novel::engine::NovelStage, novel_music, prelude::*, sound_effects, stages};
+use crate::{actors, backgrounds, global_music::plugin::NewBgMusic, novel::engine::NovelStage, novel_music, prelude::*, properties::{AppState, LastState}, sound_effects, stages};
 use bevy::{audio::{PlaybackMode, Volume}, text::{FontSmoothing, LineHeight}};
 use bevy_asset_loader::prelude::AssetCollection;
 use crate::novel::engine::*;
@@ -303,6 +303,9 @@ pub fn setup(
     music: Res<NovelMusicAssets>,
     sfx: Res<NovelSoundEffectsAssets>,
 ){
+    cmd.spawn((
+        NewBgMusic{handle: None, instant_translation: true},
+    ));
     let s = NovelState::default().inited();
     let cam = cam.iter().next().expect("No cam!");
     let slicer = TextureSlicer {
