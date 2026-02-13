@@ -8,7 +8,7 @@ pub struct FlappyBirdPlugin;
 // TODO!: TRANSITION EASINGS
 
 const STATE: AppState = AppState::FlappyBird;
-const NEXT_STATE: AppState = AppState::Platformer;
+const NEXT_STATE: AppState = AppState::Geometry;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
 #[source(AppState = STATE)]

@@ -27,16 +27,24 @@ struct GamesPlugin;
 #[cfg(feature="yaro")]
 impl Plugin for GamesPlugin {
     fn build(&self, app: &mut App) {
-        use crate::pathfinder::plugin::PathfinderPlugin;
+        use bevy::asset::embedded_asset;
+
+        use crate::{hints::{HintAssets, update_hints}, pathfinder::plugin::PathfinderPlugin};
+        let omit_prefix = "";
+        embedded_asset!(app, omit_prefix, "../assets/images/loading_screen.jpg");
 
         app
             .insert_resource(LastState::default())
             .insert_resource(LastScreenshot::default())
             .init_state::<AppState>()
+            .add_systems(Update, update_hints)
+            .add_systems(Startup, setup_loading_screen)
+            .add_systems(OnExit(AppState::LoadingAssets), cleanup_loading_screen)
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Geometry)
+                    .continue_to_state(AppState::FlappyBird)
                     .load_collection::<GameAssets>()
+                    .load_collection::<HintAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
                     .load_collection::<flappy_bird::plugin::FlappyBirdAssets>()
                     .load_collection::<platformer::plugin::PlatformerAssets>()

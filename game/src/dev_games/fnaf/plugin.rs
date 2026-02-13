@@ -1,12 +1,13 @@
 use bevy::{audio::Volume, color::palettes::css::{RED, WHITE}};
 use bevy_asset_loader::asset_collection::AssetCollection;
+use rand::Rng;
 
 use crate::prelude::*;
 
 pub struct FNAFPlugin;
 
 const STATE: AppState = AppState::Fnaf;
-const NEXT_STATE: AppState = AppState::PacmanEnter;
+const NEXT_STATE: AppState = AppState::FakeEnd;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
 #[source(AppState = STATE)]
@@ -21,20 +22,8 @@ enum LocalState {
 
 #[derive(AssetCollection, Resource)]
 pub struct FNAFAssets {
-    #[asset(path = "images/fnaf/room.png")]
-    room: Handle<Image>,
-    #[asset(path = "images/fnaf/white.png")]
-    white_button: Handle<Image>,
-    #[asset(path = "images/fnaf/red.png")]
-    red_button: Handle<Image>,
-    #[asset(path = "images/fnaf/door.png")]
-    door: Handle<Image>,
-    #[asset(path = "images/fnaf/window.png")]
-    window: Handle<Image>,
     #[asset(path = "sounds/fnaf/ambience.mp3")]
     ambience: Handle<AudioSource>,
-    #[asset(path = "sounds/fnaf/faz.mp3")]
-    faz: Handle<AudioSource>,
     #[asset(path = "sounds/fnaf/open_door.mp3")]
     open_door: Handle<AudioSource>,
     #[asset(path = "sounds/fnaf/close_door.mp3")]
@@ -43,10 +32,33 @@ pub struct FNAFAssets {
     light: Handle<AudioSource>,
     #[asset(path = "sounds/fnaf/lobster.mp3")]
     lobster_audio: Handle<AudioSource>,
-    #[asset(path = "images/fnaf/lobster.jpg")]
-    lobster_pic: Handle<Image>,
+    #[asset(path = "sounds/fnaf/faz.mp3")]
+    faz: Handle<AudioSource>,
     #[asset(path = "sounds/fnaf/yay.mp3")]
     yay: Handle<AudioSource>,
+    #[asset(path = "sounds/fnaf/mem.mp3")]
+    mem: Handle<AudioSource>,
+    #[asset(path = "sounds/fnaf/ur.mp3")]
+    ur: Handle<AudioSource>,
+
+    #[asset(path = "images/fnaf/room.png")]
+    room: Handle<Image>,
+    #[asset(path = "images/fnaf/white.png")]
+    white_button: Handle<Image>,
+    #[asset(path = "images/fnaf/red.png")]
+    red_button: Handle<Image>,
+    #[asset(path = "images/fnaf/door.png")]
+    door: Handle<Image>,
+    #[asset(path = "images/fnaf/light_l.png")]
+    light_l: Handle<Image>,
+    #[asset(path = "images/fnaf/light_R.png")]
+    light_r: Handle<Image>,
+    #[asset(path = "images/fnaf/fred_l.png")]
+    fred_l: Handle<Image>,
+    #[asset(path = "images/fnaf/fred_r.png")]
+    fred_r: Handle<Image>,
+    #[asset(path = "images/fnaf/lobster.jpg")]
+    lobster_pic: Handle<Image>,
 }
 
 impl Plugin for FNAFPlugin {
@@ -62,7 +74,7 @@ impl Plugin for FNAFPlugin {
             .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
             // .add_systems(OnEnter(LocalState::Game), begin_game)
             .add_systems(Update, (
-                update_mouse_pos, update_text, handle_faz_time,
+                update_mouse_pos, update_text, handle_faz_time, play_mem, handle_faz,
                 (handle_rects, handle_game_logic).chain()).run_if(in_state(LocalState::Game)))
             .add_systems(Update, defeat.run_if(in_state(LocalState::Defeat)))
             .add_systems(Update, win.run_if(in_state(LocalState::Win)))
@@ -102,12 +114,6 @@ pub struct EnvironmentData {
     left_light_on: bool,
     right_light_on: bool,
 }
-
-// 0 0 - top left; LR 53 528, 121 410; LW 52 673, 122 570; faz 713 386, 730 373
-// 1728x972
-// todo: tick transition change to phone guy
-const SPRITE_XSIZE: f32 = 1728.;
-const SPRITE_YSIZE: f32 = 972.;
 
 fn init_rects(
     mut cmd: Commands,
@@ -188,6 +194,7 @@ fn handle_rects(
     mut env_data: ResMut<EnvironmentData>,
     mut env: Query<(&mut Visibility, &Environment)>,
     light_audio: Query<Entity, With<LightAudio>>,
+    bear_data: Res<BearData>,
 ) {
     gizmos.rect_2d(rects.faz.center(), rects.faz.size(), Color::Srgba(RED));
     gizmos.rect_2d(rects.red_left.center(), rects.red_left.size(), Color::Srgba(RED));
@@ -309,8 +316,23 @@ fn handle_rects(
                         Environment::LWhitelight => {
                             *visibility = Visibility::Visible
                         }
-                        Environment::LWindow => {
-                            *visibility = Visibility::Visible
+                        Environment::LLight => {
+                            if !bear_data.bear_here || bear_data.right {
+                                *visibility = Visibility::Visible
+                            }
+                        }
+                        Environment::LBear => {
+                            if bear_data.bear_here && !bear_data.right {
+                                *visibility = Visibility::Visible;
+                                cmd.spawn((
+                                    DespawnOnExit(STATE),
+                                    AudioPlayer(fnaf_assets.ur.clone()),
+                                    PlaybackSettings {
+                                        mode: bevy::audio::PlaybackMode::Once,
+                                        ..default()
+                                    },
+                                ));
+                            }
                         }
                         _ => {}
                     }
@@ -326,7 +348,10 @@ fn handle_rects(
                         Environment::LWhitelight => {
                             *visibility = Visibility::Hidden
                         }
-                        Environment::LWindow => {
+                        Environment::LLight => {
+                            *visibility = Visibility::Hidden
+                        }
+                        Environment::LBear => {
                             *visibility = Visibility::Hidden
                         }
                         _ => {}
@@ -351,8 +376,23 @@ fn handle_rects(
                         Environment::RWhitelight => {
                             *visibility = Visibility::Visible
                         }
-                        Environment::RWindow => {
-                            *visibility = Visibility::Visible
+                        Environment::RLight => {
+                            if !bear_data.bear_here || !bear_data.right {
+                                *visibility = Visibility::Visible
+                            }
+                        }
+                        Environment::RBear => {
+                            if bear_data.bear_here && bear_data.right {
+                                *visibility = Visibility::Visible;
+                                cmd.spawn((
+                                    DespawnOnExit(STATE),
+                                    AudioPlayer(fnaf_assets.ur.clone()),
+                                    PlaybackSettings {
+                                        mode: bevy::audio::PlaybackMode::Once,
+                                        ..default()
+                                    },
+                                ));
+                            }
                         }
                         _ => {}
                     }
@@ -368,7 +408,10 @@ fn handle_rects(
                         Environment::RWhitelight => {
                             *visibility = Visibility::Hidden
                         }
-                        Environment::RWindow => {
+                        Environment::RLight => {
+                            *visibility = Visibility::Hidden
+                        }
+                        Environment::RBear => {
                             *visibility = Visibility::Hidden
                         }
                         _ => {}
@@ -394,10 +437,11 @@ fn handle_game_logic(
     env_data: Res<EnvironmentData>,
     mut battery: ResMut<Battery>,
     time: Res<Time>,
+    mut state: ResMut<NextState<LocalState>>,
 ) {
     let dt = time.delta_secs();
-    const DOOR_DISCHARGE: f32 = 3.;
-    const WINDOW_DISCHARGE: f32 = 1.;
+    const DOOR_DISCHARGE: f32 = 1.25;
+    const WINDOW_DISCHARGE: f32 = 0.4;
     let mut discharge = 0.;
     if !env_data.left_door_open {
         discharge += DOOR_DISCHARGE * dt;
@@ -412,6 +456,9 @@ fn handle_game_logic(
         discharge += WINDOW_DISCHARGE * dt;
     }
     battery.charge -= discharge;
+    if battery.charge <= 0. {
+        state.set(LocalState::Defeat); //todo: add winscreen
+    }
 }
 
 fn update_text(
@@ -482,17 +529,21 @@ pub enum Environment {
     RWhitelight,
     LRedlight,
     RRedlight,
-    LWindow,
-    RWindow,
+    LLight,
+    RLight,
     Faz,
+    LBear,
+    RBear,
 }
 
 fn setup(
     mut cmd: Commands,
     fnaf_assets: Res<FNAFAssets>,
     asset_server: Res<AssetServer>,
-    mut proj: Query<&mut Projection, With<WorldCamera>>
+    mut proj: Query<&mut Projection, With<WorldCamera>>,
+    mut state: ResMut<LastState>,
 ) {
+    state.state = STATE;
     cmd.insert_resource(MousePos(None));
     cmd.insert_resource(EnvironmentData {
         left_door_open: true,
@@ -502,6 +553,10 @@ fn setup(
     });
     cmd.insert_resource(FazTime {start_time: 0., time_to_show: 12});
     cmd.insert_resource(Battery {charge: 100.});
+    cmd.insert_resource(MemTimer {timer: 0., disable: false});
+    cmd.insert_resource(BearData::default());
+    cmd.insert_resource(WinscreenTimer::default());
+    cmd.insert_resource(LobsterTimer::default());
     cmd.spawn((
         DespawnOnExit(STATE),
         AudioPlayer(fnaf_assets.ambience.clone()),
@@ -531,6 +586,7 @@ fn setup(
             ..default()
         },
         Environment::LDoor,
+        Transform::from_xyz(0., 0., 10.),
         Visibility::Hidden,
     ));
     cmd.spawn((
@@ -541,12 +597,14 @@ fn setup(
             ..default()
         },
         Environment::RDoor,
+        Transform::from_xyz(0., 0., 10.),
         Visibility::Hidden,
     ));
     cmd.spawn((
         DespawnOnExit(STATE),
         Sprite {
             image: fnaf_assets.white_button.clone(),
+            flip_x: true,
             ..default()
         },
         Environment::LWhitelight,
@@ -556,7 +614,6 @@ fn setup(
         DespawnOnExit(STATE),
         Sprite {
             image: fnaf_assets.white_button.clone(),
-            flip_x: true,
             ..default()
         },
         Environment::RWhitelight,
@@ -566,6 +623,7 @@ fn setup(
         DespawnOnExit(STATE),
         Sprite {
             image: fnaf_assets.red_button.clone(),
+            flip_x: true,
             ..default()
         },
         Environment::LRedlight,
@@ -575,7 +633,6 @@ fn setup(
         DespawnOnExit(STATE),
         Sprite {
             image: fnaf_assets.red_button.clone(),
-            flip_x: true,
             ..default()
         },
         Environment::RRedlight,
@@ -584,20 +641,41 @@ fn setup(
     cmd.spawn((
         DespawnOnExit(STATE),
         Sprite {
-            image: fnaf_assets.window.clone(),
+            image: fnaf_assets.light_l.clone(),
             ..default()
         },
-        Environment::LWindow,
+        Environment::LLight,
+        Transform::from_xyz(0., 0., 1.),
         Visibility::Hidden,
     ));
     cmd.spawn((
         DespawnOnExit(STATE),
         Sprite {
-            image: fnaf_assets.window.clone(),
-            flip_x: true,
+            image: fnaf_assets.light_r.clone(),
             ..default()
         },
-        Environment::RWindow,
+        Environment::RLight,
+        Transform::from_xyz(0., 0., 1.),
+        Visibility::Hidden,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.fred_l.clone(),
+            ..default()
+        },
+        Environment::LBear,
+        Transform::from_xyz(0., 0., 2.),
+        Visibility::Hidden,
+    ));
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Sprite {
+            image: fnaf_assets.fred_r.clone(),
+            ..default()
+        },
+        Environment::RBear,
+        Transform::from_xyz(0., 0., 2.),
         Visibility::Hidden,
     ));
     cmd.spawn((
@@ -607,17 +685,18 @@ fn setup(
             flip_x: true,
             ..default()
         },
-        Lobster(0.),
+        Lobster,
+        Transform::from_xyz(0., 0., 100.),
         Visibility::Hidden,
     ));
     cmd.spawn((
         DespawnOnExit(STATE),
         Sprite {
-            image: fnaf_assets.lobster_pic.clone(),
+            image: fnaf_assets.lobster_pic.clone(), // todo: change
             flip_x: true,
             ..default()
         },
-        Winscreen(0.),
+        Winscreen,
         Visibility::Hidden,
     ));
     let font = asset_server.load("fonts/kaivs_minegram_v1.ttf");
@@ -693,57 +772,65 @@ fn cleanup(
     cmd.remove_resource::<EnvironmentData>();
     cmd.remove_resource::<Battery>();
     cmd.remove_resource::<FazTime>();
+    cmd.remove_resource::<MemTimer>();
+    cmd.remove_resource::<BearData>();
+    cmd.remove_resource::<LobsterTimer>();
+    cmd.remove_resource::<WinscreenTimer>();
 }
 
 #[derive(Component)]
-pub struct Lobster(f32);
+pub struct Lobster;
+
+#[derive(Resource, Default)]
+pub struct LobsterTimer(f32);
 
 fn defeat(
     mut cmd: Commands,
     fnaf_assets: Res<FNAFAssets>,
-    mut lobster: Query<(&mut Visibility, &mut Lobster)>,
+    mut lobster: Query<&mut Visibility, With<Lobster>>,
     time: Res<Time>,
-    mut state: ResMut<NextState<AppState>>,
     mut screenshot: ResMut<LastScreenshot>,
     canvas: Res<camera::ViewportCanvas>,
+    mut lobster_timer: ResMut<LobsterTimer>,
 ) {
-    let (mut visibility, mut lobster) = lobster.single_mut().unwrap();
-    if lobster.0 == 0. {
+    let mut visibility = lobster.single_mut().unwrap();
+    if lobster_timer.0 == 0. {
         *visibility = Visibility::Visible;
         cmd.spawn((
             DespawnOnExit(STATE),
             AudioPlayer(fnaf_assets.lobster_audio.clone()),
             PlaybackSettings {
                 mode: bevy::audio::PlaybackMode::Once,
-                volume: Volume::Linear(1.),
                 ..default()
             },
         ));
     } else {
-        if lobster.0 > 1. {
+        if lobster_timer.0 > 1. {
             if screenshot.awaiting == false {
                 cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
                     .observe(await_screenshot_and_translate(AppState::Defeat));
                 screenshot.awaiting = true;
             }
-            state.set(AppState::Defeat);
         }
-        lobster.0 += time.delta_secs()
     }
+    lobster_timer.0 += time.delta_secs();
 }
 
 #[derive(Component)]
-pub struct Winscreen(f32);
+pub struct Winscreen;
 
+#[derive(Resource, Default)]
+pub struct WinscreenTimer(f32);
 fn win(
     mut cmd: Commands,
-    mut winscreen: Query<(&mut Visibility, &mut Winscreen)>,
+    mut winscreen: Query<&mut Visibility, With<Winscreen>>,
     fnaf_assets: Res<FNAFAssets>,
     time: Res<Time>,
     mut state: ResMut<NextState<AppState>>,
+    mut winscreen_timer: ResMut<WinscreenTimer>,
 ) {
-    let (mut visibility, mut winscreen) = winscreen.single_mut().unwrap();
-    if winscreen.0 == 0. {
+    let mut visibility = winscreen.single_mut().unwrap();
+    if winscreen_timer.0 == 0. {
         *visibility = Visibility::Visible;
         cmd.spawn((
             DespawnOnExit(STATE),
@@ -755,9 +842,89 @@ fn win(
             },
         ));
     } else {
-        if winscreen.0 > 2. {
-            state.set(AppState::FakeEnd);
+        if winscreen_timer.0 > 2. {
+            state.set(NEXT_STATE);
         }
-        winscreen.0 += time.delta_secs()
+    }
+    winscreen_timer.0 += time.delta_secs();
+}
+
+#[derive(Resource)]
+pub struct MemTimer {
+    pub timer: f32,
+    pub disable: bool,
+}
+
+fn play_mem(
+    mut cmd: Commands,
+    mut mem_timer: ResMut<MemTimer>,
+    time: Res<Time>,
+    fnaf_assets: Res<FNAFAssets>,
+) {
+    mem_timer.timer += time.delta_secs();
+    if mem_timer.timer < 5. && !mem_timer.disable {
+        cmd.spawn((
+            DespawnOnExit(STATE),
+            AudioPlayer(fnaf_assets.mem.clone()),
+            PlaybackSettings {
+                mode: bevy::audio::PlaybackMode::Once,
+                volume: Volume::Linear(1.),
+                ..default()
+            },
+        ));
+        mem_timer.disable = true
+    }
+}
+
+#[derive(Resource, Default)]
+pub struct BearData {
+    pub initial_delay: f32,
+    pub bear_until_comes: f32,
+    pub bear_until_leaves: f32,
+    pub bear_until_kills: f32,
+    pub bear_here: bool,
+    pub right: bool,
+}
+
+fn handle_faz(
+    time: Res<Time>,
+    env_data: Res<EnvironmentData>,
+    mut bear_data: ResMut<BearData>,
+    mut state: ResMut<NextState<LocalState>>,
+) {
+    let mut rng = rand::rng();
+    let delta_secs = time.delta_secs();
+    if bear_data.initial_delay > 2. { // todo: set to 20.
+        if bear_data.bear_here {
+            if bear_data.bear_until_leaves <= 0. {
+                println!("BEAR LEFT");
+                bear_data.bear_here = false;
+                bear_data.bear_until_kills = 0.;
+                bear_data.bear_until_comes = rng.random_range(20.0..30.0);
+                println!("BEAR COMES IN {}", bear_data.bear_until_comes);
+            } else {
+                bear_data.bear_until_leaves -= delta_secs;
+            }
+            if (env_data.left_door_open && !bear_data.right) || (env_data.right_door_open && bear_data.right) {
+                bear_data.bear_until_kills += delta_secs;
+            } else {
+                bear_data.bear_until_kills = 0.;
+            }
+            if bear_data.bear_until_kills >= 10. {
+                state.set(LocalState::Defeat);
+            }
+        } else {
+            if bear_data.bear_until_comes <= 0. {
+                println!("BEAR HERE");
+                bear_data.bear_here = true;
+                bear_data.right = rng.random_bool(0.5);
+                bear_data.bear_until_leaves = rng.random_range(10.0..20.0);
+                println!("BEAR LEAVES IN {}", bear_data.bear_until_leaves);
+            } else {
+                bear_data.bear_until_comes -= delta_secs;
+            }
+        }
+    } else {
+        bear_data.initial_delay += delta_secs;
     }
 }
