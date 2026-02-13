@@ -4,7 +4,6 @@
   <chunksize width="32" height="32"/>
  </editorsettings>
  <tileset firstgid="1" source="tilemap.tsx"/>
- <tileset firstgid="1025" source="../miami/miami.tsx"/>
  <layer id="1" name="Слой тайлов 1" width="16" height="16">
   <properties>
    <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
@@ -24,7 +23,7 @@
    eJztkrkJwDAUxXItkmORHIvk2H+GqHaVjwMGI4GKVxgj+E3znRU33PEIvPuLEy+88Snwv/3222+//fbX0t9ihz0OBfaIE864FNhR0hvI3VHSG8jdUey333777a+j/wU1J3N9
   </chunk>
    <chunk x="0" y="0" width="32" height="32">
-   eJztj7cNwEAQw95hEYdFHBZx2H8Gs/7q4CufBFgIECCoFBEREWmNDnsccPzRz+YJZ1xwDezX/WzecMcDz8B+3c/mC2988A3s1/1s9r///e9//7f5/wNXJW/B
+   eJztj7cNwEAQw95hEYdFHBZx2H8Gs35c4eK6JwEWggpBpYiIiEhrdNjjgOOPPjtPOOOCa7Bf99l5wx0PPIP9us/OF9744Bvs13129r///e9//7f5/wO+IYJh
   </chunk>
    <chunk x="32" y="0" width="32" height="32">
    eJztz7kRgDAQBEHxJAIoEZ5EQOQfgyaAc8/STFUba24pZmZmNloTZixYg53dhh0HarCzO3HhxhPs7F58aPiDnZ3//e9///t/zP8dXDQlQQ==
@@ -33,7 +32,7 @@
    eJztz7kJADAMBEG15qcRP/3X4G1BoMSwBxtcOBG5Neo0aBb87BZtOnQLfnb69evXr1+/fv369evXr1//j/4HqQrOQQ==
   </chunk>
    <chunk x="0" y="32" width="32" height="32">
-   eJztz1sKgCAURdHbYyJlE7GaSI/5j8HzfRESzH7awv44IOiKZraqTe32fKK7X7sPdapL3QXv+/u12/8HP378+PHjx4//b/5O9WpQY2a39k9qVkEtmd3a//V+24MfP378pTsB+RASgA==
+   eJzt0bkNgDAQRNHlaISjEQONcPRfAxMvS+Yl4Vv6wcgBfqKY2aJWtdnzFHdfe+/qUKe6gu/7+9rbvwc/fvz48ePHj/9v/ka1qlN9sLP9gxrVpOZgZ/u/3tn/Fz9+/Pjf9g3+gyxI
   </chunk>
    <chunk x="32" y="32" width="32" height="32">
    eJztz7sNACAMA9GsFmARPvvPgOuI1lRn6QqXLyOiqa6GyvLdm2qprc7ju1e9+PHjx48fP37/8OPHjx8/fvz//RdPYFKB
@@ -143,7 +142,7 @@
    </properties>
    <point/>
   </object>
-  <object id="14" x="191.739" y="-96" width="16" height="351.957">
+  <object id="14" x="128" y="-96" width="16" height="351.957">
    <properties>
     <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
@@ -161,7 +160,7 @@
     </property>
    </properties>
   </object>
-  <object id="15" x="144" y="-96" width="48" height="368">
+  <object id="15" x="96" y="-96" width="32" height="368">
    <properties>
     <property name="rb" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
@@ -172,7 +171,7 @@
     <property name="st" type="class" propertytype="game::dev_games::platformer::plugin::StopTrigger"/>
    </properties>
   </object>
-  <object id="17" x="80" y="800" width="96" height="32">
+  <object id="17" x="64" y="816" width="64" height="16">
    <properties>
     <property name="asd" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>

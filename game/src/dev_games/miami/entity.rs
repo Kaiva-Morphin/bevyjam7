@@ -187,6 +187,7 @@ pub fn on_entity_spawnpoint(
         },
         char
     )).id();
+
     let pivot = cmd.spawn((
         Name::new("Pivot"),
         CharacterPivotPoint,
@@ -206,7 +207,6 @@ pub fn on_entity_spawnpoint(
         DespawnOnExit(STATE),
         Name::new("Character"),
         GlobalTransform::default(),
-        transform.clone(),
         Visibility::default(),
         RigidBody::Dynamic,
         LockedAxes::ROTATION_LOCKED,
@@ -219,10 +219,13 @@ pub fn on_entity_spawnpoint(
     ));
     let id;
     if let MiamiEntity::Player = spawner.entity_type {
+        
         id = c.insert(
             (
+                transform.clone(),
                 Focusable,
                 Player,
+                super::player::PlayerDisabled,
                 Name::new("Player"),
                 miami_player_layers()
             )
@@ -240,6 +243,7 @@ pub fn on_entity_spawnpoint(
             .with_ignore_self(true)
             .with_query_filter(SpatialQueryFilter::from_mask(miami_seeker_shapecast_layer().memberships));
         id = c.insert((
+            transform.clone(),
             miami_character_layers(),
             CharacterInPlace,
             // DummyEntity,

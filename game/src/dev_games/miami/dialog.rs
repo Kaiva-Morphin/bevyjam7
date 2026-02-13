@@ -1,8 +1,8 @@
 use std::time::Duration;
 
-use bevy::{asset, text::{FontSmoothing, LineHeight}};
+use bevy::{ecs::entity_disabling::Disabled, text::{FontSmoothing, LineHeight}};
 
-use crate::{dev_games::miami::plugin::{MiamiAssets, STATE}, prelude::*};
+use crate::{dev_games::miami::{player::PlayerDisabled, plugin::{MiamiAssets, STATE}}, prelude::*};
 
 
 
@@ -210,7 +210,7 @@ pub fn start_dialog(
             BackgroundGradient::from(LinearGradient {
                 color_space: InterpolationColorSpace::Oklaba,
                 stops: vec![
-                    ColorStop::new(Color::srgba_u8(0, 0, 0, 255), percent(12.)),
+                    ColorStop::new(Color::srgba_u8(32, 0, 255, 255), percent(12.)),
                     ColorStop::new(Color::srgba_u8(200, 10, 40, 255), percent(100.)),
                 ],
                 ..default()
@@ -273,7 +273,7 @@ pub fn start_dialog(
             top: Val::Percent(40.0),
             ..default()
         },
-        ZIndex(2),
+        ZIndex(4),
         UiTransform {
             scale: Vec2::splat(2.5),
             ..default()
@@ -281,9 +281,12 @@ pub fn start_dialog(
     ));
 }
 
+#[derive(Component)]
+pub struct PrevHead;
+
 pub fn tick_dialog(
     mut state: Query<(Entity, &mut DialogState)>,
-    mut anim: Query<(&mut ImageNode, &mut UiTransform), (With<DialogRot>, Without<DialogShadowLabel>)>,
+    mut anim: Query<(&ImageNode, &mut UiTransform), (With<DialogRot>, Without<DialogShadowLabel>, Without<PrevHead>)>,
     mut shadow_anim : Query<&mut UiTransform, (With<DialogShadowLabel>, Without<DialogRot>)>,
     mut texts: Query<&mut Text, With<DialogLabel>>,
     time: Res<Time>,
@@ -291,20 +294,13 @@ pub fn tick_dialog(
     mut cmd: Commands,
     assets: Res<MiamiAssets>,
 
-    main_q: Query<Entity, With<BgDialog>>,
-    top_q: Query<Entity, With<TopDialog>>,
-    bottom_q: Query<Entity, With<BottomDialog>>,
-    char_q: Query<Entity, With<DialogHead>>,
-    char_s_q: Query<Entity, With<DialogHeadShadow>>,
+    disabled_q: Query<Entity, With<PlayerDisabled>>,
+    main_q: Query<Entity, (With<BgDialog>, Without<PrevHead>)>,
+    top_q: Query<Entity, (With<TopDialog>, Without<PrevHead>)>,
+    bottom_q: Query<Entity, (With<BottomDialog>, Without<PrevHead>)>,
+    char_q: Query<Entity, (With<DialogHead>, Without<PrevHead>)>,
+    char_s_q: Query<Entity, (With<DialogHeadShadow>, Without<PrevHead>)>,
 ){
-    
-
-    
-
-    
-
-    
-
     for (_, mut t) in anim.iter_mut() {
         t.rotation = Rot2::radians((time.elapsed_secs() * 2.0).sin() * 0.15);
     }
@@ -317,6 +313,9 @@ pub fn tick_dialog(
         if s.state >= s.dialogs.len() {return;}
         s.state = s.state + 1;
         if s.state >= s.dialogs.len() {
+            for e in disabled_q.iter() {
+                cmd.entity(e).remove::<PlayerDisabled>();
+            }
             for e in main_q.iter() {
                 let main_out = Tween::new(
                     EaseFunction::SineIn,
@@ -380,16 +379,97 @@ pub fn tick_dialog(
             for mut text in texts.iter_mut() {
                 text.0 = s.dialogs[s.state].0.clone();
             }
-            for (mut image, _) in anim.iter_mut() {
-                image.image = s.dialogs[s.state].1.to_asset(&assets);
+            for (image, _) in anim.iter() {
+                let next_image = s.dialogs[s.state].1.to_asset(&assets);
+                if next_image != image.image {
+                    let char_in = Tween::new(
+                        EaseFunction::SineOut,
+                        Duration::from_secs_f32(0.3),
+                        UiTransformTranslationPxLens {
+                            start: vec2(300., -25.),
+                            end: vec2(-20., -25.),
+                        }
+                    );
+                    let shadow_in = Tween::new(
+                        EaseFunction::SineOut,
+                        Duration::from_secs_f32(0.3),
+                        UiTransformTranslationPxLens {
+                            start: vec2(300., -18.),
+                            end: vec2(-12., -18.),
+                        }
+                    );
+                    for e in char_q.iter() {
+                        let char_out = Tween::new(
+                            EaseFunction::SineIn,
+                            Duration::from_secs_f32(0.3),
+                            UiTransformTranslationPxLens {
+                                start: vec2(-20., -25.),
+                                end: vec2(300., -25.),
+                            }
+                        );
+                        cmd.entity(e).insert((TweenAnim::new(char_out), PrevHead));
+                    }
+
+                    for e in char_s_q.iter() {
+                        let shadow_out = Tween::new(
+                            EaseFunction::SineIn,
+                            Duration::from_secs_f32(0.3),
+                            UiTransformTranslationPxLens {
+                                start: vec2(-12., -18.),
+                                end: vec2(300., -18.),
+                            }
+                        );
+                        cmd.entity(e).insert((TweenAnim::new(shadow_out), PrevHead));
+                    }
+                    cmd.spawn((
+                        DespawnOnExit(STATE),
+                        Name::new("DialogCharacter"),
+                        ZIndex(5),
+                        TweenAnim::new(char_in),
+                        ImageNode {
+                            image: next_image.clone(),
+                            ..Default::default()
+                        },
+                        DialogRot,
+                        DialogHead,
+                        Node {
+                            position_type: PositionType::Absolute,
+                            right: Val::Px(40.0),
+                            top: Val::Percent(40.0),
+                            ..default()
+                        },
+                        UiTransform {
+                            scale: Vec2::splat(2.5),
+                            ..default()
+                        }
+                    ));
+                    cmd.spawn((
+                        DespawnOnExit(STATE),
+                        Name::new("DialogCharacterShadow"),
+                        TweenAnim::new(shadow_in),
+                        ImageNode {
+                            image: next_image,
+                            color: Color::linear_rgba(0.0, 0.0, 0.0, 0.5),
+                            ..Default::default()
+                        },
+                        DialogRot,
+                        DialogHeadShadow,
+                        Node {
+                            position_type: PositionType::Absolute,
+                            right: Val::Px(40.0),
+                            top: Val::Percent(40.0),
+                            ..default()
+                        },
+                        ZIndex(4),
+                        UiTransform {
+                            scale: Vec2::splat(2.5),
+                            ..default()
+                        }
+                    ));
+                }
+                
+                // image.image = next_
             }
         }
     }
-}
-
-pub fn cleanup_tweens(
-    mut _q_event_completed: MessageReader<AnimCompletedEvent>,
-    mut _cmd: Commands,
-) {
-
 }

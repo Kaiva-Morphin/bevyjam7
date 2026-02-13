@@ -5,15 +5,16 @@ macro_rules! maps {
             $(
                 $map_path => Box::new(std::io::Cursor::new(include_bytes!(concat!("../../../../game/assets/", $map_path)))),
             )*
-            _ => panic!("No map rule exists! Please add map to static registry.")
+            _ => panic!("No map rule for {} exists! Please add map to static registry.", $path)
         }
     };
 }
 
 #[cfg(feature = "wasm")]
-pub fn map_matcher(path: &std::path::Path) -> Box<dyn std::Read + 'static> {
+pub fn map_matcher(path: &std::path::Path) -> Box<dyn std::io::Read + 'static> {
     let path = path.to_str().expect("Invalid path").replace("\\", "/");
     let p = path.as_str();
+    log::info!("Loading map: {}", p);
     maps!(
         p =>
         "maps/v0.1/map.tmx"

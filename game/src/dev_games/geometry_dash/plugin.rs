@@ -454,7 +454,7 @@ fn defeat(
     canvas: Res<camera::ViewportCanvas>,
 ){
     if screenshot.awaiting == false {
-        cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
+        cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
             .observe(await_screenshot_and_translate(AppState::Defeat));
         screenshot.awaiting = true;
     }
