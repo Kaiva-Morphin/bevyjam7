@@ -8,8 +8,8 @@ pub mod tilemap;
 pub mod core;
 pub mod shaders;
 pub mod global_music;
-
+pub mod hints;
 pub mod fake_end;
-
+pub mod geometry_dash;
 pub mod pathfinder;
 // pub mod miami;

@@ -2,9 +2,9 @@ use std::time::Duration;
 
 use avian2d:: math::{PI, Vector};
 use bevy_asset_loader::asset_collection::AssetCollection;
-use games::global_music::plugin::NewBgMusic;
+use global_music::plugin::NewBgMusic;
 
-use crate::{hints::{HintAssets, KeyHint}, prelude::*};
+use crate::{global_music, hints::{self, HintAssets, KeyHint}, prelude::*};
 pub struct GeometryDashPlugin;
 
 const STATE: AppState = AppState::Geometry;
@@ -98,7 +98,7 @@ fn setup(
         Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
     ));
     let cam = cam.iter().next().expect("No cam!");
-    crate::hints::show_hints(
+    hints::show_hints(
         &mut cmd,
         vec![KeyHint::KeysSpace],
         STATE,

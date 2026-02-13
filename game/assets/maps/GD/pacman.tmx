@@ -117,7 +117,7 @@
    </properties>
    <point/>
   </object>
-  <object id="3" x="40" y="217.5">
+  <object id="3" x="40.5" y="224.5">
    <properties>
     <property name="CameraCenter" type="class" propertytype="game::dev_games::geometry_dash::plugin::CameraCenter"/>
    </properties>

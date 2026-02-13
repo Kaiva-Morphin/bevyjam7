@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use bevy::image::TextureAtlas;
 use bevy_asset_loader::asset_collection::AssetCollection;
-use games::prelude::DespawnOnExit;
+use bevy_tweening::{Tween, TweenAnim, lens::UiTransformTranslationPxLens};
 use crate::prelude::*;
 
 
