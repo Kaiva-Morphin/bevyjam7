@@ -7,7 +7,3 @@ pub const HAND_OUT_ANIMATION_DURATION : f32 = 0.2;
 
 
 
-pub const MIAMI_SHADOW_OFFSET : Vec3 = vec3(2.0, -2.0, -0.5);
-pub fn miami_shadow_color() -> Color {
-    Color::Srgba(Srgba::rgba_u8(0, 0, 0, 218))    
-}

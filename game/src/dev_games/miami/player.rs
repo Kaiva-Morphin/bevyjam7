@@ -1,8 +1,12 @@
-use crate::{dev_games::miami::entity::*, prelude::*};
+use super::entity::*;
+use crate::prelude::*;
+
+#[derive(Component)]
+pub struct PlayerDisabled;
 
 
 pub fn control_player(
-    player: Single<&mut CharacterController, With<Player>>,
+    player: Single<&mut CharacterController, (With<Player>, Without<PlayerDisabled>)>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mouse_input: Res<ButtonInput<MouseButton>>,
 ) {
@@ -35,7 +39,7 @@ pub fn control_player(
 }
 
 pub fn player_look_at_cursor(
-    player: Single<(&mut CharacterController, &GlobalTransform), With<Player>>,
+    player: Single<(&mut CharacterController, &GlobalTransform), (With<Player>, Without<PlayerDisabled>)>,
     window: Single<&Window>,
     camera_q: Query<(&Camera, &GlobalTransform), With<WorldCamera>>,
     canvas: Res<camera::ViewportCanvas>,

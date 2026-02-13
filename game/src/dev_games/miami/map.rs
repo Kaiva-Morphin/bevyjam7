@@ -1,4 +1,5 @@
-use crate::{dev_games::miami::plugin::STATE, pathfinder::plugin::PathfinderObstacle, prelude::*};
+use super::plugin::STATE;
+use crate::{pathfinder::plugin::PathfinderObstacle, prelude::*};
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]

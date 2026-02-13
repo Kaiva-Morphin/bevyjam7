@@ -50,7 +50,7 @@
  </layer>
  <layer id="1" name="walls" width="30" height="20">
   <properties>
-   <property name="obs" type="class" propertytype="game::pathfinder::plugin::PathfinderObstacle"/>
+   <property name="obs" type="class" propertytype="games::pathfinder::plugin::PathfinderObstacle"/>
    <property name="rb" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
     <properties>
      <property name=":variant" propertytype="avian2d::dynamics::rigid_body::RigidBody:::Variant" value="Static"/>
@@ -182,7 +182,7 @@
    </properties>
    <point/>
   </object>
-  <object id="19" x="88.75" y="298">
+  <object id="19" x="-93.25" y="290.5">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner"/>
    </properties>

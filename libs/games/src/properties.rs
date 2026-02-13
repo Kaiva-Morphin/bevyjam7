@@ -105,3 +105,8 @@ pub const FLAPPY_DEATH_DELAY : f32 = 1.0;
 pub const FLAPPY_PIPE_SCALE : f32 = 0.25;
 
 pub const NOVEL_MUSIC_INTERPOLATION : f32 = 1.0;
+
+pub const MIAMI_SHADOW_OFFSET : Vec3 = vec3(2.0, -2.0, -0.5);
+pub fn miami_shadow_color() -> Color {
+    Color::Srgba(Srgba::rgba_u8(0, 0, 0, 218))    
+}

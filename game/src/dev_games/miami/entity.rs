@@ -5,7 +5,9 @@ use bevy::color::palettes;
 use camera::CameraController;
 use room::Focusable;
 
-use crate::{dev_games::miami::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}}, prelude::*};
+
+use super::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}};
+use crate::prelude::*;
 
 
 #[derive(Component)]

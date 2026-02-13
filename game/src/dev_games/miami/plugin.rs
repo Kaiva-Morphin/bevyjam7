@@ -1,10 +1,14 @@
+use std::f32::consts::FRAC_2_PI;
+
 use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::CameraController;
 
-use crate::{dev_games::miami::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}}, prelude::*};
+use super::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}};
+use crate::prelude::*;
 use super::entity::*;
-use crate::miami::shadows::*;
-use crate::miami::player::*;
+use super::shadows::*;
+use super::player::*;
+use super::dialog::*;
 
 pub const STATE: AppState = AppState::Miami;
 pub const NEXT_STATE: AppState = AppState::PacmanEnter;
@@ -26,6 +30,16 @@ pub struct MiamiAssets {
     pub decals: Handle<Image>,
     #[asset(path = "maps/miami/projectiles.png")]
     pub projectiles: Handle<Image>,
+
+    #[asset(path = "maps/miami/dialog_faz.png")]
+    pub dialog_faz: Handle<Image>,
+    #[asset(path = "maps/miami/dialog_pac.png")]
+    pub dialog_pac: Handle<Image>,
+
+    #[asset(path = "fonts/kaivs_minegram_v1.ttf")]
+    pub font: Handle<Font>,
+    #[asset(path = "fonts/kaivs_minegram_v1-italic.ttf")]
+    pub italic: Handle<Font>,
 }
 
 pub struct MiamiPlugin;
@@ -44,10 +58,12 @@ impl Plugin for MiamiPlugin {
             .add_observer(on_pickup_weapon_collision)
             .add_observer(propagate_obstacles)
             .add_observer(on_projectile_hit)
+            .add_observer(on_map_created)
             
 
             .add_systems(OnEnter(STATE), (
                 setup,
+                
                 // setup_navmesh
             ))
             .add_systems(PreUpdate, (
@@ -60,6 +76,8 @@ impl Plugin for MiamiPlugin {
                 tick,
                 update_chasers,
                 chase,
+                tick_dialog,
+                cleanup_tweens
                 // display_path,
                 
                 // update_shadows,
@@ -83,10 +101,14 @@ impl Plugin for MiamiPlugin {
     }
 }
 
+
+
+
+
 fn setup(
     mut cmd: Commands,
     assets: Res<MiamiAssets>,
-    mut camera_controller: ResMut<CameraController>,
+    cam: Query<Entity, With<WorldCamera>>,
 ){
     cmd.spawn((
         DespawnOnExit(STATE),
@@ -94,6 +116,28 @@ fn setup(
         TiledMap(assets.map.clone()),
     ))
         ;
+    let cam = cam.iter().next().expect("No cam!");
+
+    start_dialog(&mut cmd, &assets, cam, vec![
+        ("HELLO, PAC! I WILL KILL YOU!".to_string(), Speaker::Freddy),
+        ("YOU BASTARD!".to_string(), Speaker::Pacman)
+    ]);
+}
+
+fn on_map_created(
+    _event: On<TiledEvent<TilemapCreated>>,
+    state: Res<State<AppState>>,
+    mut map: Query<&mut Transform, With<TiledMap>>,
+) {
+    if state.get() != &STATE {return;};
+    let Ok(mut map) = map.single_mut() else {return;};
+    map.scale.z = 0.05;
+}
+
+
+pub fn late_setup(
+    mut camera_controller: ResMut<CameraController>,
+){
     camera_controller.follow_speed = 0.9;
     camera_controller.target_zoom = 0.9;
 }
@@ -115,6 +159,7 @@ fn cleanup(
     controller.target_zoom = 0.8;
     let Ok(mut t) = camera.single_mut() else {return;};
     t.rotation.z = 0.0;
+    t.rotation.y = 0.0;
 }
 
 pub fn miami_player_layers() ->            CollisionLayers {CollisionLayers::from_bits(0b101000110, 0b101000111)}

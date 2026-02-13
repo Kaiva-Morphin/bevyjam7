@@ -1,16 +1,9 @@
-use std::{
-    io::{Cursor, Read},
-    path::Path,
-};
-
-use bevy::log::info;
-
 #[cfg(feature = "wasm")]
 macro_rules! maps {
     ($path:ident => $($map_path:expr)*$(;)?) => {
         match $path {
             $(
-                $map_path => Box::new(Cursor::new(include_bytes!(concat!("../../../../game/assets/", $map_path)))),
+                $map_path => Box::new(std::io::Cursor::new(include_bytes!(concat!("../../../../game/assets/", $map_path)))),
             )*
             _ => panic!("No map rule exists! Please add map to static registry.")
         }
@@ -18,10 +11,9 @@ macro_rules! maps {
 }
 
 #[cfg(feature = "wasm")]
-pub fn map_matcher(path: &Path) -> Box<dyn Read + 'static> {
+pub fn map_matcher(path: &std::path::Path) -> Box<dyn std::Read + 'static> {
     let path = path.to_str().expect("Invalid path").replace("\\", "/");
     let p = path.as_str();
-    info!("Loading map: {}", p);
     maps!(
         p =>
         "maps/v0.1/map.tmx"

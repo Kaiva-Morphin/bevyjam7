@@ -14,29 +14,35 @@
    </property>
   </properties>
   <data encoding="base64" compression="zlib">
+   <chunk x="-32" y="-32" width="32" height="32">
+   eJztz8EJwCAUREFbS7QRo/3X4F5TwQeZgXdetjUAAAD4e9KbehoF+zN9aaVdsH/j/wNAKwUp
+  </chunk>
+   <chunk x="-64" y="0" width="32" height="32">
+   eJzt07kJwDAQBVH5aMRHIz4a8dF/DZ5YiRLjBWseTKDow4JSkvSVhlrqqA/YH2ikieaA/YVW2mgP2D/opIvugH39S+3/OZffo/R+W36P0luSpBo9LlsFeQ==
+  </chunk>
    <chunk x="-32" y="0" width="32" height="32">
-   eJztz8kNgDAQBEFzJAI4EY5EwOQfgzsEtPtC6pL6Mc8pRZIk6ZuBRppoTuyohVbaqCZ21E4HnXQldtRNDzV6EzvK//73v//9/+//HV/+U7E=
+   eJztkrkJwDAUxXItkmORHIvk2H+GqHaVjwMGI4GKVxgj+E3znRU33PEIvPuLEy+88Snwv/3222+//fbX0t9ihz0OBfaIE864FNhR0hvI3VHSG8jdUey333777a+j/wU1J3N9
   </chunk>
    <chunk x="0" y="0" width="32" height="32">
-   eJztj7kNwDAMxJxnkSReJM8iibP/DL5SEKBKpUmABYFrrhQAAAAYjUWucpKz6Qi/y/Yhq9zkbjrC77J9y0ee8jId4XfZbvKXr/xMR/hdtvnPf/7zn/9j/u/NMnkx
+   eJztj7cNwEAQw95hEYdFHBZx2H8Gs/7q4CufBFgIECCoFBEREWmNDnsccPzRz+YJZ1xwDezX/WzecMcDz8B+3c/mC2988A3s1/1s9r///e9//7f5/wNXJW/B
   </chunk>
    <chunk x="32" y="0" width="32" height="32">
    eJztz7kRgDAQBEHxJAIoEZ5EQOQfgyaAc8/STFUba24pZmZmNloTZixYg53dhh0HarCzO3HhxhPs7F58aPiDnZ3//e9///t/zP8dXDQlQQ==
   </chunk>
    <chunk x="-32" y="32" width="32" height="32">
-   eJztz7kNADAMw0CvlmeRPPvPEM5gVwEogIXKi8itUadBs/CzW7Tp0C387PTr169fv379+vXr169fv/6f/A+PQblh
+   eJztz7kJADAMBEG15qcRP/3X4G1BoMSwBxtcOBG5Neo0aBb87BZtOnQLfnb69evXr1+/fv369evXr1//j/4HqQrOQQ==
   </chunk>
    <chunk x="0" y="32" width="32" height="32">
-   eJztzzsKACAMBNFcTeNF/Nz/DG5hIYFUdjLCFAspfG5mTRVVlZ+dvXj3uqdaqqtx7ezFu9ed/Qs/fvz48ePHjx8/fvz48eP/yb8B4L8McA==
+   eJztz1sKgCAURdHbYyJlE7GaSI/5j8HzfRESzH7awv44IOiKZraqTe32fKK7X7sPdapL3QXv+/u12/8HP378+PHjx4//b/5O9WpQY2a39k9qVkEtmd3a//V+24MfP378pTsB+RASgA==
   </chunk>
    <chunk x="32" y="32" width="32" height="32">
    eJztz7sNACAMA9GsFmARPvvPgOuI1lRn6QqXLyOiqa6GyvLdm2qprc7ju1e9+PHjx48fP37/8OPHjx8/fvz//RdPYFKB
   </chunk>
    <chunk x="-32" y="64" width="32" height="32">
-   eJztz7sNACAMA9GsxmcRCPvPgGdwKsQ96QqXjvA01dVQs7BdS22V6hS2i//85z//+f/nfwAAgFdd4gdRGw==
+   eJztz7sNACAMA9GsxmcRCPvPgFewlAZxT7rCpSM8TXU11CzYrqW2SnUKtov//Oc///n/538AAIDXXRjEWj0=
   </chunk>
    <chunk x="0" y="64" width="32" height="32">
-   eJztj7kNACAMxLIazyI8+8/AFRQIKVU6sCUXJ6WIi5lVmWSWZW+P+y66h5yyyX5sj/suur2/6Keffvrpf7sfAAAA4DcWV0x1aw==
+   eJztz7ENACAMA0GvFmARCPvPgKcISPxJLlx+SGpe94YXxX96y0tvX/jVvfTTTz/99L/RDwAA8JsDQWmQYQ==
   </chunk>
    <chunk x="32" y="64" width="32" height="32">
    eJztz7ENACAMA8GsFmARCPvPgOuINlX+JBcu381saFNbmqdfbWtHC+1+frXcSz/99NNPf49+AACAbh6hOCQZ
@@ -72,13 +78,16 @@
   </properties>
   <data encoding="base64" compression="zlib">
    <chunk x="-32" y="-32" width="32" height="32">
-   eJztz7ENACAMA8FsB5vA/hOQEdykQLqTvnHnKgAAAPjb6nawTTndDbYpyf8HWYID2w==
+   eJztzsEJACAIheEutUmtUpvU/hPkRRAROtQl+D94CA8RUwIAAAAA4A9ZUsxUXTLcbtTdqpJmppqS5Xaj7kR/fvG7v7EBK+UFFg==
+  </chunk>
+   <chunk x="-64" y="0" width="32" height="32">
+   eJztxcENACAIADG2k010/wngyQL6sU0uFwHADavL8dd2d8YBAPhbAT+0Ar0=
   </chunk>
    <chunk x="-32" y="0" width="32" height="32">
-   eJxjYKAdSAfiDCLE6AncgdhjAO0fLP4fqHCA+X+gw2EUjAJqAlYgZsNC0wuoArEaFnoUjIJRMApGwSgYBaNgFIwCZAAAYf8Guw==
+   eJxjYCAM0oE4A4mmBFDDDEqAOxB7DKD9+PzPCsRsWGhqApj/sYWDKhCrYaGpCaiZlogB+PxLD0Bv/44C8gEl+Y8aeZeS/EePvDsKRsEoGAWjYBSMglEwCoY+AAAH+gxK
   </chunk>
    <chunk x="0" y="0" width="32" height="32">
-   eJztz7EJACAQQ1Eb3URX0U10/wm85pqrxQj+ByFlSEpQ6pYh3J+WJdzHe7KlCPerpQn3f/vvf2Pf4n9jAwAA4LwNcGQDDQ==
+   eJztzTENADAMBLGwS5k0/BE0KPqLLd18VST1doL/u03wDwAAwB8Ped0BXw==
   </chunk>
   </data>
  </layer>
@@ -107,13 +116,16 @@
   </properties>
   <data encoding="base64" compression="zlib">
    <chunk x="-32" y="-32" width="32" height="32">
-   eJztz7ENACAMA8F0sAnsPyEZwU0KpDvpG3euAgAAgL+tbgfblNPdYJuS/H+RZADb
+   eJztzsEJACAIheFutUktUpvU/iPkRRAROtQl+D94CA8RUwIAAAAA4A9dMsxUWVLcbtTdmpJlpqqS5naj7kR/fvG7v7EBCuUDlg==
+  </chunk>
+   <chunk x="-64" y="0" width="32" height="32">
+   eJztxbENACAIAEE62UT3nxBKFtDGu+TzEQDcsLocf213ZxwAgL8VinkAvQ==
   </chunk>
    <chunk x="-32" y="0" width="32" height="32">
-   eJxjYKAdUAdiDSLEaAVYgZgNTYwdiDnoZL8qEKuhiQ0W/9MjHPD5n57hMApGAa2BKxC7YaHpBVKBOA0LPQpGwSgYBaNgFIyCUTAKRgEyAAA60AZn
+   eJxjYCAM1IFYA4mmBFDDDEoAOxBzDKD9+PzvCsRuWGhqApj/sYVDKhCnYaGpCaiZlogB+PxLD0Bv/44C8gEl+Y8aeZeS/EePvDsKRsEoGAWjYBSMglEwCoY+AAAbzA7K
   </chunk>
    <chunk x="0" y="0" width="32" height="32">
-   eJztz7EJACAQQ1E73UQX0U10/xG85pqrxQj+ByFlSEpQypYi3K+WJtzHe7plCPenZQn3f/vvf2Pf4n9jAwAA4LwNno8HDQ==
+   eJztzTENADAMBLFsKZOGP8IGRX+xpZuviqTeTvB/twn+AQAA+OMBOwsAXw==
   </chunk>
   </data>
  </layer>
@@ -125,13 +137,13 @@
     </properties>
    </property>
   </properties>
-  <object id="7" x="-166.667" y="62.8333">
+  <object id="7" x="32.4997" y="199.667">
    <properties>
     <property name="r" type="class" propertytype="game::dev_games::platformer::plugin::SpawnPoint"/>
    </properties>
    <point/>
   </object>
-  <object id="14" x="191.739" y="80" width="16" height="175.957">
+  <object id="14" x="191.739" y="-96" width="16" height="351.957">
    <properties>
     <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
@@ -140,7 +152,7 @@
     </property>
    </properties>
   </object>
-  <object id="20" x="-272" y="-129" width="16" height="417">
+  <object id="20" x="-752" y="-128" width="16" height="352">
    <properties>
     <property name="r" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
@@ -149,7 +161,7 @@
     </property>
    </properties>
   </object>
-  <object id="15" x="144" y="80" width="48" height="192">
+  <object id="15" x="144" y="-96" width="48" height="368">
    <properties>
     <property name="rb" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
@@ -160,7 +172,7 @@
     <property name="st" type="class" propertytype="game::dev_games::platformer::plugin::StopTrigger"/>
    </properties>
   </object>
-  <object id="17" x="96" y="800" width="96" height="32">
+  <object id="17" x="80" y="800" width="96" height="32">
    <properties>
     <property name="asd" type="class" propertytype="avian2d::dynamics::rigid_body::RigidBody">
      <properties>
@@ -171,7 +183,7 @@
     <property name="s" type="class" propertytype="avian2d::collision::collider::Sensor"/>
    </properties>
   </object>
-  <object id="18" x="-256" y="-128" width="880" height="1376">
+  <object id="18" x="-256" y="-256" width="880" height="1504">
    <properties>
     <property name="ro" type="class" propertytype="room::MapRoom">
      <properties>

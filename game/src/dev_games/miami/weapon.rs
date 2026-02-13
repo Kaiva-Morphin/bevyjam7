@@ -1,13 +1,13 @@
 use avian2d::math::Vector;
 use bevy::prelude::*;
-use games::prelude::AppState;
+use crate::prelude::AppState;
 use rand::Rng;
-use crate::dev_games::miami::entity::{CharacterComponents, CharacterController, CharacterPivotPoint, CharacterSprite, Player};
-use crate::dev_games::miami::plugin::{BLOOD_Z_TRANSLATION, BODY_Z_TRANSLATION, THROWN_DAMAGE_MULTIPLIER, miami_dropped_weapon_layers, miami_pickup_weapon_layers, miami_projectile_damager_layer, miami_projectile_player_layer};
-use crate::dev_games::miami::shadows::ShadowCaster;
+use super::entity::{CharacterComponents, CharacterController, CharacterPivotPoint, CharacterSprite, Player};
+use super::plugin::{BLOOD_Z_TRANSLATION, BODY_Z_TRANSLATION, THROWN_DAMAGE_MULTIPLIER, miami_dropped_weapon_layers, miami_pickup_weapon_layers, miami_projectile_damager_layer, miami_projectile_player_layer};
+use super::shadows::ShadowCaster;
 use crate::pathfinder::plugin::PathfinderObstacle;
 use crate::prelude::*;
-use crate::dev_games::miami::{plugin::{MiamiAssets, STATE}, shadows::ShadowInit};
+use super::{plugin::{MiamiAssets, STATE}, shadows::ShadowInit};
 
 
 
