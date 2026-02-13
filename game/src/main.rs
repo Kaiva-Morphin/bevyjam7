@@ -100,7 +100,7 @@ impl Plugin for GamesPlugin {
             .add_systems(OnExit(AppState::LoadingAssets), cleanup_loading_screen)
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Platformer)
+                    .continue_to_state(AppState::FlappyBird)
                     .load_collection::<GameAssets>()
                     .load_collection::<HintAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()

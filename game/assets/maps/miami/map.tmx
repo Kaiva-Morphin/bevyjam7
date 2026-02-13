@@ -38,7 +38,7 @@
    KLUv/WAAA30BAKAA4eKiAAEBAAACAcMAAADkAOMDAQoAAUIOQWLHHdi9tYLBuG8QbMWwXSb8qNwV
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
-   KLUv/WAAA30EAFQDoQAAAKIAwQAAAMMAAAAEAQMBAADkAKQAAADiAAAA4eKjAKGkAgEAAAEBxADCAwHjAKTBAAEtoFCruXLAgpoi8YnkxEkuznLilBuchsnklslGKUPonIRF61XbaqRvaCUZSKwuO0NFcL9uHny+WkvuRPMxswDLwVPzkuBotBx31jMPS8IQOLS9977vpXJJ
+   KLUv/WAAA3UEAJQDoQAAAKIAwQAAAMMAAAAEAQMBAADkAKQAAADiAAAA4eKjAKGkAgEAAAEBxADCAwHjAOMAwQACAQEBJaAQS2PLAWCCMliqAz2E6nLcJMfAq3sD5LyExZiGQ+RWB1G+IZI+g6YilyAbUSDcJmBX4fU1QjO0m8dOZAvpxXh5zPksQ7gnjoFDrP0rfi8K3wE=
   </chunk>
    <chunk x="16" y="16" width="16" height="16">
    KLUv/WAAA10EAKQDAKEAAACiAAMBAAAEAQDjAOIAouGj5AAAAAEBAAACAQAAwgAAAMEAwwADAaQA5OMA4aTiAgEBAgEBACWgwcm2tPUOkIJTQsUDPqjbWL/ojg1L7uM2g/s0TmcbnFDDZvdTh0gwfhROwMu3o2tlGxvu2IEDRvG20DVogDgc9x0ePgTRWOQsH1vqdwc=
@@ -68,7 +68,7 @@
    KLUv/WAAA20BAJAAQUICAGEAAABiIwAAAEQAQ2MKAIApHIJ0jzu1e2DF1XGPIMSKuV3G+FE5IQ==
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
-   KLUv/WAAAz0EAOQCAQAAAAIAIQAAACMAAABkYwAAAEQABAAAAEIAAABBQgMBBGIAAABhJCJjQwQhYS2gQDVqNcCCmiLxieTGSU6ccuMkJziHyXzLxFF2EHJOwqJ51VsaaQ6tNAOJ1WUzrAXn682D5/tacifO88zsWeZOzZfko2GZcY6ZB0tiCEza3nvhJ6LcHQ==
+   KLUv/WAAAw0EAPQCAQAAAAIAIQAAACMAAABkYwAAAEQABAAAAEIAAABBQgMBBGIAAABhJCJjQ0MhYmEloCA3ajVggjJYqgM9hHo5br1jjNURAHJewmKm4RCx1WyUcoikNGgqcgmykRrCbQJahdfXyM9wudl1wl2eS3TZZYcrwu7fMbCJvX/vT0ThOw==
   </chunk>
    <chunk x="16" y="16" width="16" height="16">
    KLUv/WAAA+0DABQDAAEAAAACAGMAAABkAENjQgJBA0QAAABhAAAAYgAAACIAAAAhI2MERENBBEJiYWJhACWgoeGL7R2gglNC5AE/0Oyvn/upwZI/zjj5pzGdkcCODpuhcodLMe4oXIFXr4I1ho6JMyDT4Ni9FR9cBsjJvXHHsXvY7G3STk37
@@ -126,7 +126,7 @@
   </object>
  </objectgroup>
  <objectgroup color="#aa0000" id="7" name="spawners">
-  <object id="24" x="125.955" y="293.273">
+  <object id="31" x="656.773" y="433.682">
    <properties>
     <property name="b" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>
@@ -140,49 +140,7 @@
    </properties>
    <point/>
   </object>
-  <object id="31" x="35.7727" y="294.182">
-   <properties>
-    <property name="b" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
-     <properties>
-      <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
-       <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Endoskeleton"/>
-       </properties>
-      </property>
-     </properties>
-    </property>
-   </properties>
-   <point/>
-  </object>
-  <object id="32" x="90.8636" y="253.091">
-   <properties>
-    <property name="b" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
-     <properties>
-      <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
-       <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Endoskeleton"/>
-       </properties>
-      </property>
-     </properties>
-    </property>
-   </properties>
-   <point/>
-  </object>
-  <object id="33" x="88.3182" y="332.364">
-   <properties>
-    <property name="b" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
-     <properties>
-      <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
-       <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Endoskeleton"/>
-       </properties>
-      </property>
-     </properties>
-    </property>
-   </properties>
-   <point/>
-  </object>
-  <object id="19" x="-93.25" y="290.5">
+  <object id="19" x="124.75" y="277">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner"/>
    </properties>
@@ -202,7 +160,7 @@
    </properties>
    <point/>
   </object>
-  <object id="27" x="383.417" y="400">
+  <object id="27" x="394.417" y="367.5">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>
@@ -216,7 +174,7 @@
    </properties>
    <point/>
   </object>
-  <object id="28" x="289.417" y="440">
+  <object id="28" x="454.417" y="410">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>
@@ -230,7 +188,7 @@
    </properties>
    <point/>
   </object>
-  <object id="29" x="170.75" y="424">
+  <object id="29" x="182.25" y="407.5">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>
@@ -244,7 +202,7 @@
    </properties>
    <point/>
   </object>
-  <object id="30" x="241.417" y="396.667">
+  <object id="30" x="490.917" y="337.167">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>

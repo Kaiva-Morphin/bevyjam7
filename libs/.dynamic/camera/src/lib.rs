@@ -118,6 +118,7 @@ pub fn setup_camera(
             ..Default::default()
         }
     ));
+    
     commands.spawn((Sprite::from_image(image_handle), HIGHRES_LAYERS));
 }
 

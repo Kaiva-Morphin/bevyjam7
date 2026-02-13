@@ -1,12 +1,13 @@
-use std::{f32::consts::{FRAC_2_PI, PI}, time::Duration};
+use std::time::Duration;
 
 use avian2d::math::FRAC_PI_2;
+use bevy::audio::{PlaybackMode, Volume};
 use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::CameraController;
 use games::global_music::plugin::NewBgMusic;
 
 use super::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}};
-use crate::prelude::*;
+use crate::{dev_games::miami::player, prelude::*};
 use super::entity::*;
 use super::shadows::*;
 use super::player::*;
@@ -45,6 +46,10 @@ pub struct MiamiAssets {
     pub font: Handle<Font>,
     #[asset(path = "fonts/kaivs_minegram_v1-italic.ttf")]
     pub italic: Handle<Font>,
+
+    #[asset(path = "sounds/miami/power_up.ogg")]
+    pub powerup_sound: Handle<AudioSource>,
+
 }
 
 pub struct MiamiPlugin;
@@ -79,11 +84,14 @@ impl Plugin for MiamiPlugin {
                 (control_player, shoot, throw_weapon).chain(),
                 tick_thrown,
                 tick,
+
                 update_chasers,
                 chase,
+                
                 tick_dialog,
                 update_screenshot,
-                // display_path,
+
+                display_path,
                 
                 // update_shadows,
             ).run_if(in_state(STATE)))
@@ -137,8 +145,9 @@ fn setup(
     // ]);
     if completed.is_some() {return;}
     cmd.init_resource::<MiamiTransitionShooted>();
+    let Some(screenshot) = last.image.clone() else {return;};
     let tween = Tween::new(
-        EaseFunction::SineOut,
+        EaseFunction::QuinticOut,
         Duration::from_secs_f32(SCREENSHOT_TRANSITION_TIME),
         TransformRotationLens {
             start: Quat::from_rotation_x(0.0),
@@ -147,32 +156,48 @@ fn setup(
     );
     cmd.spawn((
         Name::new("Screenshot"),
+        DespawnOnExit(STATE),
+        PlaybackSettings{
+            mode: PlaybackMode::Once,
+            volume: Volume::Linear(1.0),
+            ..default()
+        },
+        AudioPlayer::new(assets.powerup_sound.clone()),
         TweenAnim::new(tween),
         MiamiScreenshot(0.0),
         Transform::from_translation(Vec3::new(0.0, 0.0, 500.0)),
         Sprite {
-            image: last.image.clone().unwrap(),
+            image: screenshot,
             ..Default::default()
         },
         HIGHRES_LAYERS,
     ));
 }
 
+
 const SCREENSHOT_TRANSITION_TIME: f32 = 0.5;
+
 
 fn update_screenshot(
     mut screenshot: Query<(Entity, &mut MiamiScreenshot)>,
     mut cmd: Commands,
     dt: Res<Time>,
+    player: Query<Entity, (With<Player>, With<PlayerDisabled>)>,
 ){
+    let Some(player) = player.iter().next() else {return;};
+    cmd.entity(player).remove::<PlayerDisabled>();
+
     let dt = dt.dt();
     for (e, mut s) in screenshot.iter_mut() {
         s.0 += dt;
         if s.0 > SCREENSHOT_TRANSITION_TIME {
             cmd.entity(e).despawn();
+            // let Some(player) = player.iter().next() else {continue;};
+            cmd.entity(player).remove::<PlayerDisabled>();
         }
     }
 }
+
 
 fn on_map_created(
     _event: On<TiledEvent<TilemapCreated>>,
@@ -218,8 +243,8 @@ pub fn miami_dropped_weapon_layers() ->    CollisionLayers {CollisionLayers::fro
 pub fn miami_pickup_weapon_layers() ->     CollisionLayers {CollisionLayers::from_bits(0b001000000, 0b001000000)}
 pub fn miami_weapon_layers() ->            CollisionLayers {CollisionLayers::from_bits(0b000000000, 0b000000000)}
 pub fn miami_projectile_damager_layer() -> CollisionLayers {CollisionLayers::from_bits(0b010000001, 0b010000001)} 
-pub fn miami_projectile_player_layer() ->  CollisionLayers {CollisionLayers::from_bits(0b100000001, 0b100000001)} 
-pub fn miami_seeker_shapecast_layer() ->   CollisionLayers {CollisionLayers::from_bits(0b000000101, 0b000000101)} 
+pub fn miami_projectile_player_layer() ->  CollisionLayers {CollisionLayers::from_bits(0b100000000, 0b100000000)} 
+pub fn miami_seeker_shapecast_layer() ->   CollisionLayers {CollisionLayers::from_bits(0b000000011, 0b000000011)} 
 
 
 pub fn red_blood() -> Color {Color::Srgba(Srgba::rgba_u8(200, 32, 61, 255))}

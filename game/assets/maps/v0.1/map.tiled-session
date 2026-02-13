@@ -51,11 +51,11 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 2,
+            "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 232.25,
-                "y": 298.5
+                "x": -88.5,
+                "y": 400
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx": {
@@ -106,10 +106,10 @@
     "project": "map.tiled-project",
     "property.type": "games::pathfinder::plugin::PathfinderObstacle",
     "recentFiles": [
+        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/tilemap.tsx",
         "rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/platformer/rules.tmx",
-        "R:/prog/bevyjam7/game/assets/maps/platformer/map.tmx",
         "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx",
         "R:/prog/bevyjam7/game/assets/maps/miami/rules.tmx",
         "R:/prog/bevyjam7/game/assets/maps/miami/map.tmx",
