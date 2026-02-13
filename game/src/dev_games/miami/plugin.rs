@@ -7,7 +7,7 @@ use camera::CameraController;
 use games::global_music::plugin::NewBgMusic;
 
 use super::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}};
-use crate::{dev_games::miami::player, prelude::*};
+use crate::{dev_games::miami::map::{BossDialog, BossEntrypointCollider, EntrypointDialog, HorizontalDoor, VerticalDoor}, prelude::*};
 use super::entity::*;
 use super::shadows::*;
 use super::player::*;
@@ -60,6 +60,11 @@ impl Plugin for MiamiPlugin {
             .register_type::<TilemapShadow>()
             .register_type::<MiamiWeaponSpawner>()
             .register_type::<MiamiEntitySpawner>()
+            .register_type::<BossEntrypointCollider>()
+            .register_type::<EntrypointDialog>()
+            .register_type::<BossDialog>()
+            .register_type::<HorizontalDoor>()
+            .register_type::<VerticalDoor>()
 
             .add_observer(setup_tilemap_shadows)
             .add_observer(on_weapon_spawnpoint)
@@ -207,6 +212,7 @@ fn on_map_created(
     if state.get() != &STATE {return;};
     let Ok(mut map) = map.single_mut() else {return;};
     map.scale.z = 0.05;
+    map.translation.z = 22.0;
 }
 
 
@@ -225,6 +231,7 @@ fn tick(
     let Some(mut t) = camera.iter_mut().next() else {return;};
     t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02;
 }
+
 
 fn cleanup(
     mut controller: ResMut<CameraController>,

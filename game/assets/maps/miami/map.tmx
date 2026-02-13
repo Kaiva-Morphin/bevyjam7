@@ -82,7 +82,7 @@
   <properties>
    <property name="spawner" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner"/>
   </properties>
-  <object id="20" x="54.5758" y="317.212">
+  <object id="20" x="163.485" y="273.576">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
      <properties>
@@ -96,7 +96,7 @@
    </properties>
    <point/>
   </object>
-  <object id="22" x="64.0758" y="272.712">
+  <object id="22" x="162.985" y="254.167">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
      <properties>
@@ -110,7 +110,7 @@
    </properties>
    <point/>
   </object>
-  <object id="23" x="98.0758" y="298.712">
+  <object id="23" x="190.076" y="264.53">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
      <properties>
@@ -218,30 +218,12 @@
   </object>
  </objectgroup>
  <objectgroup color="#aaff7f" id="4" name="h_doors">
-  <object id="5" x="18" y="288">
-   <point/>
-  </object>
-  <object id="6" x="270" y="288">
-   <point/>
-  </object>
-  <object id="14" x="414" y="288">
+  <object id="5" x="90" y="306">
    <point/>
   </object>
  </objectgroup>
  <objectgroup color="#55aa00" id="5" name="v_doors">
-  <object id="7" x="180" y="234">
-   <point/>
-  </object>
-  <object id="8" x="342" y="234">
-   <point/>
-  </object>
-  <object id="9" x="342" y="342">
-   <point/>
-  </object>
-  <object id="10" x="180" y="342">
-   <point/>
-  </object>
-  <object id="15" x="648" y="378">
+  <object id="10" x="54" y="270">
    <point/>
   </object>
  </objectgroup>

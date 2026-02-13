@@ -5,6 +5,30 @@ use crate::{pathfinder::plugin::PathfinderObstacle, prelude::*};
 #[reflect(Component)]
 pub struct TilemapShadow;
 
+#[derive(Component, Reflect, Default)]
+#[reflect(Component, Default)]
+pub struct BossEntrypointCollider;
+
+
+#[derive(Component, Reflect, Default)]
+#[reflect(Component, Default)]
+pub struct EntrypointDialog;
+
+
+#[derive(Component, Reflect, Default)]
+#[reflect(Component, Default)]
+pub struct BossDialog;
+
+#[derive(Component, Reflect, Default)]
+#[reflect(Component, Default)]
+pub struct HorizontalDoor;
+
+
+#[derive(Component, Reflect, Default)]
+#[reflect(Component, Default)]
+pub struct VerticalDoor;
+
+
 pub fn setup_tilemap_shadows(
     layer_created: On<TiledEvent<LayerCreated>>,
     mut tile_shadow: Query<&mut Transform, With<TilemapShadow>>,
@@ -51,4 +75,14 @@ pub fn propagate_obstacles(
             }
         }
     }
+}
+
+
+pub fn on_v_door(
+    ev: On<Add, VerticalDoor>,
+    t: Query<&GlobalTransform, With<VerticalDoor>>,
+    mut cmd: Commands
+) {
+    let Ok(t) = t.get(ev.entity) else {return;};
+    cmd.spawn()
 }

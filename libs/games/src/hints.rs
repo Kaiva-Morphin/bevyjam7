@@ -34,6 +34,7 @@ pub enum KeyHint {
     KeysWASD,
     KeysMouseAll
 }
+
 impl KeyHint {
     pub fn get_asset(&self, assets: &HintAssets) -> Handle<TextureAtlasLayout> {
         match self {
@@ -138,5 +139,5 @@ pub fn update_hints(
 
 pub const HINT_ANIM_SPEED : f32 = 3.0;
 pub const HINT_IN_DURATION : f32 = 0.3;
-pub const HINT_STAY_DURATION : f32 = 3.0;
+pub const HINT_STAY_DURATION : f32 = 10.0;
 pub const HINT_OUT_DURATION : f32 = 0.3;

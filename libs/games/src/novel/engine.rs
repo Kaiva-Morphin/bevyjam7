@@ -156,6 +156,7 @@ pub struct NovelStage {
     pub music: NovelMusic,
     pub speaker: String,
     pub bg: Background,
+    pub bg_transform: Transform,
     pub text: String,
 }
 
@@ -163,7 +164,7 @@ pub struct NovelStage {
 macro_rules! stages {
     (
         $(
-            $bg:ident $music:ident  {
+            $bg:ident $music:ident $(($bg_transform:expr))? {
                 $(
                     $actor:ident $((
                         $( $field:ident = $value:expr ),* $(,)?
@@ -200,6 +201,7 @@ macro_rules! stages {
                         ),*
                     ],
                     bg: Background::$bg,
+                    $(bg_transform: $bg_transform,)?
                     text: $text.to_string(),
                     ..Default::default()
                 }

@@ -137,7 +137,7 @@ fn setup(
     let cam = cam.iter().next().expect("No cam!");
     crate::hints::show_hints(
         &mut cmd,
-        vec![KeyHint::KeysQAD, KeyHint::KeysSpace, KeyHint::KeysWASD, KeyHint::KeysMouseAll],
+        vec![KeyHint::KeysQAD, KeyHint::KeysSpace],
         STATE,
         cam,
         hint_assets,

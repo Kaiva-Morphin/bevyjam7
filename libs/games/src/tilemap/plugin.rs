@@ -34,6 +34,10 @@ impl Plugin for MapPlugin {
                 r"^.*::TiledPhysicsAvianBackend$",
                 r"^.*::TiledPhysicsBackend$",
                 r"^.*::TiledPhysicsSettings$",
+
+                r"^.*::BossEntrypointCollider$",
+                r"^.*::EntrypointDialog$",
+                r"^.*::BossDialog$",
                 
             ])
             .expect("Wrong regex"),

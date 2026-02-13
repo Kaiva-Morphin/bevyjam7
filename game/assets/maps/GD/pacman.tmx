@@ -113,13 +113,13 @@
  <objectgroup id="4" name="spawners">
   <object id="1" x="-204.25" y="132.5">
    <properties>
-    <property name="SpawnPoint" type="class" propertytype="game::dev_games::geometry_dash::plugin::SpawnPoint"/>
+    <property name="SpawnPoint" value=""/>
    </properties>
    <point/>
   </object>
   <object id="3" x="40.5" y="224.5">
    <properties>
-    <property name="CameraCenter" type="class" propertytype="game::dev_games::geometry_dash::plugin::CameraCenter"/>
+    <property name="CameraCenter" value=""/>
    </properties>
    <point/>
   </object>

@@ -239,6 +239,9 @@ impl NovelState {
     fn bg(&self) -> &Background {
         &self.stages[self.current_stage].bg
     }
+    fn bg_transform(&self) -> &Transform {
+        &self.stages[self.current_stage].bg_transform
+    }
     fn actors(&self) -> &Vec<ActorAppearance> {
         &self.stages[self.current_stage].actors
     }
@@ -501,7 +504,7 @@ fn tick(
     mut t_q: Query<&mut Text>,
     s_q: Query<Entity, With<SpeakerNode>>,
     r_q: Query<Entity, With<TextNode>>,
-    mut bg_q: Query<&mut Sprite, With<BackgroundSprite>>,
+    mut bg_q: Query<(&mut Sprite, &mut Transform), With<BackgroundSprite>>,
     sprite_q: Query<Entity, With<ActorSprite>>,
     current_q: Query<Entity, With<CurrentMusic>>,
     prev_q: Query<Entity, With<PrevMusic>>,
@@ -601,7 +604,7 @@ fn next_stage(
     t_q: &mut Query<&mut Text>,
     s_q: &Query<Entity, With<SpeakerNode>>,
     r_q: &Query<Entity, With<TextNode>>,
-    bg_q: &mut Query<&mut Sprite, With<BackgroundSprite>>,
+    bg_q: &mut Query<(&mut Sprite, &mut Transform), With<BackgroundSprite>>,
     a_q: &Query<Entity, With<ActorSprite>>,
     bg: &Res<BackgroundsAssets>,
     actors: &Res<ActorsAssets>,
@@ -621,8 +624,9 @@ fn next_stage(
     for e in a_q.iter() {
         cmd.entity(e).despawn();
     }
-    for mut sprite in bg_q.iter_mut() {
+    for (mut sprite, mut t) in bg_q.iter_mut() {
         sprite.image = state.bg().get_asset(bg);
+        *t = state.bg_transform().clone();
     }
     for appearance in state.actors() {
         cmd.spawn((
