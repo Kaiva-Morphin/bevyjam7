@@ -151,30 +151,6 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 9,
-            "members": [
-            ],
-            "name": "game::dev_games::geometry_dash::plugin::CameraCenter",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 10,
-            "members": [
-            ],
-            "name": "game::dev_games::geometry_dash::plugin::SpawnPoint",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
             "id": 16,
             "members": [
                 {
@@ -362,6 +338,30 @@
         {
             "color": "#ff000000",
             "drawFill": true,
+            "id": 9,
+            "members": [
+            ],
+            "name": "games::geometry_dash::plugin::CameraCenter",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 10,
+            "members": [
+            ],
+            "name": "games::geometry_dash::plugin::SpawnPoint",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
             "id": 22,
             "members": [
             ],
@@ -441,6 +441,66 @@
                 }
             ],
             "name": "room::MapRoom",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 29,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::dialog::BossDialog",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 30,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::dialog::BossEntrypointCollider",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 31,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::dialog::EntrypointDialog",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 32,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::dialog::HorizontalDoor",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 33,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::dialog::VerticalDoor",
             "type": "class",
             "useAs": [
                 "property"

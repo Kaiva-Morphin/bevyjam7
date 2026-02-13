@@ -527,9 +527,9 @@ pub fn health_watcher(
     assets: Res<MiamiAssets>,
 
 ) {
-    let mut _rng = rand::rng();
+    let mut rng = rand::rng();
     for (e, t, components, mut controller) in character.iter_mut() {
-        let dmg = controller.hp - controller.prev_hp;
+        let dmg = controller.prev_hp - controller.hp;
         let Ok(_s) = sprite.get(components.sprite) else {continue;};
         if dmg == 0.0 {continue;}
         let mut b = Transform::from_translation(t.translation());
@@ -550,14 +550,17 @@ pub fn health_watcher(
         t.translation.y += world_offset.y;
         // t.scale = Vec3::ONE;
         // b.scale = Vec3::ONE;
+        info!("Dmg: {}", dmg);
         let idx;
         if dmg <= 20.0 {
-            idx = 1;
-        } else if dmg <= 40.0 {
             idx = 0;
+        } else if dmg <= 40.0 {
+            idx = 1;
         } else {
             idx = 2;
         }
+        
+        b.rotation = Quat::from_rotation_z(rng.random_range(0u32..=3u32) as f32 * FRAC_PI_2);
         // t.rotation.z = rng.random_range(0.0..std::f32::consts::PI * 2.0);
         let rect;
         if controller.last_impact_back {
