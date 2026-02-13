@@ -107,8 +107,8 @@ impl CharacterController {
                 ..Default::default()
             },
             MiamiEntity::Endoskeleton => Self {
-                speed: 120.0, 
-                run_speed: 120.0, 
+                speed: 10.0, 
+                run_speed: 10.0, 
                 walk_speed: 60.0,
                 hp: 100.,
                 prev_hp: 100.,

@@ -314,7 +314,6 @@ fn collision_handler(
     q: Query<Entity, With<Pacman>>,
     s: Res<State<AppState>>,
     ls: Option<Res<State<LocalState>>>,
-    canvas: Res<camera::ViewportCanvas>,
     mut screenshot: ResMut<crate::properties::LastScreenshot>,
 ){
     if s.get() != &STATE {return;}
