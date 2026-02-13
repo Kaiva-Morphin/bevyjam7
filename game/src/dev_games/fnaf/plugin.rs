@@ -807,7 +807,7 @@ fn defeat(
     } else {
         if lobster_timer.0 > 1. {
             if screenshot.awaiting == false {
-                cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
+                cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
                     .observe(await_screenshot_and_translate(AppState::Defeat));
                 screenshot.awaiting = true;
             }

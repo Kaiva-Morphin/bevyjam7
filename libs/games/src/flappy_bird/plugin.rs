@@ -301,13 +301,6 @@ fn tick_game(
 
 }
 
-// fn tick_defat(
-//     mut cmd: Commands,
-//     canvas: Res<camera::ViewportCanvas>,
-// ){
-//     // cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
-//     //     .observe(crate::games::plugin::await_screenshot_and_translate(AppState::Defeat));
-// }
 
 fn cleanup(
     mut cmd: Commands,
@@ -317,7 +310,6 @@ fn cleanup(
 
 fn collision_handler(
     _e: On<CollisionStart>,
-    // mut state: ResMut<NextState<LocalState>>,
     mut cmd: Commands,
     q: Query<Entity, With<Pacman>>,
     s: Res<State<AppState>>,
@@ -331,8 +323,8 @@ fn collision_handler(
     let p = q.iter().next().expect("No pacman!");
     if _e.collider1 != p && _e.collider2 != p {return;}
     if screenshot.awaiting == false {
-        cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
-            .observe(crate::properties::await_screenshot_and_translate(AppState::FakeEnd));
+        cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
+            .observe(await_screenshot_and_translate(AppState::Defeat));
         screenshot.awaiting = true;
     }
     cmd.entity(q.iter().next().expect("No pacman!")).remove::<RigidBody>();

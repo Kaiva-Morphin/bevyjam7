@@ -72,41 +72,18 @@ pub fn on_defeat(
     let Some(new_handle) = last_screenshot.image.clone() else {
         state.set(res.state);return;
     };
-    // cmd.spawn((
-    //     Name::new("Screenshot"),
-    //     Transform::from_translation(Vec3::new(0.0, 0.0, 5.0)).with_scale(Vec3::splat(1.0)),
-    //     Sprite {
-    //         image: new_handle,
-    //         ..default()
-    //     },
-    //     ScreenshotEntity::default(),
-    // ));
     if! h_q.is_empty() {state.set(res.state);return;}
     let tween1 = Tween::new(
-        // Use a quadratic easing on both endpoints.
-        // EaseFunction::CircularOut,
         EaseFunction::SineOut,
-        // Animation time (one way only; for ping-pong it takes 2 seconds
-        // to come back to start).
         Duration::from_secs_f32(HAND_IN_ANIMATION_DURATION),
-        // The lens gives the TweenAnimator access to the Transform component,
-        // to animate it. It also contains the start and end values associated
-        // with the animation ratios 0. and 1.
         TransformPositionLens {
             start: vec3(1.0, -1.0, 2.0) * canvas.window_size.extend(0.0) * 0.75,
             end: vec3(0., 0., 2.,),
         },
     );
     let dummy = Tween::new(
-        // Use a quadratic easing on both endpoints.
-        // EaseFunction::CircularOut,
         EaseFunction::SineOut,
-        // Animation time (one way only; for ping-pong it takes 2 seconds
-        // to come back to start).
         Duration::from_secs_f32(HAND_IN_ANIMATION_DURATION),
-        // The lens gives the TweenAnimator access to the Transform component,
-        // to animate it. It also contains the start and end values associated
-        // with the animation ratios 0. and 1.
         TransformPositionLens {
             start: vec3(0., 0., 0.,),
             end: vec3(0., 0., 0.,),
@@ -114,21 +91,13 @@ pub fn on_defeat(
     );
 
     let tween2 = Tween::new(
-        // Use a quadratic easing on both endpoints.
-        // EaseFunction::CircularOut,
         EaseFunction::SineIn,
-        // Animation time (one way only; for ping-pong it takes 2 seconds
-        // to come back to start).
         Duration::from_secs_f32(HAND_OUT_ANIMATION_DURATION),
-        // The lens gives the TweenAnimator access to the Transform component,
-        // to animate it. It also contains the start and end values associated
-        // with the animation ratios 0. and 1.
         TransformPositionLens {
             start: vec3(0., 0., 0.,),
             end: vec3(0.5, -1.0, 0.0) * canvas.window_size.extend(0.0) * 1.5,
         },
     );
-    // let cam = cam.iter().next().expect("No cam!");
     cmd.spawn((
         Sprite {
             image: new_handle,
@@ -153,37 +122,6 @@ pub fn on_defeat(
             TweenAnim::new(tween1),
         )],
     ));
-
-    // cmd.spawn((
-    //     UiTargetCamera(cam),
-    //     Node{
-    //         width: Val::Percent(100.0),
-    //         height: Val::Percent(100.0),
-    //         ..default()
-    //     },
-    //     ImageNode {
-    //         image: new_handle,
-    //         ..default()
-    //     },
-    //     ScreenshotEntity::default(),
-    //     TweenAnim::new(dummy.then(tween2)),
-    //     children![(
-    //         Name::new("Hand"),
-    //         Node{
-    //             ..default()
-    //         },
-    //         ImageNode {
-    //             image: assets.hand.clone(),
-    //             texture_atlas: Some(TextureAtlas {
-    //                 layout: assets.hand_layout.clone(),
-    //                 ..default()
-    //             }),
-    //             ..default()
-    //         },
-    //         HandEntity::default(),
-    //         TweenAnim::new(tween1),
-    //     )],
-    // ));
     state.set(res.state);
 }
 

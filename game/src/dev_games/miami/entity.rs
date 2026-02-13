@@ -5,7 +5,9 @@ use bevy::color::palettes;
 use camera::CameraController;
 use room::Focusable;
 
-use crate::{dev_games::miami::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}}, prelude::*};
+
+use super::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}};
+use crate::prelude::*;
 
 
 #[derive(Component)]
@@ -185,6 +187,7 @@ pub fn on_entity_spawnpoint(
         },
         char
     )).id();
+
     let pivot = cmd.spawn((
         Name::new("Pivot"),
         CharacterPivotPoint,
@@ -204,7 +207,6 @@ pub fn on_entity_spawnpoint(
         DespawnOnExit(STATE),
         Name::new("Character"),
         GlobalTransform::default(),
-        transform.clone(),
         Visibility::default(),
         RigidBody::Dynamic,
         LockedAxes::ROTATION_LOCKED,
@@ -217,10 +219,13 @@ pub fn on_entity_spawnpoint(
     ));
     let id;
     if let MiamiEntity::Player = spawner.entity_type {
+        
         id = c.insert(
             (
+                transform.clone(),
                 Focusable,
                 Player,
+                super::player::PlayerDisabled,
                 Name::new("Player"),
                 miami_player_layers()
             )
@@ -238,6 +243,7 @@ pub fn on_entity_spawnpoint(
             .with_ignore_self(true)
             .with_query_filter(SpatialQueryFilter::from_mask(miami_seeker_shapecast_layer().memberships));
         id = c.insert((
+            transform.clone(),
             miami_character_layers(),
             CharacterInPlace,
             // DummyEntity,

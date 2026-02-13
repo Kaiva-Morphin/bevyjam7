@@ -297,6 +297,35 @@
         {
             "color": "#ff000000",
             "drawFill": true,
+            "id": 27,
+            "members": [
+                {
+                    "name": ":variant",
+                    "propertyType": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
+                    "type": "string",
+                    "value": "Yellow"
+                }
+            ],
+            "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "id": 28,
+            "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Yellow",
+                "White"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
             "id": 23,
             "members": [
             ],
@@ -336,7 +365,7 @@
             "id": 22,
             "members": [
             ],
-            "name": "game::pathfinder::plugin::PathfinderObstacle",
+            "name": "games::pathfinder::plugin::PathfinderObstacle",
             "type": "class",
             "useAs": [
                 "property"
@@ -416,35 +445,6 @@
             "useAs": [
                 "property"
             ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 27,
-            "members": [
-                {
-                    "name": ":variant",
-                    "propertyType": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
-                    "type": "string",
-                    "value": "Yellow"
-                }
-            ],
-            "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "id": 28,
-            "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
-            "storageType": "string",
-            "type": "enum",
-            "values": [
-                "Yellow",
-                "White"
-            ],
-            "valuesAsFlags": false
         }
     ]
 }

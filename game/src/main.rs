@@ -9,7 +9,7 @@ use crate::core::plugin::CorePlugin;
 pub mod prelude;
 pub mod properties;
 pub mod dev_games;
-pub mod pathfinder;
+// pub mod pathfinder;
 pub mod hints;
 
 

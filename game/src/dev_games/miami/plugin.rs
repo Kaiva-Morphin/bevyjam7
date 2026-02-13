@@ -1,10 +1,16 @@
+use std::{f32::consts::{FRAC_2_PI, PI}, time::Duration};
+
+use avian2d::math::FRAC_PI_2;
 use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::CameraController;
+use games::global_music::plugin::NewBgMusic;
 
-use crate::{dev_games::miami::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}}, prelude::*};
+use super::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}};
+use crate::prelude::*;
 use super::entity::*;
-use crate::miami::shadows::*;
-use crate::miami::player::*;
+use super::shadows::*;
+use super::player::*;
+use super::dialog::*;
 
 pub const STATE: AppState = AppState::Miami;
 pub const NEXT_STATE: AppState = AppState::PacmanEnter;
@@ -26,6 +32,19 @@ pub struct MiamiAssets {
     pub decals: Handle<Image>,
     #[asset(path = "maps/miami/projectiles.png")]
     pub projectiles: Handle<Image>,
+
+    #[asset(path = "maps/miami/dialog_faz.png")]
+    pub dialog_faz: Handle<Image>,
+    #[asset(path = "maps/miami/dialog_pac.png")]
+    pub dialog_pac: Handle<Image>,
+
+    #[asset(path="sounds/miami/ACTION PACK 1 OGG_Magic Fx 7.ogg")]
+    pub bg_music: Handle<AudioSource>,
+
+    #[asset(path = "fonts/kaivs_minegram_v1.ttf")]
+    pub font: Handle<Font>,
+    #[asset(path = "fonts/kaivs_minegram_v1-italic.ttf")]
+    pub italic: Handle<Font>,
 }
 
 pub struct MiamiPlugin;
@@ -44,10 +63,12 @@ impl Plugin for MiamiPlugin {
             .add_observer(on_pickup_weapon_collision)
             .add_observer(propagate_obstacles)
             .add_observer(on_projectile_hit)
+            .add_observer(on_map_created)
             
 
             .add_systems(OnEnter(STATE), (
                 setup,
+                
                 // setup_navmesh
             ))
             .add_systems(PreUpdate, (
@@ -60,6 +81,8 @@ impl Plugin for MiamiPlugin {
                 tick,
                 update_chasers,
                 chase,
+                tick_dialog,
+                update_screenshot,
                 // display_path,
                 
                 // update_shadows,
@@ -83,17 +106,88 @@ impl Plugin for MiamiPlugin {
     }
 }
 
+
+#[derive(Component)]
+pub struct MiamiScreenshot(f32);
+#[derive(Resource, Default)]
+pub struct MiamiTransitionShooted;
+
+
 fn setup(
     mut cmd: Commands,
     assets: Res<MiamiAssets>,
-    mut camera_controller: ResMut<CameraController>,
+    // cam: Query<Entity, With<WorldCamera>>,
+    last: Res<LastScreenshot>,
+    completed: Option<Res<MiamiTransitionShooted>>,
 ){
+    cmd.spawn((
+        NewBgMusic{handle: Some(assets.bg_music.clone()), instant_translation: false},
+    ));
     cmd.spawn((
         DespawnOnExit(STATE),
         Name::new("Map"),
         TiledMap(assets.map.clone()),
-    ))
-        ;
+    ));
+    // let cam = cam.iter().next().expect("No cam!");
+    // start_dialog(&mut cmd, &assets, cam, vec![
+    //     ("YOU BASTARD!".to_string(), Speaker::Pacman),
+    //     ("YOU BASTARD2!".to_string(), Speaker::Pacman),
+    //     ("HELLO, PAC! I WILL KILL YOU!".to_string(), Speaker::Freddy),
+    //     ("HELLO, PAC! I WILL KILL YOU!2".to_string(), Speaker::Freddy),
+    // ]);
+    if completed.is_some() {return;}
+    cmd.init_resource::<MiamiTransitionShooted>();
+    let tween = Tween::new(
+        EaseFunction::SineOut,
+        Duration::from_secs_f32(SCREENSHOT_TRANSITION_TIME),
+        TransformRotationLens {
+            start: Quat::from_rotation_x(0.0),
+            end: Quat::from_rotation_x(FRAC_PI_2),
+        }
+    );
+    cmd.spawn((
+        Name::new("Screenshot"),
+        TweenAnim::new(tween),
+        MiamiScreenshot(0.0),
+        Transform::from_translation(Vec3::new(0.0, 0.0, 500.0)),
+        Sprite {
+            image: last.image.clone().unwrap(),
+            ..Default::default()
+        },
+        HIGHRES_LAYERS,
+    ));
+}
+
+const SCREENSHOT_TRANSITION_TIME: f32 = 0.5;
+
+fn update_screenshot(
+    mut screenshot: Query<(Entity, &mut MiamiScreenshot)>,
+    mut cmd: Commands,
+    dt: Res<Time>,
+){
+    let dt = dt.dt();
+    for (e, mut s) in screenshot.iter_mut() {
+        s.0 += dt;
+        if s.0 > SCREENSHOT_TRANSITION_TIME {
+            cmd.entity(e).despawn();
+        }
+    }
+}
+
+fn on_map_created(
+    _event: On<TiledEvent<TilemapCreated>>,
+    state: Res<State<AppState>>,
+    mut map: Query<&mut Transform, With<TiledMap>>,
+) {
+    if state.get() != &STATE {return;};
+    let Ok(mut map) = map.single_mut() else {return;};
+    map.scale.z = 0.05;
+}
+
+
+pub fn late_setup(
+    mut camera_controller: ResMut<CameraController>,
+){
     camera_controller.follow_speed = 0.9;
     camera_controller.target_zoom = 0.9;
 }
@@ -115,6 +209,7 @@ fn cleanup(
     controller.target_zoom = 0.8;
     let Ok(mut t) = camera.single_mut() else {return;};
     t.rotation.z = 0.0;
+    t.rotation.y = 0.0;
 }
 
 pub fn miami_player_layers() ->            CollisionLayers {CollisionLayers::from_bits(0b101000110, 0b101000111)}

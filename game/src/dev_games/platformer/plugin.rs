@@ -56,7 +56,7 @@ pub struct PlatformerAssets {
     tilemap: Handle<TiledMapAsset>,
     #[asset(path = "maps/platformer/character.png")]
     character: Handle<Image>,
-    #[asset(texture_atlas_layout(tile_size_x = 80, tile_size_y = 96, columns = 2, rows = 4))]
+    #[asset(texture_atlas_layout(tile_size_x = 48, tile_size_y = 64, columns = 2, rows = 4))]
     character_layout: Handle<TextureAtlasLayout>,
     #[asset(path = "sounds/platformer/Three Red Hearts - Penguins vs Rabbits.ogg")]
     bg_music: Handle<AudioSource>,
@@ -78,10 +78,9 @@ fn focus_player(
     let Ok(pt) = spawnpoint_q.get(point.entity) else {return;};
     let pt = pt.translation;
 
-    let collider = Collider::capsule(32.0, 32.0);
-    let caster_shape = Collider::capsule(30.0, 30.0);
-    let blocker_shape = Collider::capsule(25.0, 30.0);
-        // caster_shape.set_scale(Vector::ONE * Vector::new(0.99, 1.01), 10);
+    let collider = Collider::capsule(20.0, 20.0);
+    let caster_shape = Collider::capsule(16.0, 16.0);
+    let blocker_shape = Collider::capsule(12.0, 12.0);
     
     let switch = cmd.spawn((
         Sensor,
@@ -120,7 +119,6 @@ fn focus_player(
         Friction::new(0.0),
     )).id();
     cmd.entity(player).add_child(switch);
-    
     camera_controller.focused_entities.push_front(player);
     let Some((ce, mut p)) = cq.iter_mut().next() else {return;}; 
     let Projection::Orthographic(p) = &mut *p else {warn!("Camera without perspective projection"); return;};
@@ -244,10 +242,8 @@ fn on_collision(
     let is_next = n_q.get(e).is_ok();
     if is_next {
         if screenshot.awaiting == false {
-            // cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
             cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
                 .observe(await_screenshot_and_translate(NEXT_STATE))
-                // .observe(bevy::render::view::screenshot::save_to_disk("./screen.png"))
                 ;
             screenshot.awaiting = true;
         }

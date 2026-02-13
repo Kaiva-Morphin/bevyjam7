@@ -10,3 +10,6 @@ pub mod shaders;
 pub mod global_music;
 
 pub mod fake_end;
+
+pub mod pathfinder;
+// pub mod miami;
