@@ -6,7 +6,7 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use crate::prelude::*;
 
 const STATE: AppState = AppState::FakeEnd;
-// const NEXT_STATE: AppState = AppState::Platformer;
+const NEXT_STATE: AppState = AppState::Novel;
 
 const RECT_HS: f32 = 3.;
 #[derive(Component)]
@@ -30,7 +30,13 @@ pub struct JokerTexture {
 #[states(scoped_entities)]
 enum LocalState {
     #[default]
-    InitialAnim,
+    Game,
+    Aboba,
+}
+
+#[derive(Resource, PartialEq, Eq)]
+enum SuperLocalState {
+    Setup,
     Game,
     Aboba,
 }
@@ -39,26 +45,19 @@ pub struct FakeEndPlugin;
 impl Plugin for FakeEndPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_systems(Startup, global_setup.after(crate::novel::plugin::setup))
-            // .insert_resource(LocalRes::default())
+        .add_systems(Startup, global_setup.after(camera::setup_camera)) // .after(crate::||  ||::plugin::setup) todo:!!
+            .insert_resource(SuperLocalState::Setup)
             // .insert_resource(Pipes::default())
             .add_sub_state::<LocalState>()
             .add_systems(OnEnter(STATE), setup)
-            .add_systems(Update, tick_transition.run_if(in_state(LocalState::InitialAnim)))
             // .add_systems(OnEnter(LocalState::Game), begin_game)
-            .add_systems(Update, monke_fall.run_if(in_state(LocalState::Game)))
+            .add_systems(Update, (monke_fall, paste_screenshot).after(setup).run_if(resource_equals(SuperLocalState::Game)))
             // .add_systems(Update, tick_defat.run_if(in_state(LocalState::Defeat)))
             // .add_systems(Update, tick_win.run_if(in_state(LocalState::Win)))
-            .add_systems(OnEnter(LocalState::Aboba), cleanup)
+            .add_systems(Update, cleanup.run_if(resource_equals(SuperLocalState::Aboba)))
             // .add_observer(collision_handler)
             ;
     }
-}
-
-fn tick_transition(
-    mut state: ResMut<NextState<LocalState>>,
-) {
-    state.set(LocalState::Game);
 }
 
 fn global_setup(
@@ -90,7 +89,7 @@ fn global_setup(
     let image_handle = images.add(image);
     let cam = cam.iter().next().expect("No cam!");
     cmd.spawn((
-        DespawnOnExit(LocalState::Aboba),
+        DespawnOnEnter(LocalState::Aboba),
         UiTargetCamera(cam),
         Node{
             width: Val::Percent(100.0),
@@ -101,10 +100,10 @@ fn global_setup(
             image: image_handle.clone(),
             ..default()
         },
-    ZIndex(100)));
+    ZIndex(10000)));
 
     cmd.spawn((
-        DespawnOnExit(LocalState::Aboba),
+        DespawnOnEnter(LocalState::Aboba),
         Camera3d::default(),
         Camera {
             clear_color: ClearColorConfig::Custom(Color::Srgba(Srgba::rgba_u8(0, 0, 0, 0))),
@@ -129,10 +128,10 @@ fn global_setup(
     
     cmd.spawn((
         Name::new("Texture rect"),
-        DespawnOnExit(LocalState::Aboba),
+        DespawnOnEnter(LocalState::Aboba),
         Mesh3d(mesh),
         MeshMaterial3d(material),
-        Transform::from_translation(Vec3::new(0.0, 5.05, 0.0)),
+        Transform::from_translation(Vec3::new(0.0, 5.05, -2.)),
         RenderLayers::layer(3),
         TextureRect,
     ));
@@ -141,14 +140,16 @@ fn global_setup(
 
 fn setup(
     mut cmd: Commands,
-    mut joker_rect: Query<&mut Transform, With<TextureRect>>
+    mut joker_rect: Query<&mut Transform, With<TextureRect>>,
+    mut super_local_state: ResMut<SuperLocalState>,
 ) {
+    *super_local_state = SuperLocalState::Game;
     cmd.insert_resource(FallStart {start: false, num: 0, timer: 0.});
     cmd.insert_resource(ClimbStart {climbed: false, num: 0, timer: 0.});
-    let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
+    let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
     let q = Quat::from_axis_angle(Vec3::X, PI / 2.);
     let mut t = joker_rect.single_mut().expect("NO JOKER");
-    *t = Transform::from_translation(Vec3::new(0.0, 0.0, 0.0));
+    *t = Transform::from_translation(Vec3::new(0.0, 0.0, -2.0));
     t.rotate_around(pivot_point, q);
 }
 
@@ -171,9 +172,10 @@ fn monke_fall(
     mut transform_q: Query<&mut Transform, With<TextureRect>>,
     mut fall_start: ResMut<FallStart>,
     mut climb_start: ResMut<ClimbStart>,
-    mut state: ResMut<NextState<LocalState>>,
     time: Res<Time>,
     fake_assets: Res<FakeEndAssets>,
+    mut super_local_state: ResMut<SuperLocalState>,
+    mut appstate: ResMut<NextState<AppState>>,
 ) {
     const DEGPF: f32 = -0.01;
     if climb_start.num as f32 * -DEGPF > PI / 2. {
@@ -184,7 +186,7 @@ fn monke_fall(
     } else {
         if climb_start.num == 0 {
             cmd.spawn((
-                DespawnOnExit(STATE),
+                DespawnOnEnter(LocalState::Aboba),
                 AudioPlayer(fake_assets.creek1.clone()),
                 PlaybackSettings {
                     mode: bevy::audio::PlaybackMode::Once,
@@ -192,7 +194,7 @@ fn monke_fall(
                 },
             ));
         }
-        let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
+        let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
         let q = Quat::from_axis_angle(Vec3::X, DEGPF);
         transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
         climb_start.num += 1;
@@ -200,7 +202,7 @@ fn monke_fall(
     if fall_start.start {
         if fall_start.num == 0 {
             cmd.spawn((
-                DespawnOnExit(STATE),
+                DespawnOnEnter(LocalState::Aboba),
                 AudioPlayer(fake_assets.creek2.clone()),
                 PlaybackSettings {
                     mode: bevy::audio::PlaybackMode::Once,
@@ -209,19 +211,53 @@ fn monke_fall(
             ));
         }
         if fall_start.num as f32 * -DEGPF > PI {
-            state.set(LocalState::Aboba);
+            *super_local_state = SuperLocalState::Aboba;
+            appstate.set(AppState::Novel);
         }
-        let pivot_point = Vec3::new(0.0, -RECT_HS, 0.0);
+        let pivot_point = Vec3::new(0.0, -RECT_HS, -2.);
         let q = Quat::from_axis_angle(Vec3::X, DEGPF);
         transform_q.single_mut().expect("no rect").rotate_around(pivot_point, q);
         fall_start.num += 1;
     }
 }
 
+fn paste_screenshot(
+    last: Res<LastScreenshot>,
+    mut cmd: Commands,
+    cam: Query<Entity, With<WorldCamera>>,
+    mut ran: Local<bool>
+) {
+    if !*ran {
+        *ran = true;
+        let img = last.image.clone().unwrap();
+        let cam = cam.iter().next().expect("No cam!");
+        cmd.spawn((
+            Name::new("Screenshot"),
+            DespawnOnEnter(LocalState::Aboba),
+            Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+            // RenderLayers::layer(3),
+            UiTargetCamera(cam),
+            ImageNode {
+                image: img,
+                ..default()
+            },
+            Node {
+                position_type: PositionType::Absolute,
+                width: Val::Percent(100.),
+                height: Val::Percent(100.),
+                ..default()
+            },
+            ZIndex(1000),
+        ));
+    }
+}
+
 fn cleanup(
     mut cmd: Commands,
     mut cam: Query<&mut Transform, With<WorldCamera>>,
+    mut state: ResMut<NextState<LocalState>>,
 ) {
+    state.set(LocalState::Aboba);
     cam.iter_mut().next().expect("No cam!").translation = Vec3::ZERO;
     cmd.remove_resource::<FallStart>();
     cmd.remove_resource::<ClimbStart>();

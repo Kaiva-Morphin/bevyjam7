@@ -57,7 +57,7 @@ actors! {
     Bal => "images/novel/actors/ballerina.png",
     Bal2 => "images/novel/actors/ballerina1.png",
     Time => "images/novel/actors/time.png",
-    Rust => "images/novel/actors/rust.jpg",
+    Rust => "images/novel/actors/rust.png",
     Go => "images/novel/actors/golang.png",
 }
 

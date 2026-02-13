@@ -8,7 +8,7 @@ pub struct FlappyBirdPlugin;
 // TODO!: TRANSITION EASINGS
 
 const STATE: AppState = AppState::FlappyBird;
-const NEXT_STATE: AppState = AppState::Platformer;
+const NEXT_STATE: AppState = AppState::Geometry;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
 #[source(AppState = STATE)]
@@ -332,7 +332,7 @@ fn collision_handler(
     if _e.collider1 != p && _e.collider2 != p {return;}
     if screenshot.awaiting == false {
         cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
-            .observe(crate::properties::await_screenshot_and_translate(AppState::Defeat));
+            .observe(crate::properties::await_screenshot_and_translate(AppState::FakeEnd));
         screenshot.awaiting = true;
     }
     cmd.entity(q.iter().next().expect("No pacman!")).remove::<RigidBody>();

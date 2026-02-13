@@ -1,19 +1,14 @@
 use std::time::Duration;
 
-use avian2d::{dynamics::solver::solver_body::InertiaFlags, math::{PI, Vector}};
+use avian2d:: math::{PI, Vector};
 use bevy_asset_loader::asset_collection::AssetCollection;
+use games::global_music::plugin::NewBgMusic;
 
-use crate::prelude::*;
+use crate::{hints::{HintAssets, KeyHint}, prelude::*};
 pub struct GeometryDashPlugin;
 
 const STATE: AppState = AppState::Geometry;
 const NEXT_STATE: AppState = AppState::Platformer;
-
-const WIDTH : f32 = 576.0;
-const HALF_HEIGHT : f32 = 250.0 / 2.0;
-const SCALE : f32 = 1.0;
-
-const DEATH_DELAY : f32 = 1.0;
 
 const GRAVITY_SCALE : f32 = 30.;
 
@@ -76,16 +71,24 @@ impl Plugin for GeometryDashPlugin {
 
 #[derive(AssetCollection, Resource)]
 pub struct GeometryDashAssets {
-    #[asset(path = "images/pacman.png")]
-    cube: Handle<Image>,
     #[asset(path = "maps/GD/pacman.tmx")]
     tilemap_handle: Handle<TiledMapAsset>,
+    #[asset(path = "images/gd.png")]
+    cube: Handle<Image>,
+    #[asset(texture_atlas_layout(tile_size_x = 16, tile_size_y = 16, columns = 1, rows = 2))]
+    cube_layout: Handle<TextureAtlasLayout>,
+    #[asset(path = "sounds/170144__timgormly__8-bit-explosion2.mp3")]
+    explosion: Handle<AudioSource>,
+    #[asset(path = "sounds/170144__timgormly__8-bit-explosion2.mp3")]
+    bg_music: Handle<AudioSource>,
 }
 
 fn setup(
     mut cmd: Commands,
     assets: Res<GeometryDashAssets>,
     mut state: ResMut<LastState>,
+    hint_assets: Res<HintAssets>,
+    cam: Query<Entity, With<WorldCamera>>,
 ) {
     state.state = STATE;
     cmd.spawn((
@@ -94,7 +97,17 @@ fn setup(
         TiledMap(assets.tilemap_handle.clone()),
         Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
     ));
-
+    let cam = cam.iter().next().expect("No cam!");
+    crate::hints::show_hints(
+        &mut cmd,
+        vec![KeyHint::KeysSpace],
+        STATE,
+        cam,
+        hint_assets,
+    );
+    cmd.spawn((
+        NewBgMusic{handle: Some(assets.bg_music.clone()), instant_translation: false},
+    ));
     cmd.insert_resource(PlayerEntity {entity: Entity::PLACEHOLDER});
     cmd.insert_resource(FollowerEntity {entity: Entity::PLACEHOLDER});
     cmd.insert_resource(IsLeft {is: false});
@@ -128,14 +141,13 @@ fn spawnpoint_handler(
     mut cmd: Commands,
     spawnpoint_transform_q: Query<&Transform, With<SpawnPoint>>,
     assets: Res<GeometryDashAssets>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
     mut player_entity: ResMut<PlayerEntity>,
     mut follower_entity: ResMut<FollowerEntity>,
     mut proj: Query<&mut Projection, With<WorldCamera>>
 ) {
     match &mut *proj.single_mut().expect("nocam") {
         Projection::Orthographic(proj) => {
-            proj.scale = 2.;
+            proj.scale = 0.9;
         },
         _ => {}
     }
@@ -143,9 +155,6 @@ fn spawnpoint_handler(
     let e = event.entity;
     let transform = spawnpoint_transform_q.get(e).expect("no spawnpoint").clone();
 
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(16), 1, 6, None, None);
-    let texture_atlas_layout = texture_atlas_layouts.add(layout);
-    
     let collider = Collider::rectangle(16.0, 16.0);
     let layers = CollisionLayers::new(
         CollisionLayer::Default,
@@ -160,7 +169,7 @@ fn spawnpoint_handler(
         Sprite {
             image: assets.cube.clone(),
             texture_atlas: Some(TextureAtlas {
-                layout: texture_atlas_layout.clone(),
+                layout: assets.cube_layout.clone(),
                 index: 0,
             }),
             ..default()
@@ -340,14 +349,13 @@ fn controller(
     player_entity: Res<PlayerEntity>,
     mut cube_pos_q: Query<(&mut Position, &mut CollisionLayers), With<Cube>>,
     mut is_left: ResMut<IsLeft>,
-    time: Res<Time>,
-    mut t: Local<Duration>,
-    mut inair: Local<bool>,
+    (time, mut t, mut inair):(Res<Time>, Local<Duration>, Local<bool>,),
     mut just_jumped: Local<bool>,
     mut cube_transform_q: Query<&mut Transform, With<Cube>>,
     aboba: Query<&Aboba>,
     mut collision_reader: MessageReader<CollisionStart>,
     mut funny_timer: ResMut<FunnyTimer>,
+    mut sprite: Query<&mut Sprite, With<Cube>>
 ) {
     let mut on_ground = false;
     let mut hit_aboba = false;
@@ -355,11 +363,11 @@ fn controller(
         for hit in hits.iter() {
             match castdir {
                 &CastDir::NEGY => {
-                    if hit.entity != player_entity.entity && hit.distance < 1.5 {
+                    if hit.entity != player_entity.entity && hit.distance < 2. {
                         // println!("FLOOR {} {} {:?} {:?} {:?}", hit.distance, hit.entity, castdir, hit.normal1, hit.normal2);
                         on_ground = true;
                         if *inair {
-                            println!("{:?}", (time.elapsed() - *t).as_millis());
+                            // println!("{:?}", (time.elapsed() - *t).as_millis());
                             *inair = false;
                         }
                         let mut cube_t = cube_transform_q.single_mut().expect("no cube(");
@@ -396,14 +404,15 @@ fn controller(
     if hit_aboba && funny_timer.0.is_none() {
         funny_timer.0 = Some(0.);
         let (mut pos, mut layers) = cube_pos_q.single_mut().expect("no cube");
+        let mut sprite = sprite.single_mut().expect("no cube");
         let mut to_white = true;
         is_left.is = !is_left.is;
         *pos = Position::from_xy(pos.x, pos.y + -1. * 6. * 16.);
         if layers.filters == LayerMask::from([CollisionLayer::Yellow, CollisionLayer::Aboba, CollisionLayer::End]) {
-            println!("lol");
+            sprite.texture_atlas.as_mut().unwrap().index = 1;
             layers.filters = LayerMask::from([CollisionLayer::White, CollisionLayer::Aboba, CollisionLayer::End]);
         } else {
-            println!("kek");
+            sprite.texture_atlas.as_mut().unwrap().index = 0;
             layers.filters = LayerMask::from([CollisionLayer::Yellow, CollisionLayer::End]);
             to_white = false;
         }
@@ -448,11 +457,19 @@ fn controller(
 
 fn defeat(
     mut cmd: Commands,
-    time: Res<Time>,
     mut state: ResMut<NextState<AppState>>,
     mut screenshot: ResMut<LastScreenshot>,
     canvas: Res<camera::ViewportCanvas>,
+    assets: Res<GeometryDashAssets>,
 ){
+    cmd.spawn((
+        DespawnOnEnter(NEXT_STATE),
+        AudioPlayer(assets.explosion.clone()),
+        PlaybackSettings {
+            mode: bevy::audio::PlaybackMode::Once,
+            ..default()
+        },
+    ));
     if screenshot.awaiting == false {
         cmd.spawn(bevy::render::view::screenshot::Screenshot::image(canvas.image.clone()))
             .observe(await_screenshot_and_translate(AppState::Defeat));
