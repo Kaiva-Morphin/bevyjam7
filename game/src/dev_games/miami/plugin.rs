@@ -7,7 +7,7 @@ use camera::CameraController;
 use games::global_music::plugin::NewBgMusic;
 
 use super::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}};
-use crate::{dev_games::miami::player, prelude::*};
+use crate::prelude::*;
 use super::entity::*;
 use super::shadows::*;
 use super::player::*;
@@ -225,6 +225,7 @@ fn tick(
     let Some(mut t) = camera.iter_mut().next() else {return;};
     t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02;
 }
+
 
 fn cleanup(
     mut controller: ResMut<CameraController>,

@@ -1,3 +1,5 @@
+use std::f32::consts::FRAC_PI_2;
+
 use avian2d::math::Vector;
 use bevy::prelude::*;
 use crate::prelude::AppState;
@@ -243,7 +245,6 @@ impl Weapon {
                     CollisionEventsEnabled,
                     RigidBody::Dynamic,
                     layer,
-                    // Friction(0.0),
                     Sensor,
                     t.clone(),
                     p
@@ -518,11 +519,13 @@ pub fn on_thrown_weapon_collision(
     info!("Dropped weapon collision!");
 }
 
+
 pub fn health_watcher(
     mut character: Query<(Entity, &GlobalTransform, &CharacterComponents, &mut CharacterController)>,
     sprite: Query<&GlobalTransform, With<CharacterSprite>>,
     mut cmd: Commands,
     assets: Res<MiamiAssets>,
+
 ) {
     let mut _rng = rand::rng();
     for (e, t, components, mut controller) in character.iter_mut() {
@@ -535,6 +538,7 @@ pub fn health_watcher(
         t.translation.z += BODY_Z_TRANSLATION;
 
         // t.rotation.z = controller.last_impact_dir.normalize_or_zero().to_angle();
+        t.rotation = Quat::from_rotation_z(controller.last_impact_dir.normalize_or_zero().to_angle() + FRAC_PI_2);
         // t.translation.z += BODY_Z_TRANSLATION;
         // b.translation.z += BLOOD_Z_TRANSLATION;
         let up = (if controller.look_dir == Vec2::ZERO {Vec2::new(0.0, -1.0)} else {controller.look_dir}).normalize_or_zero();
@@ -548,9 +552,9 @@ pub fn health_watcher(
         // b.scale = Vec3::ONE;
         let idx;
         if dmg <= 20.0 {
-            idx = 0;
-        } else if dmg <= 40.0 {
             idx = 1;
+        } else if dmg <= 40.0 {
+            idx = 0;
         } else {
             idx = 2;
         }
@@ -563,6 +567,7 @@ pub fn health_watcher(
         };
         controller.prev_hp = controller.hp;
         if controller.hp <= 0.0 {
+            // cmd.trigger()
             cmd.spawn((
                 DespawnOnExit(STATE),
                 t,
@@ -603,16 +608,17 @@ pub fn health_watcher(
     }
 }
 
+
 pub fn on_projectile_hit(
     event: On<CollisionStart>,
-    mut projectile: Query<(Entity, &mut Projectile , &mut Transform)>,
+    mut projectile: Query<(Entity, &mut Projectile, Option<&LinearVelocity>, &mut Transform)>,
     mut controllers : Query<(&mut CharacterController, &GlobalTransform, Option<&Player>)>,
     q : Query<(), With<PathfinderObstacle>>,
     state: Res<State<AppState>>,
     mut cmd: Commands,
 ){
     if state.get() != &STATE {return;};
-    let Ok((e, mut projectile, t)) = projectile.get_mut(event.collider1) else {return;};
+    let Ok((e, mut projectile, vel, t)) = projectile.get_mut(event.collider1) else {return;};
     if let Ok(()) = q.get(event.collider2) && projectile.despawn_on_wall {
         cmd.entity(e).despawn();
         return;
@@ -629,9 +635,16 @@ pub fn on_projectile_hit(
     } else {
         c.look_dir
     };
-    c.last_impact_back = d.truncate().dot(ld) < 0.0;
-
+    let dir;
+    if let Some(vel) = vel &&vel.length_squared() > 1.0 {
+        dir = -vel.normalize();
+    } else {
+        dir = -d.truncate();
+    }
+    c.last_impact_back = dir.dot(ld) < 0.0;
+    c.last_impact_dir = dir;
     projectile.piercing -= 1;
+    info!("Hit: {} {}", projectile.damage, c.hp);
     c.hp -= projectile.damage;
 }
 
@@ -649,3 +662,4 @@ pub fn update_projectile(
         }
     }
 }
+
