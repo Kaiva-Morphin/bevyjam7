@@ -9,7 +9,7 @@ use games::global_music::plugin::NewBgMusic;
 
 
 const STATE: AppState = AppState::Platformer;
-const NEXT_STATE: AppState = AppState::Miami;
+const NEXT_STATE: AppState = AppState::FakeEnd;
 
 pub struct PlatformerPlugin;
 

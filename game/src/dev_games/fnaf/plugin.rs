@@ -1,5 +1,6 @@
 use bevy::{audio::Volume, color::palettes::css::{RED, WHITE}};
 use bevy_asset_loader::asset_collection::AssetCollection;
+use games::hints::{HintAssets, KeyHint};
 use rand::Rng;
 
 use crate::prelude::*;
@@ -7,7 +8,7 @@ use crate::prelude::*;
 pub struct FNAFPlugin;
 
 const STATE: AppState = AppState::Fnaf;
-const NEXT_STATE: AppState = AppState::FakeEnd;
+const NEXT_STATE: AppState = AppState::End;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, SubStates)]
 #[source(AppState = STATE)]
@@ -542,7 +543,17 @@ fn setup(
     asset_server: Res<AssetServer>,
     mut proj: Query<&mut Projection, With<WorldCamera>>,
     mut state: ResMut<LastState>,
+    cam: Query<Entity, With<WorldCamera>>,
+    hint_assets: Res<HintAssets>,
 ) {
+    let cam = cam.iter().next().expect("No cam!");
+    crate::hints::show_hints(
+        &mut cmd,
+        vec![KeyHint::KeysLmb],
+        STATE,
+        cam,
+        hint_assets,
+    );
     state.state = STATE;
     cmd.insert_resource(MousePos(None));
     cmd.insert_resource(EnvironmentData {

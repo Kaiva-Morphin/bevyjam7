@@ -6,3 +6,5 @@ pub use properties::*;
 pub use bevy_ecs_tiled::prelude::*;
 pub use utils::*;
 pub use vleue_navigator::prelude::*;
+pub use bevy_tweening::*;
+pub use bevy_tweening::lens::*;

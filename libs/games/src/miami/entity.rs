@@ -9,6 +9,7 @@ use room::Focusable;
 
 use super::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}};
 use super::{bossfight::{BossFightStandAi, BossFightWait}, plugin::CHASER_RANDOM_RADIUS};
+use super::bossfight::*;
 use crate::prelude::*;
 
 #[derive(Component)]
@@ -52,7 +53,6 @@ pub struct CharacterComponents {
 
 impl MiamiEntity {
     pub fn to_character(&self) -> CharacterSprite {
-        info!("To character: {:?}", self);
         match self {
             MiamiEntity::Player | MiamiEntity::Endoskeleton | MiamiEntity::Bonnie | MiamiEntity::Chicka
             | MiamiEntity::CopperEndoskeleton | MiamiEntity::NewBonnie | MiamiEntity::NewChicka
@@ -89,28 +89,28 @@ impl MiamiEntity {
     pub fn to_chaser(&self, start: Vec2) -> ChaserAi {
         match self {
             MiamiEntity::Player => unimplemented!(),
-            MiamiEntity::Endoskeleton => ChaserAi {
-                seek_range: 300.0,
-                attention_range: 100.0,
-                origin_point: start,
-                max_seek_time: 1.0,
-                max_stay_time: 10.0,
-                ..Default::default()
-            },  
             MiamiEntity::Bonnie => ChaserAi{
                 seek_range: 300.0,
-                attention_range: 100.0,
+                attention_range: 300.0,
                 origin_point: start,
-                max_seek_time: 20.0,
-                max_stay_time: 10.0,   
+                max_seek_time: 2.0,
+                max_stay_time: 1.0,   
+                ..Default::default()
+            },
+            MiamiEntity::Freddy | MiamiEntity::NewBonnie | MiamiEntity::NewChicka => ChaserAi{
+                seek_range: 500.0,
+                attention_range: 500.0,
+                origin_point: start,
+                max_seek_time: 0.0,
+                max_stay_time: 1.0,   
                 ..Default::default()
             },
             _ => ChaserAi{ // TODO!
                 seek_range: 300.0,
                 attention_range: 100.0,
                 origin_point: start,
-                max_seek_time: 20.0,
-                max_stay_time: 10.0,   
+                max_seek_time: 2.0,
+                max_stay_time: 3.0,   
                 ..Default::default()
             }
         }
@@ -125,13 +125,10 @@ impl CharacterController {
                 speed: 120.0,
                 run_speed: 120.0,
                 walk_speed: 120.0,
-                hp: 1200.0,
-                prev_hp: 1200.0,
-                blood_rects: blood_rects(),
+                hp: 30000000.0,
+                prev_hp: 30000000.0,
                 blood_color: red_blood(),
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::Endoskeleton => Self {
@@ -140,104 +137,74 @@ impl CharacterController {
                 walk_speed: 60.0,
                 hp: 100.,
                 prev_hp: 100.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::Bonnie => Self {
-                speed: 100.0,
-                run_speed: 100.0,
+                speed: 125.0,
+                run_speed: 125.0,
                 walk_speed: 30.0,
-                hp: 300.,
-                prev_hp: 300.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
+                hp: 400.,
+                prev_hp: 400.,
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::NewBonnie => Self {
                 speed: 100.0,
                 run_speed: 100.0,
                 walk_speed: 30.0,
-                hp: 300.,
-                prev_hp: 300.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
+                hp: 120.,
+                prev_hp: 120.,
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::Chicka => Self {
-                speed: 100.0,
-                run_speed: 100.0,
+                speed: 80.0,
+                run_speed: 80.0,
                 walk_speed: 30.0,
-                hp: 300.,
-                prev_hp: 300.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
+                hp: 800.,
+                prev_hp: 800.,
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::NewChicka => Self {
                 speed: 100.0,
                 run_speed: 100.0,
                 walk_speed: 30.0,
-                hp: 300.,
-                prev_hp: 300.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
+                hp: 150.,
+                prev_hp: 150.,
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::CopperEndoskeleton => Self {
-                speed: 100.0,
-                run_speed: 100.0,
-                walk_speed: 30.0,
-                hp: 300.,
-                prev_hp: 300.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
+                speed: 130.0,
+                run_speed: 130.0,
+                walk_speed: 100.0,
+                hp: 50.,
+                prev_hp: 50.,
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::Freddy => Self {
-                speed: 100.0,
-                run_speed: 100.0,
+                speed: 110.0,
+                run_speed: 110.0,
                 walk_speed: 30.0,
-                hp: 300.,
-                prev_hp: 300.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
+                hp: 1500.,
+                prev_hp: 1500.,
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
+                front_body_rect: Rect::new(0.0, 0.0, 48.0, 48.0),
+                back_body_rect: Rect::new(0.0, 0.0, 48.0, 48.0),
                 ..Default::default()
             },
-            _ => Self {
-                speed: 100.0,
-                run_speed: 100.0,
-                walk_speed: 30.0,
-                hp: 300.,
-                prev_hp: 300.,
-                blood_rects: blood_rects(),
-                blood_color: oil_blood(),
+            MiamiEntity::GoldenEndoskeleton => Self {
+                speed: 110.0,
+                run_speed: 110.0,
+                walk_speed: 110.0,
+                hp: 150.,
+                prev_hp: 150.,
                 character: e,
-                front_body_rect: front_body_rect(),
-                back_body_rect: back_body_rect(),
                 ..Default::default()
-            },
+            }
         }
         
     }
@@ -385,7 +352,36 @@ pub fn spawn_entity(
     || entity_type == MiamiEntity::NewChicka
     || entity_type == MiamiEntity::Freddy 
     {
-        cmd.entity(id).insert((InvincibleCharacter, BossFightWait));
+        cmd.entity(id).insert((InvincibleCharacter, BossFightWait, RigidBody::Static));
+    }
+    if entity_type == MiamiEntity::Freddy {
+        let mut transform = transform.clone();
+        transform.translation.z = 100.0;
+        cmd.spawn((
+            Sprite{
+                image: assets.screen.clone(),
+                texture_atlas: Some(TextureAtlas{layout: assets.screen_layout.clone(), index: 0}),
+                ..Default::default()
+            },
+            transform.clone(),
+            Name::new("Bottom"),
+            FreddyScreen,
+            RigidBody::Static,
+            Collider::rectangle(80.0, 76.0),
+        ));
+        cmd.spawn((
+            Name::new("Top"),
+            Sprite{
+                image: assets.screen.clone(),
+                texture_atlas: Some(TextureAtlas{layout: assets.screen_layout.clone(), index: 2}),
+                ..Default::default()
+            },
+            transform.clone(),
+            FreddyScreenTop
+        ));
+        cmd.spawn((
+            
+        ));
     }
     cmd.entity(id).add_child(pivot);
 }
@@ -514,6 +510,7 @@ pub fn update_controllers(
     }
 }
 
+
 #[derive(Component)]
 pub struct Path {
     current: Vec3,
@@ -525,7 +522,7 @@ pub fn update_chasers(
         (
             Entity, &mut CharacterController, &mut ChaserAi, 
             &GlobalTransform, &ShapeHits, &mut ShapeCaster
-        ), 
+        ),
         (
             Without<DummyEntity>, Without<BossFightWait>, Without<BossFightStandAi>
         )>,
@@ -548,6 +545,7 @@ pub fn update_chasers(
         let mut last_seen = None;
         let mut max_dist = caster.max_distance;
         let mut t = gt.translation();
+        
         if nd.truncate().dot(controller.look_dir) < 0.0 {
             max_dist = chaser.attention_range;
         }
@@ -594,7 +592,6 @@ pub fn update_chasers(
                 }
             );
         } else if chaser.stay_time >= chaser.max_stay_time {
-            // info!("Seeking!");
             let mut pos = t + Vec3::new(rand.random_range(-CHASER_RANDOM_RADIUS..CHASER_RANDOM_RADIUS), rand.random_range(-CHASER_RANDOM_RADIUS..CHASER_RANDOM_RADIUS), 0.0);
             pos.z = 0.0;
             let Some(path) = navmesh.transformed_path(t, pos) else {
@@ -643,8 +640,10 @@ pub fn chase(
             chaser.seek_time += dt;
             continue;
         };
+        chaser.stay_time = 0.0;
         let move_direction = path.current - transform.translation;
         controller.input_dir = move_direction.normalize_or_zero().truncate();
+        controller.look_dir = controller.input_dir;
         if chaser.last_seen.is_none() {
             controller.look_dir = controller.input_dir;
         } else {

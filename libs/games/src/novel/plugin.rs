@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use crate::{actors, backgrounds, global_music::plugin::NewBgMusic, novel::engine::NovelStage, novel_music, prelude::*, properties::{AppState, LastState}, sound_effects, stages};
+use crate::{actors, backgrounds, global_music::plugin::NewBgMusic, hints::{HintAssets, KeyHint}, novel::engine::NovelStage, novel_music, prelude::*, properties::{AppState, LastState}, sound_effects, stages};
 use bevy::{audio::{PlaybackMode, Volume}, text::{FontSmoothing, LineHeight}};
 use bevy_asset_loader::prelude::AssetCollection;
 use crate::novel::engine::*;
@@ -312,12 +312,20 @@ pub fn setup(
     bg: Res<BackgroundsAssets>,
     music: Res<NovelMusicAssets>,
     sfx: Res<NovelSoundEffectsAssets>,
+    hint_assets: Res<HintAssets>,
 ){
+    let cam = cam.iter().next().expect("No cam!");
+    crate::hints::show_hints(
+        &mut cmd,
+        vec![KeyHint::KeysSpace],
+        STATE,
+        cam,
+        hint_assets,
+    );
     cmd.spawn((
         NewBgMusic{handle: None, instant_translation: true},
     ));
     let s = NovelState::default().inited();
-    let cam = cam.iter().next().expect("No cam!");
     let slicer = TextureSlicer {
         border: BorderRect::all(2.0),
         center_scale_mode: SliceScaleMode::Tile { stretch_value: 2.0 },
@@ -497,7 +505,6 @@ fn tick(
         Res<NovelSoundEffectsAssets>,
     ),
     mut state: ResMut<NovelState>,
-    mut next: ResMut<NextState<AppState>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     time: Res<Time>,
     mut cmd: Commands,

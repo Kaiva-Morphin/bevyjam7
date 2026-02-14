@@ -1,6 +1,6 @@
-use std::f32::consts::{FRAC_2_PI, PI};
+use std::f32::consts::PI;
 
-use games::pathfinder::plugin::*;
+use crate::pathfinder::plugin::*;
 
 use super::plugin::STATE;
 use super::entity::*;
@@ -50,42 +50,84 @@ pub fn setup_tilemap_shadows(
     t.translation.y += MIAMI_SHADOW_OFFSET.y;
 }
 
-pub fn propagate_obstacles(
-    collider_created: On<TiledEvent<ColliderCreated>>,
-    mut commands: Commands,
+
+#[derive(Event)]
+pub struct ObstacleCreated;
+// pub fn propagate_obstacles(
+//     collider_created: On<TiledEvent<ColliderCreated>>,
+//     mut commands: Commands,
+//     q: Query<&Children, With<PathfinderObstacle>>,
+//     state: Res<State<AppState>>,
+//     obstacle: Option<ResMut<SinceObstacle>>,
+// ){
+//     if state.get() != &super::plugin::STATE {return;}
+//     let e = collider_created.origin;
+
+//     for c in q {
+//         for c in c {
+//             if c == &e {
+//                 commands.entity(e).insert(PathfinderObstacle);
+//                 if let Some(mut obstacle) = obstacle {
+//                     obstacle.0 = 0.0;
+//                 }
+//                 return;
+//             }
+//         }
+//     }
+// }
+
+pub fn propagate_obstacles2(
+    mut collider_created: MessageReader<TiledEvent<ColliderCreated>>,
+    mut cmd: Commands,
     q: Query<&Children, With<PathfinderObstacle>>,
     state: Res<State<AppState>>,
 ){
     if state.get() != &super::plugin::STATE {return;}
-    let e = collider_created.origin;
-    for c in q {
-        for c in c {
-            if c == &e {
-                commands.entity(e).insert(PathfinderObstacle);
-                commands.spawn((
-                    DespawnOnExit(STATE),
-                    Name::new("Navmesh"),
-                    NavMeshSettings {
-                        // Define the outer borders of the navmesh.
-                        fixed: Triangulation::from_outer_edges(&[
-                            vec2(0.0, 0.0),
-                            vec2(2000.0, 0.0),
-                            vec2(2000.0, 2000.0),
-                            vec2(0.0, 2000.0),
-                        ]),
-                        agent_radius: 6.5,
-                        simplify: 1.0,
-                        merge_steps: 1,
-                        ..default()
-                    },
-                    NavMeshUpdateMode::Direct,
-                ));
-                return;
+    let mut i = 0;
+    for e in collider_created.read() {
+        let e = e.origin;
+        i += 1;
+        for c in q {
+            for c in c {
+                if c == &e {
+                    cmd.entity(e).insert(PathfinderObstacle);
+                }
             }
         }
     }
+    if i != 0 {
+        cmd.trigger(ObstacleCreated);
+    }
 }
 
+
+
+
+pub fn obstacle_watcher(
+    _ev: On<ObstacleCreated>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+){
+    if state.get() != &STATE {return;};
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Name::new("Navmesh"),
+        NavMeshSettings {
+            // Define the outer borders of the navmesh.
+            fixed: Triangulation::from_outer_edges(&[
+                vec2(0.0, 0.0),
+                vec2(1700.0, 0.0),
+                vec2(1700.0, 1700.0),
+                vec2(0.0, 1700.0),
+            ]),
+            agent_radius: 6.5,
+            simplify: 10.0,
+            merge_steps: 3,
+            ..default()
+        },
+        NavMeshUpdateMode::OnDemand(true),
+    ));
+}
 
 pub fn on_v_door(
     ev: On<Add, VerticalDoor>,

@@ -2,7 +2,7 @@ use crate::{properties::{AppState, LastState}, prelude::*};
 use bevy_asset_loader::asset_collection::AssetCollection;
 
 const STATE: AppState = AppState::PacmanEnter;
-const NEXT_STATE: AppState = AppState::End;
+const NEXT_STATE: AppState = AppState::FlappyBird;
 
 pub struct PacmanEatPlugin;
 

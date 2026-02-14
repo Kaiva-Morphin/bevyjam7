@@ -1,4 +1,4 @@
-use crate::{prelude::{AppState, LastState}, prelude::*};
+use crate::{hints::{HintAssets, KeyHint}, prelude::{AppState, LastState, *}};
 use bevy_asset_loader::asset_collection::AssetCollection;
 use rand::Rng;
 use crate::global_music::plugin::NewBgMusic;
@@ -157,8 +157,18 @@ fn setup(
 
 fn begin_game (
     mut cmd: Commands,
-    q: Query<Entity, With<Pacman>>
+    q: Query<Entity, With<Pacman>>,
+    hint_assets: Res<HintAssets>,
+    cam: Query<Entity, With<WorldCamera>>,
 ) {
+    let cam = cam.iter().next().expect("No cam!");
+    crate::hints::show_hints(
+        &mut cmd,
+        vec![KeyHint::KeysSpace],
+        STATE,
+        cam,
+        hint_assets,
+    );
     cmd.spawn((
 
     ));

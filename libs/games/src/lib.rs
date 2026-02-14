@@ -12,4 +12,4 @@ pub mod hints;
 pub mod fake_end;
 pub mod geometry_dash;
 pub mod pathfinder;
-// pub mod miami;
+pub mod miami;

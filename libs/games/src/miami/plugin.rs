@@ -4,7 +4,10 @@ use avian2d::math::FRAC_PI_2;
 use bevy::audio::{PlaybackMode, Volume};
 use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::CameraController;
-use games::global_music::plugin::NewBgMusic;
+use crate::global_music::plugin::NewBgMusic;
+use crate::hints::HintAssets;
+use crate::hints::KeyHint;
+use rand::Rng;
 
 use super::weapon::*;
 use super::map::*;
@@ -65,6 +68,10 @@ pub struct MiamiAssets {
     #[asset(path = "maps/miami/dialog_pac.png")]
     pub dialog_pac: Handle<Image>,
 
+    #[asset(path = "maps/miami/screen.png")]
+    pub screen: Handle<Image>,
+    #[asset(texture_atlas_layout(tile_size_x = 80, tile_size_y = 96, columns = 3, rows = 1))]
+    pub screen_layout: Handle<TextureAtlasLayout>,
 
 
     #[asset(path="sounds/miami/ACTION PACK 1 OGG_Magic Fx 7.ogg")]
@@ -105,11 +112,13 @@ impl Plugin for MiamiPlugin {
             .add_observer(setup_tilemap_shadows)
             .add_observer(on_weapon_spawnpoint)
             .add_observer(on_entity_spawnpoint)
+
             .add_observer(on_thrown_weapon_collision)
             .add_observer(on_pickup_weapon_collision)
-            .add_observer(propagate_obstacles)
             .add_observer(on_projectile_hit)
+
             .add_observer(on_map_created)
+            .add_observer(obstacle_watcher)
             .add_observer(on_v_door)
             .add_observer(on_h_door)
             .add_observer(on_entrypoint_dialog_spawned)
@@ -117,7 +126,6 @@ impl Plugin for MiamiPlugin {
             .add_observer(on_boss_dialog_spawned)
             
             .add_systems(OnEnter(STATE), setup)
-
             .add_systems(PostUpdate, setup_freddy_fight.run_if(in_state(FreddyFightStage::Idle)))
             .add_systems(OnEnter(FreddyFightStage::PreFreddy), start_freddy_enter_dialog)
             .add_systems(OnEnter(FreddyFightStage::PreFreddy), kill_endoskeletons)
@@ -125,39 +133,41 @@ impl Plugin for MiamiPlugin {
             .add_systems(OnEnter(FreddyFightStage::Finished), kill_endoskeletons)
             .add_systems(PostUpdate, tick_bonnie_chicka_fight.run_if(in_state(FreddyFightStage::BonnieChicka)))
             .add_systems(PostUpdate, tick_freddy_fight.run_if(in_state(FreddyFightStage::Freddy)))
-
             .add_systems(Update, (
                 bonnie_chicka_fight_attack,
                 
                 (cleanup_shadows, setup_shadows).chain(),
+
+                propagate_obstacles2,
+
                 update_projectile,
                 player_look_at_cursor,
                 update_controllers,
                 (control_player, shoot, throw_weapon).chain(),
                 tick_thrown,
-                tick,
 
-                update_chasers,
-                chase,
+                (update_chasers, chase, player_health_watcher),
                 
                 tick_dialog,
                 update_screenshot,
 
-                player_health_watcher,
                 display_path,
+                
+
 
 
                 
-                // update_shadows,
+                update_shadows,
             ).run_if(in_state(STATE)))
             // .add_systems(PhysicsSchedule, update_shadows.after(tick_camera).in_set(PhysicsSystems::First))
             // .add_systems(PhysicsSchedule, update_shadows.after(tick_camera).in_set(NarrowPhaseSystems::Last))
-            .add_systems(FixedLast, update_shadows.run_if(in_state(STATE)))
+            // .add_systems(FixedLast, update_shadows.run_if(in_state(STATE)))
             .add_systems(PostUpdate, health_watcher.run_if(in_state(STATE)))
             // .add_systems(
             //     PhysicsSchedule,
             // update_shadows.in_set(ShadowSystems::Update).run_if(in_state(STATE))
             // )
+            
             // .insert_resource(NavMeshesDebug(bevy::color::palettes::tailwind::RED_800.into()))
 
             // .add_systems(PostUpdate, (
@@ -174,6 +184,7 @@ impl Plugin for MiamiPlugin {
 
 #[derive(Component)]
 pub struct MiamiScreenshot(f32);
+
 #[derive(Resource, Default)]
 pub struct MiamiTransitionShooted;
 
@@ -186,7 +197,21 @@ fn setup(
     mut latest: ResMut<LastState>,
     mut camera_controller: ResMut<CameraController>,
     completed: Option<Res<MiamiTransitionShooted>>,
+    cam: Query<Entity, With<WorldCamera>>,
+    hint_assets: Res<HintAssets>,
 ){
+    cmd.init_resource::<CameraShake>();
+    let cam = cam.iter().next().expect("No cam!");
+    camera_controller.follow_speed = 0.9;
+    camera_controller.target_zoom = 0.9;
+    // cmd.init_resource::<SinceObstacle>();
+    crate::hints::show_hints(
+        &mut cmd,
+        vec![KeyHint::KeysWASD, KeyHint::KeysMouseAll],
+        STATE,
+        cam,
+        hint_assets,
+    );
     latest.state = STATE;
 
     cmd.spawn((
@@ -198,13 +223,6 @@ fn setup(
         TiledMap(assets.map.clone()),
     ));
     cmd.init_resource::<ShootedDialogs>();
-    // let cam = cam.iter().next().expect("No cam!");
-    // start_dialog(&mut cmd, &assets, cam, vec![
-    //     ("YOU BASTARD!".to_string(), Speaker::Pacman),
-    //     ("YOU BASTARD2!".to_string(), Speaker::Pacman),
-    //     ("HELLO, PAC! I WILL KILL YOU!".to_string(), Speaker::Freddy),
-    //     ("HELLO, PAC! I WILL KILL YOU!2".to_string(), Speaker::Freddy),
-    // ]);
     if completed.is_some() {return;}
     cmd.init_resource::<MiamiTransitionShooted>();
     let Some(screenshot) = last.image.clone() else {return;};
@@ -234,12 +252,11 @@ fn setup(
         },
         HIGHRES_LAYERS,
     ));
-    camera_controller.follow_speed = 0.9;
-    camera_controller.target_zoom = 0.9
+    
 }
 
 
-const SCREENSHOT_TRANSITION_TIME: f32 = 0.5;
+const SCREENSHOT_TRANSITION_TIME: f32 = 1.0;
 
 
 fn update_screenshot(
@@ -270,18 +287,56 @@ fn on_map_created(
     if state.get() != &STATE {return;};
     let Ok(mut map) = map.single_mut() else {return;};
     map.scale.z = 0.05;
-    map.translation.z = 22.0;
+    map.translation.z = 30.0;
 }
 
 
 
+pub const SHAKE_STRENGTH: f32 = 6.0;
+pub const SHAKE_DURATION: f32 = 0.25;
+
+#[derive(Resource, Default)]
+pub struct CameraShake {
+    pub timer: f32,
+    pub strength: f32,
+}
+
 
 fn tick(
     time: Res<Time>,
-    mut camera: Query<&mut Transform, With<WorldCamera>>
-){
-    let Some(mut t) = camera.iter_mut().next() else {return;};
-    t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02
+    mut camera: Query<&mut Transform, With<WorldCamera>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut shake: ResMut<CameraShake>,
+    mut cmd: Commands,
+    last_screenshot: Res<LastScreenshot>,
+) {
+    if keyboard_input.just_pressed(KeyCode::Enter) {
+        if !last_screenshot.awaiting {
+            cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
+                .observe(await_screenshot_and_translate(super::plugin::NEXT_STATE));
+            return;
+        }
+    }
+
+    // if keyboard_input.just_pressed(KeyCode::ShiftRight) {
+    //     shake.timer = SHAKE_DURATION;
+    // }
+
+    let Some(mut t) = camera.iter_mut().next() else { return; };
+
+    if shake.timer > 0.0 {
+        shake.timer -= time.delta_secs();
+        let k = shake.timer / SHAKE_DURATION; // затухание 1 → 0
+
+        let mut rng = rand::thread_rng();
+        let offset = Vec3::new(
+            rng.gen_range(-1.0..1.0),
+            rng.gen_range(-1.0..1.0),
+            0.0,
+        ) * shake.strength * k;
+
+        t.translation += offset;
+    }
 }
 
 
@@ -294,8 +349,11 @@ fn cleanup(
     cmd.remove_resource::<ShootedDialogs>();
     cmd.remove_resource::<BossfightDialog>();
     cmd.remove_resource::<FinalDialog>();
+    cmd.remove_resource::<CameraShake>();
+
     controller.follow_speed = 0.0;
     controller.target_zoom = 0.8;
+    
     let Ok(mut t) = camera.single_mut() else {return;};
     t.rotation.z = 0.0;
     t.rotation.y = 0.0;
@@ -318,7 +376,6 @@ pub fn player_health_watcher(
     let dt = time.dt();
     zh.0 += dt;
     if zh.0 > DEFEAT_TIME {
-        info!("Defeat!: {}", zh.0);
         if screenshot.awaiting == false {
             cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
                 .observe(await_screenshot_and_translate(AppState::Defeat));
@@ -333,7 +390,7 @@ pub fn miami_dropped_weapon_layers() ->    CollisionLayers {CollisionLayers::fro
 pub fn miami_pickup_weapon_layers() ->     CollisionLayers {CollisionLayers::from_bits(0b001000000, 0b001000000)}
 pub fn miami_weapon_layers() ->            CollisionLayers {CollisionLayers::from_bits(0b000000000, 0b000000000)}
 pub fn miami_projectile_damager_layer() -> CollisionLayers {CollisionLayers::from_bits(0b010000001, 0b010000001)} 
-pub fn miami_projectile_player_layer() ->  CollisionLayers {CollisionLayers::from_bits(0b100000000, 0b100000000)} 
+pub fn miami_projectile_player_layer() ->  CollisionLayers {CollisionLayers::from_bits(0b100000000, 0b100000001)} 
 pub fn miami_seeker_shapecast_layer() ->   CollisionLayers {CollisionLayers::from_bits(0b000000011, 0b000000011)} 
 pub fn dialog_sensor_layer() ->            CollisionLayers {CollisionLayers::from_bits(0b000000100, 0b000000100)} 
 
@@ -355,7 +412,7 @@ pub const THROWN_DAMAGE_MULTIPLIER: f32 = 0.0071428571;
 
 pub const DEFEAT_TIME: f32 = 1.0;
 
-pub const CHASER_RANDOM_RADIUS: f32 = 100.0;
+pub const CHASER_RANDOM_RADIUS: f32 = 500.0;
 
 pub const SHOTGUN_BULLET_RADIUS: f32 = 0.4;
 pub const SHOTGUN_BULLET_COUNT: usize = 6;

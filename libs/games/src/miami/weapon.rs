@@ -1,4 +1,5 @@
 use std::f32::consts::FRAC_PI_2;
+use std::f32::consts::PI;
 
 use avian2d::math::Vector;
 use bevy::prelude::*;
@@ -23,7 +24,7 @@ pub struct MiamiWeaponSpawner {
 }
 
 
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect, Default, Clone, Eq, PartialEq)]
 #[reflect(Component, Default)]
 pub enum WeaponType {
     #[default]
@@ -97,13 +98,12 @@ pub struct WeaponProjectile;
 
 
 impl WeaponType {
-    
     pub fn to_weapon(&self) -> Weapon {
         match self {
             WeaponType::ChickaThrow => Weapon {
                 weapon_type: WeaponType::ChickaThrow,
 
-                rect: Rect::new(0.0, 0.0, 0.0, 0.0),
+                rect: Rect::new(16.0, 112.0, 32.0, 128.0),
                 held_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 held_offset: Vec3::ZERO,
                 
@@ -111,8 +111,8 @@ impl WeaponType {
                 char_offset: vec3(0., 0., 0.),
 
                 ammo: u32::MAX,
-                cooldown: 0.3,
-                anim_time: 0.3,
+                cooldown: 0.6,
+                anim_time: 0.6,
 
                 attack_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 attack_offset: Vec3::ZERO,
@@ -120,10 +120,10 @@ impl WeaponType {
                 attack_char_rect: Rect::new(0.0, 64.0, 32.0, 96.0),
                 attack_char_offset: vec3(0., -8., 0.),
 
-                projectile_speed: 300.0,
+                projectile_speed: 250.0,
                 damage: 100.0,
                 piercing: 128,
-                ttl: 0.3,
+                ttl: 2.0,
 
                 projectile_rect: Rect::new(0., 16., 16., 32.),
                 ..Default::default()
@@ -131,7 +131,7 @@ impl WeaponType {
             WeaponType::BonniePlay => Weapon {
                 weapon_type: WeaponType::BonniePlay,
 
-                rect: Rect::new(0.0, 0.0, 0.0, 0.0),
+                rect: Rect::new(32.0, 112.0, 48.0, 128.0),
                 held_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 held_offset: Vec3::ZERO,
                 
@@ -139,8 +139,8 @@ impl WeaponType {
                 char_offset: vec3(0., 0., 0.),
 
                 ammo: u32::MAX,
-                cooldown: 0.3,
-                anim_time: 0.3,
+                cooldown: 0.6,
+                anim_time: 0.6,
 
                 attack_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 attack_offset: Vec3::ZERO,
@@ -150,9 +150,9 @@ impl WeaponType {
 
                 damage: 100.0,
                 piercing: 128,
-                ttl: 0.3,
+                ttl: 2.0,
 
-                projectile_speed: 300.0,
+                projectile_speed: 250.0,
 
                 projectile_rect: Rect::new(16., 16., 32., 32.),
 
@@ -169,7 +169,7 @@ impl WeaponType {
                 char_offset: vec3(0., -3., 0.),
 
                 ammo: 30,
-                cooldown: 0.1,
+                cooldown: 0.4,
                 anim_time: 0.1,
 
                 attack_char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
@@ -199,7 +199,7 @@ impl WeaponType {
                 char_offset: vec3(0., -3., 0.),
 
                 ammo: u32::MAX,
-                cooldown: 0.1,
+                cooldown: 0.4,
                 anim_time: 0.1,
 
                 attack_char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
@@ -210,15 +210,14 @@ impl WeaponType {
 
                 projectile_rect: Rect::new(0.0, 0.0, 1.0, 16.0),
 
-                damage: 100.0,
+                damage: 150.0,
                 ttl: 5.0,
                 piercing: 1,
                 projectile_speed: 700.0,
-                throw_damage: 100.0,
+                throw_damage: 150.0,
 
                 ..Default::default()
             },
-
             WeaponType::Shotgun => Weapon {
                 weapon_type: WeaponType::Shotgun,
 
@@ -230,7 +229,7 @@ impl WeaponType {
                 char_offset: vec3(0., -3., 0.),
 
                 ammo: 30,
-                cooldown: 0.1,
+                cooldown: 0.5,
                 anim_time: 0.1,
 
                 attack_char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
@@ -241,7 +240,7 @@ impl WeaponType {
 
                 projectile_rect: Rect::new(2.0, 0.0, 3.0, 16.0),
 
-                damage: 100.0,
+                damage: 150.0,
                 ttl: 5.0,
                 piercing: 1,
                 projectile_speed: 700.0,
@@ -300,7 +299,7 @@ impl WeaponType {
                 attack_char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 attack_char_offset: Vec3::ZERO,
 
-                damage: 400.0,
+                damage: 700.0,
                 ttl: 0.01,
                 piercing: 128,
                 throw_damage: 400.0,
@@ -327,7 +326,7 @@ impl WeaponType {
                 attack_char_rect: Rect::new(0.0, 48.0, 32.0, 64.0),
                 attack_char_offset: Vec3::ZERO,
 
-                damage: 500.0,
+                damage: 700.0,
                 piercing: 128,
                 ttl: 0.01,
                 
@@ -390,7 +389,7 @@ impl WeaponType {
             WeaponType::FazStar => Weapon {
                 weapon_type: WeaponType::FazStar,
 
-                rect: Rect::new(0.0, 0.0, 0.0, 0.0),
+                rect: Rect::new(48.0, 112.0, 64.0, 128.0),
                 held_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
                 held_offset: Vec3::ZERO,
                 
@@ -398,7 +397,7 @@ impl WeaponType {
                 char_offset: vec3(0., -7., 0.),
 
                 ammo: u32::MAX,
-                cooldown: 0.3,
+                cooldown: 0.7,
                 anim_time: 0.3,
 
                 attack_char_rect: Rect::new(144.0, 0.0, 192.0, 48.0),
@@ -411,8 +410,8 @@ impl WeaponType {
 
                 damage: 100.0,
                 ttl: 5.0,
-                piercing: 1,
-                projectile_speed: 500.0,
+                piercing: 3,
+                projectile_speed: 200.0,
                 throw_damage: 100.0,
 
                 ..Default::default()
@@ -435,6 +434,7 @@ impl Weapon {
         pos: Vec3,
         is_enemy: bool,
         assets: &Res<MiamiAssets>,
+        shake: &mut ResMut<CameraShake>,
     ) -> bool {
         let mut rng = rand::rng();
         let mut p = Projectile {
@@ -443,6 +443,7 @@ impl Weapon {
             collided: Vec::new(),
             piercing: weapon.piercing,
             from_player: !is_enemy,
+            weapon_type: weapon.weapon_type.clone(),
             despawn_on_wall: false,
         };
         let layer = if is_enemy {
@@ -450,6 +451,8 @@ impl Weapon {
         } else {
             miami_projectile_damager_layer()
         };
+
+
         match self.weapon_type {
             WeaponType::Uzi => {
                 if !controller.holding_shoot {
@@ -462,6 +465,27 @@ impl Weapon {
                 }
             }
         }
+
+        match weapon.weapon_type {
+            WeaponType::Shotgun => {
+                shake.timer = SHAKE_DURATION;
+                shake.strength = 6.0;
+            },
+            WeaponType::Pistol | WeaponType::GoldenPistol => {
+                shake.timer = SHAKE_DURATION;
+                shake.strength = 4.0;
+            }
+            WeaponType::Uzi => {
+                shake.timer = SHAKE_DURATION;
+                shake.strength = 3.0;
+            }
+            WeaponType::Axe | WeaponType::Baguette => {
+                // shake.timer = SHAKE_DURATION;
+                // shake.strength = 0.0;
+            },
+            _ => {}
+        }
+
         match self.weapon_type {
             WeaponType::Pistol | WeaponType::GoldenPistol => {
                 let mut t = Transform::from_translation(pos - Vec3::new(controller.look_dir.x, controller.look_dir.y, 0.0) * 10.0);
@@ -479,6 +503,7 @@ impl Weapon {
                     LinearVelocity(controller.look_dir * weapon.projectile_speed),
                     LinearDamping(0.0),
                     GravityScale(0.0),
+                    WeaponProjectile,
                     CollisionEventsEnabled,
                     RigidBody::Dynamic,
                     layer,
@@ -490,7 +515,7 @@ impl Weapon {
             },
             WeaponType::BonniePlay => {
                 let mut t = Transform::from_translation(pos);
-                t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
+                // t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
                 p.despawn_on_wall = true;
                 cmd.spawn((
                     DespawnOnExit(STATE),
@@ -505,6 +530,7 @@ impl Weapon {
                     LinearDamping(0.0),
                     GravityScale(0.0),
                     CollisionEventsEnabled,
+                    WeaponProjectile,
                     RigidBody::Dynamic,
                     layer,
                     Sensor,
@@ -528,6 +554,7 @@ impl Weapon {
                     Collider::circle(0.5),
                     LinearVelocity(controller.look_dir * weapon.projectile_speed),
                     LinearDamping(0.0),
+                    WeaponProjectile,
                     GravityScale(0.0),
                     CollisionEventsEnabled,
                     RigidBody::Dynamic,
@@ -565,6 +592,7 @@ impl Weapon {
                         Collider::circle(0.5),
                         LinearVelocity(velocity_dir.truncate() * weapon.projectile_speed),
                         LinearDamping(0.0),
+                        WeaponProjectile,
                         GravityScale(0.0),
                         CollisionEventsEnabled,
                         RigidBody::Dynamic,
@@ -584,7 +612,8 @@ impl Weapon {
                     t,
                     Sensor,
                     CollisionEventsEnabled,
-                    Collider::capsule_endpoints(9.,Vector::new(-5.0, 0.0), Vector::new(3.0, 0.0)),
+                    WeaponProjectile,
+                    Collider::capsule_endpoints(12.,Vector::new(-5.0, 0.0), Vector::new(3.0, 0.0)),
                     p
                 )).id();
                 
@@ -669,6 +698,7 @@ pub struct Projectile {
     pub damage: f32,
     pub lifetime: f32,
     pub collided: Vec<Entity>,
+    pub weapon_type: WeaponType,
     pub piercing: u32,
     pub from_player: bool,
     pub despawn_on_wall: bool,
@@ -834,6 +864,7 @@ pub fn shoot(
     mut cmd: Commands,
     time: Res<Time>,
     assets: Res<MiamiAssets>,
+    mut shake: ResMut<CameraShake>,
 ){
     let dt = time.dt();
     for (_child, controller, cc, a, p) in characters.iter() {
@@ -861,7 +892,12 @@ pub fn shoot(
         // if !controller.shoot {continue;};
         // info!("Shooting!");
         
-        if w.on_shoot(&mut cmd, &controller,&w, wc.sprite, sprite_transform.translation(), p.is_none(), &assets) {
+        if w.on_shoot(
+            &mut cmd, &controller,
+            &w, wc.sprite, 
+            sprite_transform.translation(), p.is_none(), 
+            &assets, &mut shake
+        ) {
             w.t = w.cooldown;
             w.ammo -= 1;
         }
@@ -996,20 +1032,37 @@ pub fn health_watcher(
 
 pub fn on_projectile_hit(
     event: On<CollisionStart>,
-    mut projectile: Query<(Entity, &mut Projectile, Option<&LinearVelocity>, &mut Transform)>,
+    mut projectile: Query<(Entity, &mut Projectile, Option<&mut LinearVelocity>, &mut Transform)>,
     mut controllers : Query<(&mut CharacterController, &GlobalTransform, Option<&Player>, Option<&InvincibleCharacter>)>,
+
     q : Query<(), With<PathfinderObstacle>>,
     state: Res<State<AppState>>,
     mut cmd: Commands,
 ){
     if state.get() != &STATE {return;};
-    let Ok((e, mut projectile, vel, t)) = projectile.get_mut(event.collider1) else {return;};
-    if let Ok(()) = q.get(event.collider2) && projectile.despawn_on_wall {
+    let Ok((e, mut projectile, mut vel, t)) = projectile.get_mut(event.collider1) else {
+        return;
+    };
+    if let Ok(()) = q.get(event.collider2) && projectile.despawn_on_wall && projectile.weapon_type != WeaponType::FazStar {
         cmd.entity(e).despawn();
         return;
     }
-    let Ok((mut c, gt, _p, inv)) = controllers.get_mut(event.collider2) else {return;};
-    // if p.is_none() && !projectile.from_player {return;} 
+
+    if projectile.weapon_type == WeaponType::FazStar && let Some(vel) = &mut vel {
+        if projectile.piercing <= 0 {
+            cmd.entity(e).despawn();
+            return;
+        };
+        let mut rng = rand::rng();
+        let angle = rng.random_range(-PI / 8.0..PI / 8.0);
+        let rotated = vel.rotate(Vec2::from_angle(angle + PI));
+        vel.x = rotated.x;
+        vel.y = rotated.y;
+    }
+    
+    let Ok((mut c, gt, _p, inv)) = controllers.get_mut(event.collider2) else {
+        return;
+    };
     if projectile.piercing <= 0 {
         cmd.entity(e).despawn();
         return;
@@ -1029,6 +1082,8 @@ pub fn on_projectile_hit(
     c.last_impact_back = dir.dot(ld) < 0.0;
     c.last_impact_dir = dir;
     projectile.piercing -= 1;
+    
+
     if inv.is_none() {
         c.hp -= projectile.damage;
     }

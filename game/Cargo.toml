@@ -28,7 +28,7 @@ games = { version = "0.1.0", path = "../libs/games" }
 vleue_navigator = { version = "0.15.0", features = ["avian2d"] }
 # getrandom = { version = "0.2.17", features = ["js"] }
 # getrandom = { version = "0.4.1", features = ["wasm_js"] }
-
+# tracy-client = "0.18.0"
 # # [patch.crates-io]
 # getrandom = { version = "0.4", features = ["js"] }
 # features = ["wasm_bindgen"] # if chacha20 supports wasm

@@ -1,10 +1,13 @@
 use std::time::Duration;
 
 use bevy::{audio::{PlaybackMode, Volume}, text::{FontSmoothing, LineHeight}};
+use bevy_tweening::Tween;
+use camera::CameraController;
 
-use crate::{dev_games::miami::{bossfight::{BossFightWait, FreddyFightStage, begin_bossfight}, entity::Player, player::PlayerDisabled, plugin::{MiamiAssets, STATE}}, prelude::*};
-
-
+use super::bossfight::*;
+use super::entity::*;
+use super::player::*;
+use crate::{miami::plugin::STATE, prelude::*};
 
 
 
@@ -404,19 +407,26 @@ pub fn tick_dialog(
     mut cmd: Commands,
 
     (time, keys, assets, last_screenshot): 
-    (Res<Time>, Res<ButtonInput<KeyCode>>,  Res<MiamiAssets>,  Res<LastScreenshot>,),
+    (Res<Time>, Res<ButtonInput<KeyCode>>,  Res<super::plugin::MiamiAssets>,  Res<LastScreenshot>,),
     
-    disabled_q: Query<Entity, With<PlayerDisabled>>,
-    main_q: Query<Entity, (With<BgDialog>, Without<PrevHead>)>,
-    top_q: Query<Entity, (With<TopDialog>, Without<PrevHead>)>,
-    bottom_q: Query<Entity, (With<BottomDialog>, Without<PrevHead>)>,
-    char_q: Query<Entity, (With<DialogHead>, Without<PrevHead>)>,
-    char_s_q: Query<Entity, (With<DialogHeadShadow>, Without<PrevHead>)>,
+    (disabled_q,
+    main_q,
+    top_q,
+    bottom_q,
+    char_q,
+    char_s_q) :
+    (Query<Entity, With<PlayerDisabled>>,
+    Query<Entity, (With<BgDialog>, Without<PrevHead>)>,
+    Query<Entity, (With<TopDialog>, Without<PrevHead>)>,
+    Query<Entity, (With<BottomDialog>, Without<PrevHead>)>,
+    Query<Entity, (With<DialogHead>, Without<PrevHead>)>,
+    Query<Entity, (With<DialogHeadShadow>, Without<PrevHead>)>),
+
     boss_entities: Query<Entity, (With<BossFightWait>, Without<super::bossfight::FighterFreddy>)>,
     (bossfight_dialog, pre_freddy_dialog, final_dialog): (Option<Res<BossfightDialog>>, Option<Res<PreFreddyDialog>>, Option<Res<FinalDialog>>),
     mut local_state: ResMut<NextState<FreddyFightStage>>,
     q: Query<Entity, With<super::map::BossEntrypointCollider>>,
-
+    mut controller: ResMut<CameraController>,
 ){
     for (_, mut t) in anim.iter_mut() {
         t.rotation = Rot2::radians((time.elapsed_secs() * 2.0).sin() * 0.15);
@@ -432,7 +442,7 @@ pub fn tick_dialog(
         if s.state >= s.dialogs.len() {
             if bossfight_dialog.is_some() {
                 cmd.remove_resource::<BossfightDialog>();
-                begin_bossfight(&mut cmd, &boss_entities, &q);
+                begin_bossfight(&mut cmd, &boss_entities, &q, &mut controller);
             }
             if pre_freddy_dialog.is_some() {
                 cmd.remove_resource::<PreFreddyDialog>();

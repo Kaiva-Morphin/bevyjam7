@@ -1,8 +1,10 @@
 use camera::CameraController;
 use rand::Rng;
 
-use crate::{dev_games::miami::{entity::{CharacterController, InvincibleCharacter, MiamiEntity, Player, spawn_entity}, map::BossEntrypointCollider, plugin::{MiamiAssets, STATE}}, prelude::*};
-
+use crate::prelude::*;
+use super::entity::*;
+use super::map::*;
+use super::plugin::*;
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
@@ -24,6 +26,12 @@ pub struct DisabledFreddyAi;
     Freddy,
     Finished
 }
+
+#[derive(Component, Default)]
+pub struct FreddyScreen;
+
+#[derive(Component, Default)]
+pub struct FreddyScreenTop;
 
 #[derive(Component, Default)]
 pub struct BossFightWait;
@@ -63,10 +71,10 @@ pub fn setup_freddy_fight(
         match c.character {
             MiamiEntity::NewChicka => 
             {
-                cmd.entity(e).insert((Name::new("Chicka"), FighterChicka, BossFightStandAi)).remove::<InvincibleCharacter>();
+                cmd.entity(e).insert((Name::new("Chicka"), FighterChicka, BossFightStandAi, RigidBody::Dynamic)).remove::<InvincibleCharacter>();
             }
             MiamiEntity::NewBonnie => {
-                cmd.entity(e).insert((Name::new("Bonnie"), FighterBonnie, BossFightStandAi)).remove::<InvincibleCharacter>();
+                cmd.entity(e).insert((Name::new("Bonnie"), FighterBonnie, BossFightStandAi, RigidBody::Dynamic)).remove::<InvincibleCharacter>();
             }
             MiamiEntity::Freddy => {
                 cmd.entity(e).insert((Name::new("Freddy"), FighterFreddy, BossFightStandAi, BossFightWait));
@@ -83,11 +91,13 @@ pub fn begin_bossfight(
     cmd: &mut  Commands,
     e: &Query<Entity, (With<BossFightWait>, Without<FighterFreddy>)>,
     q: &Query<Entity, With<BossEntrypointCollider>>,
+    controller: &mut ResMut<CameraController>,
 ) {
     for e in e.iter() {
         cmd.entity(e).remove::<BossFightWait>();
     }
     super::map::block_bossroom(cmd, q);
+    controller.target_zoom = 1.2;
 }
 
 pub fn tick_bonnie_chicka_fight(
@@ -147,7 +157,12 @@ pub fn tick_bonnie_chicka_fight(
 
 pub fn kill_endoskeletons(
     chars: Query<&mut CharacterController>,
+    projectiles: Query<Entity, With<super::weapon::WeaponProjectile>>,
+    mut cmd: Commands
 ){
+    for e in projectiles.iter() {
+        cmd.entity(e).despawn();  
+    }
     for mut c in chars {
         match c.character {
             MiamiEntity::Endoskeleton
@@ -176,9 +191,17 @@ pub fn bonnie_chicka_fight_attack(
 pub fn setup_freddy_fight2(
     mut cmd: Commands,
     q: Query<Entity, With<FighterFreddy>>,
+    mut bot: Query<(Entity, &mut Transform, &mut Sprite), With<FreddyScreen> >
 ){
     for e in q {
-        cmd.entity(e).remove::<(InvincibleCharacter, BossFightWait)>();
+        cmd.entity(e).insert(RigidBody::Dynamic).remove::<(InvincibleCharacter, BossFightWait)>();
+    }
+    for (e, mut t, mut s) in bot.iter_mut() {
+        t.translation.z = -14.0;
+        if let Some(s) = &mut s.texture_atlas {
+            s.index = 1;
+        }
+        cmd.entity(e).remove::<(RigidBody, FreddyScreen)>();
     }
 }
 
@@ -248,9 +271,12 @@ pub fn tick_freddy_fight(
     );
 }
 
-const CHICKA_CHASE_THRESHOLD: f32 = 100.0;
-const BONNIE_CHASE_THRESHOLD: f32 = 100.0;
-const FREDDY_CHASE_THRESHOLD: f32 = 100.0;
+
+
+
+const CHICKA_CHASE_THRESHOLD: f32 = 600.0;
+const BONNIE_CHASE_THRESHOLD: f32 = 600.0;
+const FREDDY_CHASE_THRESHOLD: f32 = 600.0;
 const BONNIE_CHICKA_ENDOSKELETON_SPAWN_DELAY: f32 = 10.0;
 const FREDDY1_ENDOSKELETON_SPAWN_DELAY: f32 = 5.0;
 const FREDDY2_ENDOSKELETON_SPAWN_DELAY: f32 = 3.0;
