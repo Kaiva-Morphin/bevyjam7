@@ -22,6 +22,7 @@ pub enum AppState {
     Miami,
     Titles,
     Novel,
+    Novel2Fnaf,
     Fnaf,
     FakeEnd,
     End

@@ -701,6 +701,7 @@ fn setup(
     ));
     let font = asset_server.load("fonts/kaivs_minegram_v1.ttf");
     cmd.spawn((
+        DespawnOnExit(STATE),
         Text::new("Battery: "),
         Node {
             position_type: PositionType::Absolute,
@@ -724,6 +725,7 @@ fn setup(
         BatteryText,
     ));
     cmd.spawn((
+        DespawnOnExit(STATE),
         Text::new(""),
         Node {
             position_type: PositionType::Absolute,

@@ -10,6 +10,7 @@ pub mod prelude;
 pub mod properties;
 pub mod dev_games;
 // pub mod pathfinder;
+pub mod novel2fnaf;
 
 fn main() {
     App::new()
@@ -40,7 +41,7 @@ impl Plugin for GamesPlugin {
             .add_systems(OnExit(AppState::LoadingAssets), cleanup_loading_screen)
             .add_loading_state(
                 LoadingState::new(AppState::LoadingAssets)
-                    .continue_to_state(AppState::Geometry)
+                    .continue_to_state(AppState::Novel)
                     .load_collection::<GameAssets>()
                     .load_collection::<HintAssets>()
                     .load_collection::<pacman_eat::plugin::PacmanEatAssets>()
@@ -65,6 +66,7 @@ impl Plugin for GamesPlugin {
                 novel::plugin::NovelPlugin,
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
+                novel2fnaf::plugin::Novel2FnafPlugin,
                 miami::plugin::MiamiPlugin,
             ))
             .add_systems(Startup, warmup_screenshot)
@@ -122,6 +124,7 @@ impl Plugin for GamesPlugin {
                 novel::plugin::NovelPlugin,
                 fake_end::plugin::FakeEndPlugin,
                 fnaf::plugin::FNAFPlugin,
+                novel2fnaf::plugin::Novel2FnafPlugin,
                 miami::plugin::MiamiPlugin,
             ))
             .add_systems(Startup, warmup_screenshot)
