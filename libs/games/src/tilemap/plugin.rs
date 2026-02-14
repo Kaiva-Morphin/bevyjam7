@@ -38,6 +38,7 @@ impl Plugin for MapPlugin {
                 r"^.*::BossEntrypointCollider$",
                 r"^.*::EntrypointDialog$",
                 r"^.*::BossDialog$",
+                r"^.*::BossfightSpawner$",
                 
             ])
             .expect("Wrong regex"),

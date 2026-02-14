@@ -36,6 +36,7 @@ impl Plugin for CorePlugin {
                     })
                     .set(ImagePlugin::default_nearest()),
                 PhysicsPlugins::default(),
+                // PhysicsPlugins::default(),
                 EguiPlugin::default(),
                 CameraPlugin{initial_target_zoom: 1.0},
                 RoomPlugin::uninited(),

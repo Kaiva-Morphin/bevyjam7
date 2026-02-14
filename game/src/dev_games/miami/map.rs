@@ -1,5 +1,7 @@
+use std::f32::consts::{FRAC_2_PI, PI};
+
 use super::plugin::STATE;
-use crate::{pathfinder::plugin::PathfinderObstacle, prelude::*};
+use crate::{dev_games::miami::{dialog::{ShootedDialogs, Speaker, start_boss_dialog, start_dialog, start_entrypoint_dialog}, entity::{CharacterController, Player}, player::PlayerDisabled, plugin::{MiamiAssets, dialog_sensor_layer}}, pathfinder::plugin::PathfinderObstacle, prelude::*};
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]
@@ -60,11 +62,11 @@ pub fn propagate_obstacles(
                         // Define the outer borders of the navmesh.
                         fixed: Triangulation::from_outer_edges(&[
                             vec2(0.0, 0.0),
-                            vec2(1000.0, 0.0),
-                            vec2(1000.0, 1000.0),
-                            vec2(0.0, 1000.0),
+                            vec2(2000.0, 0.0),
+                            vec2(2000.0, 2000.0),
+                            vec2(0.0, 2000.0),
                         ]),
-                        agent_radius: 6.0,
+                        agent_radius: 6.5,
                         simplify: 1.0,
                         merge_steps: 1,
                         ..default()
@@ -80,9 +82,221 @@ pub fn propagate_obstacles(
 
 pub fn on_v_door(
     ev: On<Add, VerticalDoor>,
-    t: Query<&GlobalTransform, With<VerticalDoor>>,
-    mut cmd: Commands
+    t: Query<&Transform, With<VerticalDoor>>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+    assets: Res<MiamiAssets>
 ) {
+    if state.get() != &STATE {return};
     let Ok(t) = t.get(ev.entity) else {return;};
-    // cmd.spawn()
+    let origin =cmd.spawn((
+        Transform::from_translation(t.translation),
+        DespawnOnExit(STATE),
+        RigidBody::Static,
+    )).id();
+    let door = cmd.spawn((
+        Name::new("Door"),
+        Transform::from_translation(t.translation - vec3(0., 16., 0.0)),
+        DespawnOnExit(STATE),
+        RigidBody::Dynamic,
+        LinearDamping(1.0),
+        AngularDamping(1.0),
+        GravityScale(0.0),
+        Mass(100.0),
+        Visibility::Inherited,
+        CollisionLayers::from_bits(0b101010111, 0b000010110),
+        Collider::capsule(4.0, 32.0),
+        children![(
+            Sprite {
+                image: assets.door.clone(),
+                ..Default::default()
+            },
+            Transform::from_rotation(Quat::from_rotation_z(-PI / 2.)),
+        )]
+    )).id();
+    cmd.spawn((
+        Name::new("DoorJoint"),
+        RevoluteJoint::new(origin, door)
+        .with_anchor(t.translation.truncate())
+        .with_angle_limits(-2., 2.)
+    ));
+}
+
+pub fn on_h_door(
+    ev: On<Add, HorizontalDoor>,
+    t: Query<&Transform, With<HorizontalDoor>>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+    assets: Res<MiamiAssets>
+) {
+    if state.get() != &STATE {return};
+    let Ok(t) = t.get(ev.entity) else {return;};
+    let origin =cmd.spawn((
+        Transform::from_translation(t.translation),
+        DespawnOnExit(STATE),
+        RigidBody::Static,
+    )).id();
+    let door = cmd.spawn((
+        Name::new("Door"),
+        Transform::from_translation(t.translation - vec3(-16., 0., 0.0)).with_rotation(Quat::from_rotation_z(PI / 2.)),
+        DespawnOnExit(STATE),
+        RigidBody::Dynamic,
+        LinearDamping(1.0),
+        AngularDamping(1.0),
+        GravityScale(0.0),
+        Mass(100.0),
+        CollisionLayers::from_bits(0b101010111, 0b000010110),
+        Collider::capsule(4.0, 32.0),
+        Visibility::Inherited,
+        children![(
+            Sprite {
+                image: assets.door.clone(),
+                ..Default::default()
+            },
+            Transform::from_rotation(Quat::from_rotation_z(-PI / 2.)),
+        )]
+    )).id();
+    cmd.spawn((
+        Name::new("DoorJoint"),
+        RevoluteJoint::new(origin, door)
+        .with_local_frame2(Isometry2d::from_rotation(Rot2::from_sin_cos(-1., 0.)))
+        .with_anchor(t.translation.truncate())
+        .with_angle_limits(-3., 3.)
+    ));
+}
+
+
+pub fn on_entrypoint_dialog_spawned(
+    collider_created: On<TiledEvent<ColliderCreated>>,
+    spawn_query: Query<&EntrypointDialog>,
+    parents: Query<&ChildOf>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+) {
+    if state.get() != &STATE {return;}
+    let spawn_entity = collider_created.event().origin;
+    let Ok(p) = parents.get(spawn_entity) else {return;};
+    let Ok(_st) = spawn_query.get(p.parent()) else {return;};
+    cmd.entity(spawn_entity).insert((
+        DespawnOnExit(STATE),
+        Name::new("EntrypointDialog"),
+        Sensor,
+        EntrypointDialog,
+        dialog_sensor_layer(),
+        RigidBody::Static,
+        CollisionEventsEnabled,
+    )).observe(on_entrypoint_dialog_collision);
+}
+
+pub fn on_boss_entrypoint_spawned(
+    collider_created: On<TiledEvent<ColliderCreated>>,
+    spawn_query: Query<&BossEntrypointCollider>,
+    parents: Query<&ChildOf>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+) {
+    if state.get() != &STATE {return;}
+    let spawn_entity = collider_created.event().origin;
+    let Ok(p) = parents.get(spawn_entity) else {return;};
+    let Ok(_st) = spawn_query.get(p.parent()) else {return;};
+    cmd.entity(spawn_entity).insert((
+        DespawnOnExit(STATE),
+        Name::new("BossEntrypointCollider"),
+        Sensor,
+        dialog_sensor_layer(),
+        BossEntrypointCollider,
+        RigidBody::Static,
+        CollisionEventsEnabled,
+    ));
+}
+
+pub fn on_boss_dialog_spawned(
+    collider_created: On<TiledEvent<ColliderCreated>>,
+    spawn_query: Query<&BossDialog>,
+    parents: Query<&ChildOf>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+) {
+    if state.get() != &STATE {return;}
+    let spawn_entity = collider_created.event().origin;
+    let Ok(p) = parents.get(spawn_entity) else {return;};
+    let Ok(_st) = spawn_query.get(p.parent()) else {return;};
+    cmd.entity(spawn_entity).insert((
+        DespawnOnExit(STATE),
+        dialog_sensor_layer(),
+        Name::new("BossEntrypointCollider"),
+        Sensor,
+        BossDialog,
+        RigidBody::Static,
+        CollisionEventsEnabled,
+    )).observe(on_boss_dialog_collision);
+}
+
+pub fn on_entrypoint_dialog_collision(
+    e: On<CollisionStart>,
+    q: Query<&EntrypointDialog>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+    assets: Res<MiamiAssets>,
+    cam: Query<Entity, With<WorldCamera>>,
+    pq: Query<(Entity, &mut CharacterController), (With<Player>, Without<PlayerDisabled>)>,
+    mut shooted: ResMut<ShootedDialogs>,
+) {
+    if state.get() != &STATE {return;}
+    if shooted.entrypoint {return;}
+    shooted.entrypoint = true;
+
+    let spawn_entity = e.event().collider1;
+    let Ok(_p) = q.get(spawn_entity) else {return;};
+    let Some(cam) = cam.iter().next() else {return;};
+
+    for (p, mut c) in pq {
+        cmd.entity(p).insert(PlayerDisabled);
+        c.input_dir = Vec2::ZERO;
+        c.throw = false;
+        c.shoot = false;
+    }
+    
+    start_entrypoint_dialog(&mut cmd, &assets, cam);
+}
+
+pub fn on_boss_dialog_collision(
+    e: On<CollisionStart>,
+    q: Query<&BossDialog>,
+    mut cmd: Commands,
+    state: Res<State<AppState>>,
+    assets: Res<MiamiAssets>,
+    cam: Query<Entity, With<WorldCamera>>,
+    pq: Query<(Entity, &mut CharacterController), (With<Player>, Without<PlayerDisabled>)>,
+    mut shooted: ResMut<ShootedDialogs>,
+) {
+    if state.get() != &STATE {return;}
+    if shooted.boss {return;}
+    shooted.boss = true;
+
+    let spawn_entity = e.event().collider1;
+    let Ok(_p) = q.get(spawn_entity) else {return;};
+    let Some(cam) = cam.iter().next() else {return;};
+
+    for (p, mut c) in pq {
+        cmd.entity(p).insert(PlayerDisabled);
+        c.input_dir = Vec2::ZERO;
+        c.throw = false;
+        c.shoot = false;
+    }
+    
+    start_boss_dialog(&mut cmd, &assets, cam);
+}
+
+pub fn block_bossroom(cmd: &mut Commands, q: &Query<Entity, With<BossEntrypointCollider>>) {
+    for e in q.iter() {
+        cmd.entity(e).insert((
+            DespawnOnExit(STATE),
+            Name::new("BossEntrypointCollider"),
+            dialog_sensor_layer(),
+            BossEntrypointCollider,
+            RigidBody::Static,
+            CollisionEventsEnabled,
+        )).remove::<Sensor>();
+    }
 }

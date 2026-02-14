@@ -6,8 +6,9 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::CameraController;
 use games::global_music::plugin::NewBgMusic;
 
-use super::{map::{TilemapShadow, propagate_obstacles, setup_tilemap_shadows}, weapon::{MiamiWeaponSpawner, health_watcher, on_pickup_weapon_collision, on_projectile_hit, on_thrown_weapon_collision, on_weapon_spawnpoint, shoot, throw_weapon, tick_thrown, update_projectile}};
-use crate::{dev_games::miami::map::{BossDialog, BossEntrypointCollider, EntrypointDialog, HorizontalDoor, VerticalDoor}, prelude::*};
+use super::{map::*, weapon::*};
+use crate::dev_games::miami::bossfight::*;
+use crate::{dev_games::miami::map::*, prelude::*};
 use super::entity::*;
 use super::shadows::*;
 use super::player::*;
@@ -23,21 +24,46 @@ pub struct MiamiAssets {
     pub map: Handle<TiledMapAsset>,
     #[asset(path = "maps/miami/weapons.png")]
     pub weapons: Handle<Image>,
+
     #[asset(path = "maps/miami/pacman.png")]
     pub character: Handle<Image>,
+
     #[asset(path = "maps/miami/endoskeleton.png")]
     pub endoskeleton: Handle<Image>,
+    #[asset(path = "maps/miami/copper_endoskeleton.png")]
+    pub copper_endoskeleton: Handle<Image>,
+    #[asset(path = "maps/miami/golden_endoskeleton.png")]
+    pub golden_endoskeleton: Handle<Image>,
+
+
     #[asset(path = "maps/miami/bonnie.png")]
     pub bonnie: Handle<Image>,
+    #[asset(path = "maps/miami/new_bonnie.png")]
+    pub new_bonnie: Handle<Image>,
+    #[asset(path = "maps/miami/chicka.png")]
+    pub chica: Handle<Image>,
+    #[asset(path = "maps/miami/new_chicka.png")]
+    pub new_chica: Handle<Image>,
+
+    #[asset(path = "maps/miami/faz.png")]
+    pub freddy: Handle<Image>,
+    
     #[asset(path = "maps/miami/decals.png")]
     pub decals: Handle<Image>,
     #[asset(path = "maps/miami/projectiles.png")]
     pub projectiles: Handle<Image>,
 
+    #[asset(path = "maps/miami/door.png")]
+    pub door: Handle<Image>,
+
+
     #[asset(path = "maps/miami/dialog_faz.png")]
     pub dialog_faz: Handle<Image>,
     #[asset(path = "maps/miami/dialog_pac.png")]
     pub dialog_pac: Handle<Image>,
+
+
+
 
     #[asset(path="sounds/miami/ACTION PACK 1 OGG_Magic Fx 7.ogg")]
     pub bg_music: Handle<AudioSource>,
@@ -49,6 +75,9 @@ pub struct MiamiAssets {
 
     #[asset(path = "sounds/miami/power_up.ogg")]
     pub powerup_sound: Handle<AudioSource>,
+
+    #[asset(path = "sounds/novel/ururur.mp3")]
+    pub ururur: Handle<AudioSource>,
 
 }
 
@@ -65,6 +94,11 @@ impl Plugin for MiamiPlugin {
             .register_type::<BossDialog>()
             .register_type::<HorizontalDoor>()
             .register_type::<VerticalDoor>()
+            .register_type::<BossfightSpawner>()
+            .register_type::<FreddySpawner>()
+            .register_type::<Weapon>()
+
+            .add_sub_state::<FreddyFightStage>()
 
             .add_observer(setup_tilemap_shadows)
             .add_observer(on_weapon_spawnpoint)
@@ -74,14 +108,24 @@ impl Plugin for MiamiPlugin {
             .add_observer(propagate_obstacles)
             .add_observer(on_projectile_hit)
             .add_observer(on_map_created)
+            .add_observer(on_v_door)
+            .add_observer(on_h_door)
+            .add_observer(on_entrypoint_dialog_spawned)
+            .add_observer(on_boss_entrypoint_spawned)
+            .add_observer(on_boss_dialog_spawned)
             
+            .add_systems(OnEnter(STATE), (setup))
 
-            .add_systems(OnEnter(STATE), (
-                setup,
+            .add_systems(PostUpdate, setup_freddy_fight.run_if(in_state(FreddyFightStage::Idle)))
+            .add_systems(OnEnter(FreddyFightStage::PreFreddy), start_freddy_enter_dialog)
+            .add_systems(OnEnter(FreddyFightStage::PreFreddy), kill_endoskeletons)
+            .add_systems(OnEnter(FreddyFightStage::Freddy), setup_freddy_fight2)
+            .add_systems(PostUpdate, tick_bonnie_chicka_fight.run_if(in_state(FreddyFightStage::BonnieChicka)))
+            .add_systems(PostUpdate, tick_freddy_fight.run_if(in_state(FreddyFightStage::Freddy)))
+
+            .add_systems(Update, (
+                bonnie_chicka_fight_attack,
                 
-                // setup_navmesh
-            ))
-            .add_systems(PreUpdate, (
                 (cleanup_shadows, setup_shadows).chain(),
                 update_projectile,
                 player_look_at_cursor,
@@ -96,17 +140,22 @@ impl Plugin for MiamiPlugin {
                 tick_dialog,
                 update_screenshot,
 
+                player_health_watcher,
                 display_path,
+
+
                 
                 // update_shadows,
             ).run_if(in_state(STATE)))
             // .add_systems(PhysicsSchedule, update_shadows.after(tick_camera).in_set(PhysicsSystems::First))
             // .add_systems(PhysicsSchedule, update_shadows.after(tick_camera).in_set(NarrowPhaseSystems::Last))
-            .add_systems(PostUpdate, (update_shadows, health_watcher).run_if(in_state(STATE)))
+            .add_systems(FixedLast, update_shadows.run_if(in_state(STATE)))
+            .add_systems(PostUpdate, health_watcher.run_if(in_state(STATE)))
             // .add_systems(
             //     PhysicsSchedule,
             // update_shadows.in_set(ShadowSystems::Update).run_if(in_state(STATE))
             // )
+            // .insert_resource(NavMeshesDebug(bevy::color::palettes::tailwind::RED_800.into()))
 
             // .add_systems(PostUpdate, (
             //     update_shadows,
@@ -131,8 +180,12 @@ fn setup(
     assets: Res<MiamiAssets>,
     // cam: Query<Entity, With<WorldCamera>>,
     last: Res<LastScreenshot>,
+    mut latest: ResMut<LastState>,
+    mut camera_controller: ResMut<CameraController>,
     completed: Option<Res<MiamiTransitionShooted>>,
 ){
+    latest.state = STATE;
+
     cmd.spawn((
         NewBgMusic{handle: Some(assets.bg_music.clone()), instant_translation: false},
     ));
@@ -141,6 +194,7 @@ fn setup(
         Name::new("Map"),
         TiledMap(assets.map.clone()),
     ));
+    cmd.init_resource::<ShootedDialogs>();
     // let cam = cam.iter().next().expect("No cam!");
     // start_dialog(&mut cmd, &assets, cam, vec![
     //     ("YOU BASTARD!".to_string(), Speaker::Pacman),
@@ -177,6 +231,8 @@ fn setup(
         },
         HIGHRES_LAYERS,
     ));
+    camera_controller.follow_speed = 0.9;
+    camera_controller.target_zoom = 0.9
 }
 
 
@@ -187,17 +243,16 @@ fn update_screenshot(
     mut screenshot: Query<(Entity, &mut MiamiScreenshot)>,
     mut cmd: Commands,
     dt: Res<Time>,
-    player: Query<Entity, (With<Player>, With<PlayerDisabled>)>,
+    p_q: Query<Entity, (With<Player>, With<PlayerDisabled>)>,
 ){
-    let Some(player) = player.iter().next() else {return;};
-    cmd.entity(player).remove::<PlayerDisabled>();
+    if screenshot.iter().len() == 0 {return;}
 
     let dt = dt.dt();
     for (e, mut s) in screenshot.iter_mut() {
         s.0 += dt;
         if s.0 > SCREENSHOT_TRANSITION_TIME {
             cmd.entity(e).despawn();
-            // let Some(player) = player.iter().next() else {continue;};
+            let Some(player) = p_q.iter().next() else {continue;};
             cmd.entity(player).remove::<PlayerDisabled>();
         }
     }
@@ -216,12 +271,6 @@ fn on_map_created(
 }
 
 
-pub fn late_setup(
-    mut camera_controller: ResMut<CameraController>,
-){
-    camera_controller.follow_speed = 0.9;
-    camera_controller.target_zoom = 0.9;
-}
 
 
 fn tick(
@@ -229,19 +278,48 @@ fn tick(
     mut camera: Query<&mut Transform, With<WorldCamera>>
 ){
     let Some(mut t) = camera.iter_mut().next() else {return;};
-    t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02;
+    // t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02; // ! TODO
 }
 
 
 fn cleanup(
     mut controller: ResMut<CameraController>,
     mut camera: Query<&mut Transform, With<WorldCamera>>,
+    mut cmd: Commands,
+    mut screenshot: ResMut<LastScreenshot>,
 ){
+    cmd.remove_resource::<PlayerZeroHealthTicker>();
+    cmd.remove_resource::<ShootedDialogs>();
+    cmd.remove_resource::<BossfightDialog>();
     controller.follow_speed = 0.0;
     controller.target_zoom = 0.8;
     let Ok(mut t) = camera.single_mut() else {return;};
     t.rotation.z = 0.0;
     t.rotation.y = 0.0;
+}
+
+
+#[derive(Resource, Default)]
+pub struct PlayerZeroHealthTicker(pub f32);
+pub fn player_health_watcher(
+    zh: Option<ResMut<PlayerZeroHealthTicker>>,
+    time: Res<Time>,
+    mut state: ResMut<NextState<AppState>>,
+    mut screenshot: ResMut<LastScreenshot>,
+    mut cmd: Commands,
+) {
+    let Some(mut zh) = zh else {
+        return;
+    };
+    let dt = time.dt();
+    zh.0 += dt;
+    if zh.0 > DEFEAT_TIME {
+        if screenshot.awaiting == false {
+            cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
+                .observe(await_screenshot_and_translate(AppState::Defeat));
+            screenshot.awaiting = true;
+        }
+    }
 }
 
 pub fn miami_player_layers() ->            CollisionLayers {CollisionLayers::from_bits(0b101000110, 0b101000111)}
@@ -252,7 +330,7 @@ pub fn miami_weapon_layers() ->            CollisionLayers {CollisionLayers::fro
 pub fn miami_projectile_damager_layer() -> CollisionLayers {CollisionLayers::from_bits(0b010000001, 0b010000001)} 
 pub fn miami_projectile_player_layer() ->  CollisionLayers {CollisionLayers::from_bits(0b100000000, 0b100000000)} 
 pub fn miami_seeker_shapecast_layer() ->   CollisionLayers {CollisionLayers::from_bits(0b000000011, 0b000000011)} 
-
+pub fn dialog_sensor_layer() ->            CollisionLayers {CollisionLayers::from_bits(0b000000100, 0b000000100)} 
 
 pub fn red_blood() -> Color {Color::Srgba(Srgba::rgba_u8(200, 32, 61, 255))}
 pub fn oil_blood() -> Color {Color::Srgba(Srgba::rgba_u8(30, 22, 64, 255))}
@@ -263,9 +341,17 @@ pub fn blood_rects() -> [Rect; 3] {
         Rect::new(0.0, 0.0, 32.0, 32.0),
     ]
 }
-pub fn front_body_rect() -> Rect {Rect::new(48.0, 0.0, 80.0, 96.0)}
-pub fn back_body_rect() -> Rect {Rect::new(80.0, 0.0, 112.0, 96.0)}
+pub fn front_body_rect() -> Rect {Rect::new(48.0, 0.0, 80.0, 64.0)}
+pub fn back_body_rect() -> Rect {Rect::new(80.0, 0.0, 112.0, 64.0)}
 
 pub const BLOOD_Z_TRANSLATION : f32 = -6.0;
 pub const BODY_Z_TRANSLATION : f32 = -4.0;
 pub const THROWN_DAMAGE_MULTIPLIER: f32 = 0.0071428571;
+
+pub const DEFEAT_TIME: f32 = 1.0;
+
+pub const CHASER_RANDOM_RADIUS: f32 = 100.0;
+
+pub const SHOTGUN_BULLET_RADIUS: f32 = 0.4;
+pub const SHOTGUN_BULLET_COUNT: usize = 6;
+

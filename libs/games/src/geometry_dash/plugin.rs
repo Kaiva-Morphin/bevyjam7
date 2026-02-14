@@ -65,7 +65,7 @@ impl Plugin for GeometryDashPlugin {
             .add_systems(Update, defeat.run_if(in_state(LocalState::Defeat)))
             .add_systems(Update, win.run_if(in_state(LocalState::Win)))
             .add_systems(OnExit(STATE), cleanup)
-            ;
+        ;
     }
 }
 
@@ -457,7 +457,6 @@ fn controller(
 
 fn defeat(
     mut cmd: Commands,
-    mut state: ResMut<NextState<AppState>>,
     mut screenshot: ResMut<LastScreenshot>,
     assets: Res<GeometryDashAssets>,
 ){
@@ -474,7 +473,6 @@ fn defeat(
             .observe(await_screenshot_and_translate(AppState::Defeat));
         screenshot.awaiting = true;
     }
-    state.set(AppState::Defeat);
 }
 
 fn win(
