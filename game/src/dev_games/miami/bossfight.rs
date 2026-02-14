@@ -161,7 +161,7 @@ pub fn kill_endoskeletons(
 }
 
 pub fn bonnie_chicka_fight_attack(
-    mut fighters: Query<(&mut CharacterController, &GlobalTransform, Option<&BossFightStandAi>), Without<BossFightWait>>,
+    mut fighters: Query<(&mut CharacterController, &GlobalTransform, Option<&BossFightStandAi>), (Without<Player>, Without<BossFightWait>)>,
     player: Query<&GlobalTransform, With<Player>>,
 ) {
     let Some(player) = player.iter().next() else {return;};

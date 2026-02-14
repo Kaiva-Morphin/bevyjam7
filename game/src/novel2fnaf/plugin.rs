@@ -3,7 +3,7 @@ use games::prelude::{AppState, LastScreenshot};
 use properties::WorldCamera;
 
 const STATE: AppState = AppState::Novel2Fnaf;
-const NEXT_STATE: AppState = AppState::Novel;
+const NEXT_STATE: AppState = AppState::Fnaf;
 
 pub struct Novel2FnafPlugin;
 

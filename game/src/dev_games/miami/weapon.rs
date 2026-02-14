@@ -2,9 +2,10 @@ use std::f32::consts::FRAC_PI_2;
 
 use avian2d::math::Vector;
 use bevy::prelude::*;
-use crate::dev_games::miami::entity::InvincibleCharacter;
-use crate::dev_games::miami::plugin::{PlayerZeroHealthTicker, SHOTGUN_BULLET_COUNT, SHOTGUN_BULLET_RADIUS};
-use crate::prelude::AppState;
+use super::bossfight::*;
+use super::dialog::*;
+use super::entity::*;
+use super::plugin::*;
 use rand::Rng;
 use super::entity::{CharacterComponents, CharacterController, CharacterPivotPoint, CharacterSprite, Player};
 use super::plugin::{BLOOD_Z_TRANSLATION, BODY_Z_TRANSLATION, THROWN_DAMAGE_MULTIPLIER, miami_dropped_weapon_layers, miami_pickup_weapon_layers, miami_projectile_damager_layer, miami_projectile_player_layer};
@@ -31,7 +32,7 @@ pub enum WeaponType {
     Baguette,
     GoldenPistol,
     Shotgun,
-
+    Uzi,
     EnemyFists,
     ChickaThrow,
     BonniePlay,
@@ -181,7 +182,7 @@ impl WeaponType {
 
                 damage: 100.0,
                 ttl: 5.0,
-                piercing: 1,
+                piercing: 0,
                 projectile_speed: 500.0,
                 throw_damage: 100.0,
 
@@ -223,7 +224,7 @@ impl WeaponType {
 
                 rect: Rect::new(0.0, 96.0, 16.0, 128.0),
                 held_rect: Rect::new(0.0, 64.0, 16.0, 96.0),
-                held_offset: vec3(-4., -25., -0.05),
+                held_offset: vec3(4., -25., -0.05),
                 
                 char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
                 char_offset: vec3(0., -3., 0.),
@@ -235,20 +236,49 @@ impl WeaponType {
                 attack_char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
                 attack_char_offset: vec3(0., -3., 0.),
 
-                attack_offset: vec3(-4., -25., -0.05),
+                attack_offset: vec3(4., -25., -0.05),
                 attack_rect: Rect::new(16.0, 64.0, 32.0, 96.0),
 
                 projectile_rect: Rect::new(2.0, 0.0, 3.0, 16.0),
 
                 damage: 100.0,
                 ttl: 5.0,
-                piercing: 1,
+                piercing: 0,
                 projectile_speed: 700.0,
                 throw_damage: 100.0,
 
                 ..Default::default()
             },
+            WeaponType::Uzi => Weapon {
+                weapon_type: WeaponType::Uzi,
 
+                rect: Rect::new(32.0, 80.0, 48.0, 96.0),
+                held_rect: Rect::new(48.0, 80.0, 64.0, 96.0),
+                held_offset: vec3(-2., -25., -0.05),
+                
+                char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
+                char_offset: vec3(0., -3., 0.),
+                
+                ammo: 30,
+                cooldown: 0.1,
+                anim_time: 0.1,
+
+                attack_char_rect: Rect::new(32.0, 0.0, 48.0, 48.0),
+                attack_char_offset: vec3(0., -3., 0.),
+
+                attack_offset: vec3(-2., -25., -0.05),
+                attack_rect: Rect::new(48.0, 80.0, 64.0, 96.0),
+
+                projectile_rect: Rect::new(3.0, 0.0, 4.0, 16.0),
+
+                damage: 100.0,
+                ttl: 5.0,
+                piercing: 0,
+                projectile_speed: 700.0,
+                throw_damage: 100.0,
+
+                ..Default::default()
+            },
             WeaponType::Axe => Weapon {
                 weapon_type: WeaponType::Axe,
 
@@ -305,7 +335,6 @@ impl WeaponType {
 
                 ..Default::default()
             },
-
             WeaponType::EnemyFists => Weapon {
                 weapon_type: WeaponType::EnemyFists,
 
@@ -400,13 +429,13 @@ impl Weapon {
     pub fn on_shoot(
         &self,
         cmd: &mut Commands,
+        controller: &CharacterController,
         weapon: &Weapon,
-        look_dir: Vec2,
         sprite: Entity,
         pos: Vec3,
         is_enemy: bool,
         assets: &Res<MiamiAssets>,
-    ) {
+    ) -> bool {
         let mut rng = rand::rng();
         let mut p = Projectile {
             damage: weapon.damage,
@@ -422,9 +451,21 @@ impl Weapon {
             miami_projectile_damager_layer()
         };
         match self.weapon_type {
+            WeaponType::Uzi => {
+                if !controller.holding_shoot {
+                    return false;
+                }
+            }
+            _ => {
+                if !controller.shoot {
+                    return false;
+                }
+            }
+        }
+        match self.weapon_type {
             WeaponType::Pistol | WeaponType::GoldenPistol => {
-                let mut t = Transform::from_translation(pos - Vec3::new(look_dir.x, look_dir.y, 0.0) * 10.0);
-                t.rotation = Quat::from_rotation_z(look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
+                let mut t = Transform::from_translation(pos - Vec3::new(controller.look_dir.x, controller.look_dir.y, 0.0) * 10.0);
+                t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
                 p.despawn_on_wall = true;
                 cmd.spawn((
                     DespawnOnExit(STATE),
@@ -435,7 +476,7 @@ impl Weapon {
                         ..Default::default()
                     },
                     Collider::circle(0.5),
-                    LinearVelocity(look_dir * weapon.projectile_speed),
+                    LinearVelocity(controller.look_dir * weapon.projectile_speed),
                     LinearDamping(0.0),
                     GravityScale(0.0),
                     CollisionEventsEnabled,
@@ -445,10 +486,11 @@ impl Weapon {
                     t.clone(),
                     p
                 ));
+                true
             },
             WeaponType::BonniePlay => {
                 let mut t = Transform::from_translation(pos);
-                t.rotation = Quat::from_rotation_z(look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
+                t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
                 p.despawn_on_wall = true;
                 cmd.spawn((
                     DespawnOnExit(STATE),
@@ -459,7 +501,7 @@ impl Weapon {
                         ..Default::default()
                     },
                     Collider::circle(0.5),
-                    LinearVelocity(look_dir * weapon.projectile_speed),
+                    LinearVelocity(controller.look_dir * weapon.projectile_speed),
                     LinearDamping(0.0),
                     GravityScale(0.0),
                     CollisionEventsEnabled,
@@ -469,10 +511,11 @@ impl Weapon {
                     t.clone(),
                     p
                 ));
+                true
             },
             WeaponType::ChickaThrow => {
                 let mut t = Transform::from_translation(pos);
-                t.rotation = Quat::from_rotation_z(look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
+                t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
                 p.despawn_on_wall = true;
                 cmd.spawn((
                     DespawnOnExit(STATE),
@@ -483,7 +526,7 @@ impl Weapon {
                         ..Default::default()
                     },
                     Collider::circle(0.5),
-                    LinearVelocity(look_dir * weapon.projectile_speed),
+                    LinearVelocity(controller.look_dir * weapon.projectile_speed),
                     LinearDamping(0.0),
                     GravityScale(0.0),
                     CollisionEventsEnabled,
@@ -493,11 +536,12 @@ impl Weapon {
                     t.clone(),
                     p
                 ));
+                true
             }
             WeaponType::Shotgun => {
                 p.despawn_on_wall = true;
                 for _ in 0..SHOTGUN_BULLET_COUNT {
-                    let angle = look_dir.to_angle()
+                    let angle = controller.look_dir.to_angle()
                         - std::f32::consts::FRAC_PI_2
                         + rng.random_range(-SHOTGUN_BULLET_RADIUS..=SHOTGUN_BULLET_RADIUS);
 
@@ -531,6 +575,7 @@ impl Weapon {
                         p.clone(),
                     ));
                 }
+                true
             },
             WeaponType::Axe | WeaponType::Baguette => {
                 let t = Transform::from_xyz(0.0, -6.0, 0.0);
@@ -547,6 +592,32 @@ impl Weapon {
                 cmd.entity(sprite).add_child(e);
                 // cmd.spawn((
                 // ));
+                true
+            },
+            WeaponType::Uzi => {
+                let mut t = Transform::from_translation(pos - Vec3::new(controller.look_dir.x, controller.look_dir.y, 0.0) * 10.0);
+                t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
+                p.despawn_on_wall = true;
+                cmd.spawn((
+                    DespawnOnExit(STATE),
+                    Name::new("Projectile"),
+                    Sprite{
+                        rect: Some(weapon.get_projectile_rect()),
+                        image: assets.projectiles.clone(),
+                        ..Default::default()
+                    },
+                    Collider::circle(0.5),
+                    LinearVelocity(controller.look_dir * weapon.projectile_speed),
+                    LinearDamping(0.0),
+                    GravityScale(0.0),
+                    CollisionEventsEnabled,
+                    RigidBody::Dynamic,
+                    layer,
+                    Sensor,
+                    t.clone(),
+                    p
+                ));
+                true
             }
             WeaponType::EnemyFists => {
                 // let mut t = Transform::from_xyz(0.0, -6.0, 0.0);
@@ -561,10 +632,11 @@ impl Weapon {
                     p
                 )).id();
                 cmd.entity(sprite).add_child(e);
+                true
             },
             WeaponType::FazStar => {
                 let mut t = Transform::from_translation(pos);
-                t.rotation = Quat::from_rotation_z(look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
+                t.rotation = Quat::from_rotation_z(controller.look_dir.to_angle() - std::f32::consts::FRAC_PI_2);
                 p.despawn_on_wall = true;
                 cmd.spawn((
                     DespawnOnExit(STATE),
@@ -575,7 +647,7 @@ impl Weapon {
                         ..Default::default()
                     },
                     Collider::circle(2.5),
-                    LinearVelocity(look_dir * weapon.projectile_speed),
+                    LinearVelocity(controller.look_dir * weapon.projectile_speed),
                     LinearDamping(0.0),
                     GravityScale(0.0),
                     CollisionEventsEnabled,
@@ -585,6 +657,7 @@ impl Weapon {
                     t.clone(),
                     p
                 ));
+                true
             },
 
             _ => todo!()
@@ -786,11 +859,13 @@ pub fn shoot(
 
         if w.t > 0.0 {w.t -= dt; continue;}
         if w.ammo <= 0 {continue;}
-        if !controller.shoot {continue;};
-        w.ammo -= 1;
+        // if !controller.shoot {continue;};
         // info!("Shooting!");
-        w.t = w.cooldown;
-        w.on_shoot(&mut cmd, &w, controller.look_dir, wc.sprite, sprite_transform.translation(), p.is_none(), &assets);
+        
+        if w.on_shoot(&mut cmd, &controller,&w, wc.sprite, sprite_transform.translation(), p.is_none(), &assets) {
+            w.t = w.cooldown;
+            w.ammo -= 1;
+        }
     }
 }
 
@@ -824,15 +899,18 @@ pub fn on_thrown_weapon_collision(
 }
 
 pub fn health_watcher(
-    mut character: Query<(Entity, &GlobalTransform, &CharacterComponents, &mut CharacterController)>,
+    mut character: Query<(Entity, &GlobalTransform, &CharacterComponents, &mut CharacterController, Option<&super::bossfight::FighterFreddy>, Option<&Player>)>,
     sprite: Query<&GlobalTransform, With<CharacterSprite>>,
     mut cmd: Commands,
     assets: Res<MiamiAssets>,
-    p: Query<(), With<Player>>,
+    p_q: Query<Entity, With<Player>>,
+    c_q: Query<Entity, With<WorldCamera>>,
+    mut local_state: ResMut<NextState<FreddyFightStage>>
 ) {
     let mut rng = rand::rng();
-    for (e, t, components, mut controller) in character.iter_mut() {
+    for (e, t, components, mut controller, freddy, player) in character.iter_mut() {
         let dmg = controller.prev_hp - controller.hp;
+        
         let Ok(_s) = sprite.get(components.sprite) else {continue;};
         if dmg == 0.0 {continue;}
         let mut b = Transform::from_translation(t.translation());
@@ -868,7 +946,12 @@ pub fn health_watcher(
         };
         controller.prev_hp = controller.hp;
         if controller.hp <= 0.0 {
-            if let Ok(_) = p.get(e) {
+            if freddy.is_some() {
+                local_state.set(FreddyFightStage::Finished);
+                start_final_dialog(&mut cmd, &assets, &c_q,& p_q);
+            }
+            if player.is_some() {
+                info!("Spawning zero health ticker: {}", controller.hp);
                 cmd.init_resource::<PlayerZeroHealthTicker>();
             }
             info!("Spawning body of {:?}", controller.character);

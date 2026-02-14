@@ -6,8 +6,8 @@
     "activeFile": "R:/prog/bevyjam7/game/assets/maps/miami/map.tmx",
     "automapping.whileDrawing": true,
     "expandedProjectPaths": [
-        "R:/prog/bevyjam7/game/assets/maps/miami",
         ".",
+        "R:/prog/bevyjam7/game/assets/maps/miami",
         "R:/prog/bevyjam7/game/assets/maps/platformer"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
@@ -21,11 +21,11 @@
                 4,
                 6
             ],
-            "scale": 8,
-            "selectedLayer": 5,
+            "scale": 2,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 85.8125,
-                "y": 285
+                "x": 1339.25,
+                "y": -855.5
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/miami/miami.tsx": {
@@ -63,8 +63,8 @@
             "scale": 4.6460937499999995,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 127.95695308558939,
-                "y": 127.95695308558942
+                "x": 154.4308054481251,
+                "y": 128.92550865982852
             }
         },
         "R:/prog/bevyjam7/game/assets/maps/platformer/tilemap.tsx": {
@@ -83,8 +83,8 @@
             "scale": 9.292187499999999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 63.978476542794695,
-                "y": 63.97847654279471
+                "x": 77.21540272406256,
+                "y": 64.46275432991426
             }
         },
         "tilemap.tsx": {

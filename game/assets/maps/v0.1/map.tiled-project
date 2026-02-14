@@ -117,6 +117,36 @@
         {
             "color": "#ff000000",
             "drawFill": true,
+            "id": 40,
+            "members": [
+                {
+                    "name": "max",
+                    "propertyType": "glam::Vec2",
+                    "type": "class",
+                    "value": {
+                        "x": 0,
+                        "y": 0
+                    }
+                },
+                {
+                    "name": "min",
+                    "propertyType": "glam::Vec2",
+                    "type": "class",
+                    "value": {
+                        "x": 0,
+                        "y": 0
+                    }
+                }
+            ],
+            "name": "bevy_math::rects::rect::Rect",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
             "id": 7,
             "members": [
                 {
@@ -143,6 +173,30 @@
                 }
             ],
             "name": "bevy_text::text::TextColor",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 41,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::bossfight::BossfightSpawner",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 39,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::bossfight::FreddySpawner",
             "type": "class",
             "useAs": [
                 "property"
@@ -236,7 +290,6 @@
                 "Endoskeleton",
                 "GoldenEndoskeleton",
                 "CopperEndoskeleton",
-                "GoldEndoskeleton",
                 "Bonnie",
                 "NewBonnie",
                 "Chicka",
@@ -312,10 +365,34 @@
         {
             "color": "#ff000000",
             "drawFill": true,
+            "id": 37,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::map::HorizontalDoor",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
             "id": 11,
             "members": [
             ],
             "name": "game::dev_games::miami::map::TilemapShadow",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 38,
+            "members": [
+            ],
+            "name": "game::dev_games::miami::map::VerticalDoor",
             "type": "class",
             "useAs": [
                 "property"
@@ -335,6 +412,140 @@
                 }
             ],
             "name": "game::dev_games::miami::weapon::MiamiWeaponSpawner",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 42,
+            "members": [
+                {
+                    "name": "ammo",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "anim_time",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "attack_char_offset",
+                    "propertyType": "glam::Vec3",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "attack_char_rect",
+                    "propertyType": "bevy_math::rects::rect::Rect",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "attack_offset",
+                    "propertyType": "glam::Vec3",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "attack_rect",
+                    "propertyType": "bevy_math::rects::rect::Rect",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "char_offset",
+                    "propertyType": "glam::Vec3",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "char_rect",
+                    "propertyType": "bevy_math::rects::rect::Rect",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "cooldown",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "damage",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "held_offset",
+                    "propertyType": "glam::Vec3",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "held_rect",
+                    "propertyType": "bevy_math::rects::rect::Rect",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "piercing",
+                    "type": "int",
+                    "value": 0
+                },
+                {
+                    "name": "projectile_rect",
+                    "propertyType": "bevy_math::rects::rect::Rect",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "projectile_speed",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "rect",
+                    "propertyType": "bevy_math::rects::rect::Rect",
+                    "type": "class",
+                    "value": {
+                    }
+                },
+                {
+                    "name": "t",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "throw_damage",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "ttl",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "weapon_type",
+                    "propertyType": "game::dev_games::miami::weapon::WeaponType",
+                    "type": "class",
+                    "value": {
+                    }
+                }
+            ],
+            "name": "game::dev_games::miami::weapon::Weapon",
             "type": "class",
             "useAs": [
                 "property"
@@ -369,9 +580,12 @@
                 "Baguette",
                 "GoldenPistol",
                 "Shotgun",
+                "Uzi",
                 "EnemyFists",
                 "ChickaThrow",
-                "BonniePlay"
+                "BonniePlay",
+                "FazFists",
+                "FazStar"
             ],
             "valuesAsFlags": false
         },
@@ -537,235 +751,6 @@
         {
             "color": "#ff000000",
             "drawFill": true,
-            "id": 12,
-            "members": [
-                {
-                    "name": "zoom",
-                    "type": "float",
-                    "value": 0
-                }
-            ],
-            "name": "room::MapRoom",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 37,
-            "members": [
-            ],
-            "name": "game::dev_games::miami::map::HorizontalDoor",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 38,
-            "members": [
-            ],
-            "name": "game::dev_games::miami::map::VerticalDoor",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 39,
-            "members": [
-            ],
-            "name": "game::dev_games::miami::bossfight::FreddySpawner",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 40,
-            "members": [
-                {
-                    "name": "max",
-                    "propertyType": "glam::Vec2",
-                    "type": "class",
-                    "value": {
-                        "x": 0,
-                        "y": 0
-                    }
-                },
-                {
-                    "name": "min",
-                    "propertyType": "glam::Vec2",
-                    "type": "class",
-                    "value": {
-                        "x": 0,
-                        "y": 0
-                    }
-                }
-            ],
-            "name": "bevy_math::rects::rect::Rect",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 41,
-            "members": [
-            ],
-            "name": "game::dev_games::miami::bossfight::BossfightSpawner",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
-            "id": 42,
-            "members": [
-                {
-                    "name": "ammo",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "anim_time",
-                    "type": "float",
-                    "value": 0
-                },
-                {
-                    "name": "attack_char_offset",
-                    "propertyType": "glam::Vec3",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "attack_char_rect",
-                    "propertyType": "bevy_math::rects::rect::Rect",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "attack_offset",
-                    "propertyType": "glam::Vec3",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "attack_rect",
-                    "propertyType": "bevy_math::rects::rect::Rect",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "char_offset",
-                    "propertyType": "glam::Vec3",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "char_rect",
-                    "propertyType": "bevy_math::rects::rect::Rect",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "cooldown",
-                    "type": "float",
-                    "value": 0
-                },
-                {
-                    "name": "damage",
-                    "type": "float",
-                    "value": 0
-                },
-                {
-                    "name": "held_offset",
-                    "propertyType": "glam::Vec3",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "held_rect",
-                    "propertyType": "bevy_math::rects::rect::Rect",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "piercing",
-                    "type": "int",
-                    "value": 0
-                },
-                {
-                    "name": "projectile_rect",
-                    "propertyType": "bevy_math::rects::rect::Rect",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "projectile_speed",
-                    "type": "float",
-                    "value": 0
-                },
-                {
-                    "name": "rect",
-                    "propertyType": "bevy_math::rects::rect::Rect",
-                    "type": "class",
-                    "value": {
-                    }
-                },
-                {
-                    "name": "t",
-                    "type": "float",
-                    "value": 0
-                },
-                {
-                    "name": "throw_damage",
-                    "type": "float",
-                    "value": 0
-                },
-                {
-                    "name": "ttl",
-                    "type": "float",
-                    "value": 0
-                },
-                {
-                    "name": "weapon_type",
-                    "propertyType": "game::dev_games::miami::weapon::WeaponType",
-                    "type": "class",
-                    "value": {
-                    }
-                }
-            ],
-            "name": "game::dev_games::miami::weapon::Weapon",
-            "type": "class",
-            "useAs": [
-                "property"
-            ]
-        },
-        {
-            "color": "#ff000000",
-            "drawFill": true,
             "id": 43,
             "members": [
                 {
@@ -785,6 +770,23 @@
                 }
             ],
             "name": "glam::Vec3",
+            "type": "class",
+            "useAs": [
+                "property"
+            ]
+        },
+        {
+            "color": "#ff000000",
+            "drawFill": true,
+            "id": 12,
+            "members": [
+                {
+                    "name": "zoom",
+                    "type": "float",
+                    "value": 0
+                }
+            ],
+            "name": "room::MapRoom",
             "type": "class",
             "useAs": [
                 "property"

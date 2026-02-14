@@ -1,14 +1,15 @@
 use std::f32::consts::PI;
 
 use avian2d::math::Vector;
-use bevy::{color::palettes, ecs::spawn};
+use bevy::color::palettes;
 use camera::CameraController;
 use rand::Rng;
 use room::Focusable;
 
 
 use super::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}};
-use crate::{dev_games::miami::{bossfight::{BossFightStandAi, BossFightWait}, plugin::CHASER_RANDOM_RADIUS}, prelude::*};
+use super::{bossfight::{BossFightStandAi, BossFightWait}, plugin::CHASER_RANDOM_RADIUS};
+use crate::prelude::*;
 
 #[derive(Component)]
 pub struct InvincibleCharacter;
@@ -424,6 +425,7 @@ pub struct CharacterController {
     pub look_dir: Vec2,
 
     pub shoot: bool,
+    pub holding_shoot: bool,
     pub throw: bool,
     pub hp: f32,
 
@@ -449,6 +451,7 @@ impl Default for CharacterController {
             speed: 120.0,
             look_dir: Vec2::ZERO,
             shoot: false,
+            holding_shoot: false,
             throw: false,
             hp: 1.0,
             blood_rects: blood_rects(),

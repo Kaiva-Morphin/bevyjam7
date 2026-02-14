@@ -534,7 +534,6 @@ fn tick(
     let pressed = keyboard_input.just_pressed(KeyCode::Space);
     if state.is_finished() {
         if pressed {
-            info!("DONBASS");
             cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
                 .observe(await_screenshot_and_translate(NEXT_STATE));
         }

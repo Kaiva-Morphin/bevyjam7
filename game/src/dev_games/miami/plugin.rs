@@ -6,16 +6,17 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use camera::CameraController;
 use games::global_music::plugin::NewBgMusic;
 
-use super::{map::*, weapon::*};
-use crate::dev_games::miami::bossfight::*;
-use crate::{dev_games::miami::map::*, prelude::*};
+use super::weapon::*;
+use super::map::*;
+use super::bossfight::*;
 use super::entity::*;
 use super::shadows::*;
 use super::player::*;
 use super::dialog::*;
+use crate::prelude::*;
 
 pub const STATE: AppState = AppState::Miami;
-pub const NEXT_STATE: AppState = AppState::PacmanEnter;
+pub const NEXT_STATE: AppState = AppState::Novel;
 
 
 #[derive(AssetCollection, Resource)]
@@ -59,9 +60,10 @@ pub struct MiamiAssets {
 
     #[asset(path = "maps/miami/dialog_faz.png")]
     pub dialog_faz: Handle<Image>,
+    #[asset(path = "maps/miami/dialog_beaten_faz.png")]
+    pub dialog_beaten_faz: Handle<Image>,
     #[asset(path = "maps/miami/dialog_pac.png")]
     pub dialog_pac: Handle<Image>,
-
 
 
 
@@ -114,7 +116,7 @@ impl Plugin for MiamiPlugin {
             .add_observer(on_boss_entrypoint_spawned)
             .add_observer(on_boss_dialog_spawned)
             
-            .add_systems(OnEnter(STATE), (setup))
+            .add_systems(OnEnter(STATE), setup)
 
             .add_systems(PostUpdate, setup_freddy_fight.run_if(in_state(FreddyFightStage::Idle)))
             .add_systems(OnEnter(FreddyFightStage::PreFreddy), start_freddy_enter_dialog)
@@ -278,7 +280,7 @@ fn tick(
     mut camera: Query<&mut Transform, With<WorldCamera>>
 ){
     let Some(mut t) = camera.iter_mut().next() else {return;};
-    // t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02; // ! TODO
+    t.rotation.z = (time.elapsed_secs() * 0.7).sin() * 0.02
 }
 
 
@@ -286,11 +288,11 @@ fn cleanup(
     mut controller: ResMut<CameraController>,
     mut camera: Query<&mut Transform, With<WorldCamera>>,
     mut cmd: Commands,
-    mut screenshot: ResMut<LastScreenshot>,
 ){
     cmd.remove_resource::<PlayerZeroHealthTicker>();
     cmd.remove_resource::<ShootedDialogs>();
     cmd.remove_resource::<BossfightDialog>();
+    cmd.remove_resource::<FinalDialog>();
     controller.follow_speed = 0.0;
     controller.target_zoom = 0.8;
     let Ok(mut t) = camera.single_mut() else {return;};
@@ -301,10 +303,10 @@ fn cleanup(
 
 #[derive(Resource, Default)]
 pub struct PlayerZeroHealthTicker(pub f32);
+
 pub fn player_health_watcher(
     zh: Option<ResMut<PlayerZeroHealthTicker>>,
     time: Res<Time>,
-    mut state: ResMut<NextState<AppState>>,
     mut screenshot: ResMut<LastScreenshot>,
     mut cmd: Commands,
 ) {
@@ -314,6 +316,7 @@ pub fn player_health_watcher(
     let dt = time.dt();
     zh.0 += dt;
     if zh.0 > DEFEAT_TIME {
+        info!("Defeat!: {}", zh.0);
         if screenshot.awaiting == false {
             cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
                 .observe(await_screenshot_and_translate(AppState::Defeat));

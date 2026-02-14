@@ -1,7 +1,14 @@
 use std::f32::consts::{FRAC_2_PI, PI};
 
+use games::pathfinder::plugin::*;
+
 use super::plugin::STATE;
-use crate::{dev_games::miami::{dialog::{ShootedDialogs, Speaker, start_boss_dialog, start_dialog, start_entrypoint_dialog}, entity::{CharacterController, Player}, player::PlayerDisabled, plugin::{MiamiAssets, dialog_sensor_layer}}, pathfinder::plugin::PathfinderObstacle, prelude::*};
+use super::entity::*;
+use super::player::*;
+use super::dialog::*;
+use super::plugin::*;
+use crate::prelude::*;
+
 
 #[derive(Component, Default, Reflect)]
 #[reflect(Component)]

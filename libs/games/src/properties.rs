@@ -20,11 +20,12 @@ pub enum AppState {
     Geometry,
     Platformer,
     Miami,
-    Titles,
     Novel,
     Novel2Fnaf,
     Fnaf,
     FakeEnd,
+    
+    Titles,
     End
 }
 

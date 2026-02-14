@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="13" nextobjectid="91">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="15" nextobjectid="96">
  <tileset firstgid="1" source="miami.tsx"/>
  <layer id="2" name="floor" width="30" height="20">
   <data encoding="base64" compression="zstd">
@@ -184,6 +184,9 @@
   </chunk>
   </data>
  </layer>
+ <layer id="14" name="props" width="30" height="20">
+  <data encoding="base64" compression="zstd"/>
+ </layer>
  <objectgroup id="6" name="weapons">
   <properties>
    <property name="spawner" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner"/>
@@ -250,6 +253,20 @@
    </properties>
    <point/>
   </object>
+  <object id="94" x="1332" y="-450">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
+     <properties>
+      <property name="weapon_type" type="class" propertytype="game::dev_games::miami::weapon::WeaponType">
+       <properties>
+        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="Uzi"/>
+       </properties>
+      </property>
+     </properties>
+    </property>
+   </properties>
+   <point/>
+  </object>
   <object id="78" x="1404" y="-414">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
@@ -292,7 +309,7 @@
      <properties>
       <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
        <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="NewChicka"/>
+        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Freddy"/>
        </properties>
       </property>
      </properties>
@@ -306,7 +323,7 @@
      <properties>
       <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
        <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="NewBonnie"/>
+        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="NewChicka"/>
        </properties>
       </property>
      </properties>
@@ -320,7 +337,7 @@
      <properties>
       <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
        <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Freddy"/>
+        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="NewBonnie"/>
        </properties>
       </property>
      </properties>
@@ -350,6 +367,11 @@
    <properties>
     <property name="fsf" type="class" propertytype="game::dev_games::miami::bossfight::BossfightSpawner"/>
    </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="13" name="props">
+  <object id="95" x="1419" y="-577.667">
    <point/>
   </object>
  </objectgroup>
@@ -423,7 +445,7 @@
     <property name="dia" type="class" propertytype="game::dev_games::miami::map::EntrypointDialog"/>
    </properties>
   </object>
-  <object id="56" x="1242" y="-594" width="180" height="54">
+  <object id="56" x="1152" y="-612" width="72" height="108">
    <properties>
     <property name="dia" type="class" propertytype="game::dev_games::miami::map::BossDialog"/>
    </properties>

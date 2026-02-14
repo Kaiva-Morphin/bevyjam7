@@ -11,10 +11,11 @@ pub fn control_player(
     mouse_input: Res<ButtonInput<MouseButton>>,
 ) {
     let (mut c, d) = player.into_inner();    
-
+    info!("Disabled: {}", d.is_some());
     c.input_dir = Vec2::ZERO;
     c.throw = false;
     c.shoot = false;
+    c.holding_shoot = false;
     if d.is_some() {return;}
 
     if keyboard_input.pressed(KeyCode::KeyA) {
@@ -32,6 +33,10 @@ pub fn control_player(
 
     if mouse_input.just_pressed(MouseButton::Left) {
         c.shoot = true;
+    }
+
+    if mouse_input.pressed(MouseButton::Left) {
+        c.holding_shoot = true;
     }
 
     if mouse_input.just_pressed(MouseButton::Right) {

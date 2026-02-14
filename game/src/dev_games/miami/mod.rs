@@ -6,3 +6,4 @@ pub mod plugin;
 pub mod player;
 pub mod dialog;
 pub mod bossfight;
+pub mod props;

@@ -6,7 +6,7 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 use crate::prelude::*;
 
 const STATE: AppState = AppState::FakeEnd;
-const NEXT_STATE: AppState = AppState::Novel;
+const NEXT_STATE: AppState = AppState::Titles;
 
 const RECT_HS: f32 = 3.;
 #[derive(Component)]
