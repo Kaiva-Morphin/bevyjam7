@@ -35,7 +35,7 @@
     ]
   },
   {
-    "id": 27,
+    "id": 30,
     "name": "avian2d::collision::collider::layers::LayerMask",
     "type": "class",
     "useAs": [
@@ -82,7 +82,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 28,
+    "id": 31,
     "name": "bevy_color::color::Color",
     "type": "class",
     "useAs": [
@@ -95,6 +95,36 @@
         "name": "0",
         "type": "color",
         "value": "#ffffffff"
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "name": "bevy_math::rects::rect::Rect",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": [
+      {
+        "name": "min",
+        "propertyType": "glam::Vec2",
+        "type": "class",
+        "value": {
+          "x": 0.0,
+          "y": 0.0
+        }
+      },
+      {
+        "name": "max",
+        "propertyType": "glam::Vec2",
+        "type": "class",
+        "value": {
+          "x": 0.0,
+          "y": 0.0
+        }
       }
     ]
   },
@@ -134,7 +164,7 @@
   },
   {
     "id": 7,
-    "name": "game::dev_games::miami::dialog::BossDialog",
+    "name": "game::dev_games::miami::bossfight::BossfightSpawner",
     "type": "class",
     "useAs": [
       "property"
@@ -145,18 +175,7 @@
   },
   {
     "id": 8,
-    "name": "game::dev_games::miami::dialog::BossEntrypointCollider",
-    "type": "class",
-    "useAs": [
-      "property"
-    ],
-    "color": "#000000",
-    "drawFill": true,
-    "members": []
-  },
-  {
-    "id": 9,
-    "name": "game::dev_games::miami::dialog::EntrypointDialog",
+    "name": "game::dev_games::miami::bossfight::FreddySpawner",
     "type": "class",
     "useAs": [
       "property"
@@ -167,28 +186,6 @@
   },
   {
     "id": 10,
-    "name": "game::dev_games::miami::dialog::HorizontalDoor",
-    "type": "class",
-    "useAs": [
-      "property"
-    ],
-    "color": "#000000",
-    "drawFill": true,
-    "members": []
-  },
-  {
-    "id": 11,
-    "name": "game::dev_games::miami::dialog::VerticalDoor",
-    "type": "class",
-    "useAs": [
-      "property"
-    ],
-    "color": "#000000",
-    "drawFill": true,
-    "members": []
-  },
-  {
-    "id": 13,
     "name": "game::dev_games::miami::entity::MiamiEntity",
     "type": "class",
     "useAs": [
@@ -206,21 +203,25 @@
     ]
   },
   {
-    "id": 12,
+    "id": 9,
     "name": "game::dev_games::miami::entity::MiamiEntity:::Variant",
     "type": "enum",
     "storageType": "string",
     "values": [
       "Player",
       "Endoskeleton",
+      "GoldenEndoskeleton",
+      "CopperEndoskeleton",
       "Bonnie",
-      "PurpleGuy",
+      "NewBonnie",
+      "Chicka",
+      "NewChicka",
       "Freddy"
     ],
     "valuesAsFlags": false
   },
   {
-    "id": 14,
+    "id": 11,
     "name": "game::dev_games::miami::entity::MiamiEntitySpawner",
     "type": "class",
     "useAs": [
@@ -247,8 +248,41 @@
     ]
   },
   {
+    "id": 12,
+    "name": "game::dev_games::miami::map::BossDialog",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 13,
+    "name": "game::dev_games::miami::map::BossEntrypointCollider",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 14,
+    "name": "game::dev_games::miami::map::EntrypointDialog",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
     "id": 15,
-    "name": "game::dev_games::miami::map::TilemapShadow",
+    "name": "game::dev_games::miami::map::HorizontalDoor",
     "type": "class",
     "useAs": [
       "property"
@@ -259,6 +293,28 @@
   },
   {
     "id": 16,
+    "name": "game::dev_games::miami::map::TilemapShadow",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 17,
+    "name": "game::dev_games::miami::map::VerticalDoor",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 18,
     "name": "game::dev_games::miami::weapon::MiamiWeaponSpawner",
     "type": "class",
     "useAs": [
@@ -276,7 +332,130 @@
     ]
   },
   {
-    "id": 18,
+    "id": 19,
+    "name": "game::dev_games::miami::weapon::Weapon",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": [
+      {
+        "name": "rect",
+        "propertyType": "bevy_math::rects::rect::Rect",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "held_rect",
+        "propertyType": "bevy_math::rects::rect::Rect",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "held_offset",
+        "propertyType": "glam::Vec3",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "attack_rect",
+        "propertyType": "bevy_math::rects::rect::Rect",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "attack_offset",
+        "propertyType": "glam::Vec3",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "char_rect",
+        "propertyType": "bevy_math::rects::rect::Rect",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "char_offset",
+        "propertyType": "glam::Vec3",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "attack_char_rect",
+        "propertyType": "bevy_math::rects::rect::Rect",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "attack_char_offset",
+        "propertyType": "glam::Vec3",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "projectile_rect",
+        "propertyType": "bevy_math::rects::rect::Rect",
+        "type": "class",
+        "value": null
+      },
+      {
+        "name": "ammo",
+        "type": "int",
+        "value": null
+      },
+      {
+        "name": "cooldown",
+        "type": "float",
+        "value": null
+      },
+      {
+        "name": "anim_time",
+        "type": "float",
+        "value": null
+      },
+      {
+        "name": "t",
+        "type": "float",
+        "value": null
+      },
+      {
+        "name": "damage",
+        "type": "float",
+        "value": null
+      },
+      {
+        "name": "ttl",
+        "type": "float",
+        "value": null
+      },
+      {
+        "name": "piercing",
+        "type": "int",
+        "value": null
+      },
+      {
+        "name": "projectile_speed",
+        "type": "float",
+        "value": null
+      },
+      {
+        "name": "throw_damage",
+        "type": "float",
+        "value": null
+      },
+      {
+        "name": "weapon_type",
+        "propertyType": "game::dev_games::miami::weapon::WeaponType",
+        "type": "string",
+        "value": null
+      }
+    ]
+  },
+  {
+    "id": 21,
     "name": "game::dev_games::miami::weapon::WeaponType",
     "type": "class",
     "useAs": [
@@ -294,7 +473,7 @@
     ]
   },
   {
-    "id": 17,
+    "id": 20,
     "name": "game::dev_games::miami::weapon::WeaponType:::Variant",
     "type": "enum",
     "storageType": "string",
@@ -302,12 +481,18 @@
       "Pistol",
       "Axe",
       "Baguette",
-      "EnemyFists"
+      "GoldenPistol",
+      "Shotgun",
+      "EnemyFists",
+      "ChickaThrow",
+      "BonniePlay",
+      "FazFists",
+      "FazStar"
     ],
     "valuesAsFlags": false
   },
   {
-    "id": 20,
+    "id": 23,
     "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer",
     "type": "class",
     "useAs": [
@@ -325,7 +510,7 @@
     ]
   },
   {
-    "id": 19,
+    "id": 22,
     "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
     "type": "enum",
     "storageType": "string",
@@ -336,7 +521,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 21,
+    "id": 24,
     "name": "game::dev_games::platformer::plugin::NextTrigger",
     "type": "class",
     "useAs": [
@@ -347,7 +532,7 @@
     "members": []
   },
   {
-    "id": 22,
+    "id": 25,
     "name": "game::dev_games::platformer::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
@@ -358,7 +543,7 @@
     "members": []
   },
   {
-    "id": 23,
+    "id": 26,
     "name": "game::dev_games::platformer::plugin::StopTrigger",
     "type": "class",
     "useAs": [
@@ -369,7 +554,7 @@
     "members": []
   },
   {
-    "id": 24,
+    "id": 27,
     "name": "games::geometry_dash::plugin::CameraCenter",
     "type": "class",
     "useAs": [
@@ -380,7 +565,7 @@
     "members": []
   },
   {
-    "id": 25,
+    "id": 28,
     "name": "games::geometry_dash::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
@@ -391,7 +576,7 @@
     "members": []
   },
   {
-    "id": 29,
+    "id": 32,
     "name": "glam::Vec2",
     "type": "class",
     "useAs": [
@@ -413,7 +598,34 @@
     ]
   },
   {
-    "id": 26,
+    "id": 34,
+    "name": "glam::Vec3",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": [
+      {
+        "name": "x",
+        "type": "float",
+        "value": 0.0
+      },
+      {
+        "name": "y",
+        "type": "float",
+        "value": 0.0
+      },
+      {
+        "name": "z",
+        "type": "float",
+        "value": 0.0
+      }
+    ]
+  },
+  {
+    "id": 29,
     "name": "room::MapRoom",
     "type": "class",
     "useAs": [

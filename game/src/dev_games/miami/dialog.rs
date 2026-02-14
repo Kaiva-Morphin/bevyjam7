@@ -1,15 +1,99 @@
 use std::time::Duration;
 
-use bevy::text::{FontSmoothing, LineHeight};
+use bevy::{audio::{PlaybackMode, Volume}, text::{FontSmoothing, LineHeight}};
 
-use crate::{dev_games::miami::{player::PlayerDisabled, plugin::{MiamiAssets, STATE}}, prelude::*};
+use crate::{dev_games::miami::{bossfight::{BossFightWait, FreddyFightStage, begin_bossfight}, entity::Player, player::PlayerDisabled, plugin::{MiamiAssets, STATE}}, prelude::*};
 
+
+
+
+
+
+#[derive(Resource, Default)]
+pub struct BossfightDialog;
+
+
+
+pub fn start_entrypoint_dialog(
+    cmd: &mut Commands,
+    assets: &Res<super::plugin::MiamiAssets>,
+    cam: Entity,
+) {
+    start_dialog(cmd, assets, cam, vec![
+        ("Hello, my dear1".into(), Speaker::Freddy), 
+        ("Hi".into(), Speaker::Pacman),
+    ]);
+}
+
+
+
+pub fn start_boss_dialog(
+    cmd: &mut Commands,
+    assets: &Res<super::plugin::MiamiAssets>,
+    cam: Entity,
+) {
+    cmd.init_resource::<BossfightDialog>();
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        AudioPlayer::new(assets.ururur.clone()),
+        PlaybackSettings{
+            mode: PlaybackMode::Once,
+            volume: Volume::Linear(1.0),
+            ..default()
+        },
+    ));
+    start_dialog(cmd, assets, cam, vec![
+        ("Hello, my dear2".into(), Speaker::Freddy), 
+        ("Hi".into(), Speaker::Pacman),
+    ]);
+}
+
+
+
+#[derive(Resource, Default)]
+pub struct PreFreddyDialog;
+
+pub fn start_freddy_enter_dialog(
+    mut cmd: Commands,
+    assets: Res<super::plugin::MiamiAssets>,
+    cam: Query<Entity, With<WorldCamera>>,
+    player: Query<Entity, With<Player>>
+) {
+    let player = player.iter().next().expect("No player!");
+    let cam = cam.iter().next().expect("No cam!");
+
+    cmd.entity(player).insert(PlayerDisabled);
+    info!("start_freddy_enter_dialog");
+    cmd.init_resource::<PreFreddyDialog>();
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        AudioPlayer::new(assets.ururur.clone()),
+        PlaybackSettings{
+            mode: PlaybackMode::Once,
+            volume: Volume::Linear(1.0),
+            ..default()
+        },
+    ));
+    start_dialog(&mut cmd, &assets, cam, vec![
+        ("Hello, my dear2".into(), Speaker::Freddy), 
+        ("Hi".into(), Speaker::Pacman),
+    ]);
+}
+
+
+#[derive(Resource, Default)]
+pub struct ShootedDialogs {
+    pub entrypoint: bool,
+    pub boss: bool
+}
 
 
 #[derive(Component)]
 pub struct DialogRot;
+
 #[derive(Component)]
 pub struct DialogHead;
+
 #[derive(Component)]
 pub struct DialogHeadShadow;
 
@@ -31,10 +115,8 @@ pub struct DialogState {
     dialogs: Vec<(String, Speaker)>
 }
 
-
 #[derive(Component)]
 pub struct DialogShadowLabel;
-
 
 pub enum Speaker {
     Pacman,
@@ -289,17 +371,18 @@ pub fn tick_dialog(
     mut anim: Query<(&ImageNode, &mut UiTransform), (With<DialogRot>, Without<DialogShadowLabel>, Without<PrevHead>)>,
     mut shadow_anim : Query<&mut UiTransform, (With<DialogShadowLabel>, Without<DialogRot>)>,
     mut texts: Query<&mut Text, With<DialogLabel>>,
-    time: Res<Time>,
-    keys: Res<ButtonInput<KeyCode>>,
     mut cmd: Commands,
-    assets: Res<MiamiAssets>,
-
+    (time, keys, assets): (Res<Time>, Res<ButtonInput<KeyCode>>,  Res<MiamiAssets>),
     disabled_q: Query<Entity, With<PlayerDisabled>>,
     main_q: Query<Entity, (With<BgDialog>, Without<PrevHead>)>,
     top_q: Query<Entity, (With<TopDialog>, Without<PrevHead>)>,
     bottom_q: Query<Entity, (With<BottomDialog>, Without<PrevHead>)>,
     char_q: Query<Entity, (With<DialogHead>, Without<PrevHead>)>,
     char_s_q: Query<Entity, (With<DialogHeadShadow>, Without<PrevHead>)>,
+    boss_entities: Query<Entity, (With<BossFightWait>, Without<super::bossfight::FighterFreddy>)>,
+    (bossfight_dialog, pre_freddy_dialog): (Option<Res<BossfightDialog>>, Option<Res<PreFreddyDialog>>),
+    mut local_state: ResMut<NextState<FreddyFightStage>>,
+    q: Query<Entity, With<super::map::BossEntrypointCollider>>,
 ){
     for (_, mut t) in anim.iter_mut() {
         t.rotation = Rot2::radians((time.elapsed_secs() * 2.0).sin() * 0.15);
@@ -313,6 +396,16 @@ pub fn tick_dialog(
         if s.state >= s.dialogs.len() {return;}
         s.state = s.state + 1;
         if s.state >= s.dialogs.len() {
+            if bossfight_dialog.is_some() {
+                cmd.remove_resource::<BossfightDialog>();
+                begin_bossfight(&mut cmd, &boss_entities, &q);
+            }
+            if pre_freddy_dialog.is_some() {
+                cmd.remove_resource::<PreFreddyDialog>();
+                local_state.set(FreddyFightStage::Freddy);
+            }
+            
+            
             for e in disabled_q.iter() {
                 cmd.entity(e).remove::<PlayerDisabled>();
             }

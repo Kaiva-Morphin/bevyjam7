@@ -266,6 +266,7 @@ fn on_next_spawned(
     let Ok(p) = parents.get(spawn_entity) else {return;};
     let Ok(_nt) = spawn_query.get(p.parent()) else {return;};
     cmd.entity(spawn_entity).insert((
+        DespawnOnExit(STATE),
         Name::new("Stop"),
         Sensor,
         NextTrigger,
@@ -286,6 +287,7 @@ fn on_stop_spawned(
     let Ok(p) = parents.get(spawn_entity) else {return;};
     let Ok(_st) = spawn_query.get(p.parent()) else {return;};
     cmd.entity(spawn_entity).insert((
+        DespawnOnExit(STATE),
         Name::new("Stop"),
         Sensor,
         StopTrigger,

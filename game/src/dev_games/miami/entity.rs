@@ -1,14 +1,17 @@
 use std::f32::consts::PI;
 
 use avian2d::math::Vector;
-use bevy::color::palettes;
+use bevy::{color::palettes, ecs::spawn};
 use camera::CameraController;
+use rand::Rng;
 use room::Focusable;
 
 
 use super::{plugin::{MiamiAssets, STATE, back_body_rect, blood_rects, front_body_rect, miami_character_layers, miami_player_layers, miami_seeker_shapecast_layer, oil_blood, red_blood}, shadows::ShadowInit, weapon::{ArmedCharacter, WeaponComponents, WeaponOf, WeaponSprite, WeaponType}};
-use crate::prelude::*;
+use crate::{dev_games::miami::{bossfight::{BossFightStandAi, BossFightWait}, plugin::CHASER_RANDOM_RADIUS}, prelude::*};
 
+#[derive(Component)]
+pub struct InvincibleCharacter;
 
 #[derive(Component)]
 pub struct Player;
@@ -24,14 +27,18 @@ pub struct MiamiEntitySpawner {
     pub look_dir: Vec2,
 }
 
-#[derive(Component, Default, Reflect)]
+#[derive(Component, Default, Reflect, Eq, PartialEq, Debug, Clone)]
 #[reflect(Component, Default)]
 pub enum MiamiEntity {
     #[default]
     Player,
     Endoskeleton,
+    GoldenEndoskeleton,
+    CopperEndoskeleton,
     Bonnie,
-    PurpleGuy,
+    NewBonnie,
+    Chicka,
+    NewChicka,
     Freddy,
 }
 
@@ -44,28 +51,38 @@ pub struct CharacterComponents {
 
 impl MiamiEntity {
     pub fn to_character(&self) -> CharacterSprite {
+        info!("To character: {:?}", self);
         match self {
-            MiamiEntity::Player => CharacterSprite {
+            MiamiEntity::Player | MiamiEntity::Endoskeleton | MiamiEntity::Bonnie | MiamiEntity::Chicka
+            | MiamiEntity::CopperEndoskeleton | MiamiEntity::NewBonnie | MiamiEntity::NewChicka
+            | MiamiEntity::GoldenEndoskeleton 
+            => CharacterSprite {
                 default_rect: Rect::new(0.0, 16.0, 32.0, 32.0),
                 default_offset: vec3(0.0, 0.0, 0.0),
                 foot_offset: vec3(0.0, 0.0, 0.0),
                 foot_rect: Rect::new(0.0, 0.0, 16.0, 16.0),
             },
-            MiamiEntity::Endoskeleton | MiamiEntity::Bonnie => CharacterSprite {
-                default_rect: Rect::new(0.0, 16.0, 32.0, 32.0),
-                default_offset: vec3(0.0, 0.0, 0.0),
+            MiamiEntity::Freddy => CharacterSprite {
+                default_rect: Rect::new(0.0, 0.0, 48.0, 48.0),
+                default_offset: vec3(0.0, 11.0, 0.0),
                 foot_offset: vec3(0.0, 0.0, 0.0),
-                foot_rect: Rect::new(0.0, 0.0, 16.0, 16.0),
+                foot_rect: Rect::new(0.0, 0.0, 0.0, 0.0),
             },
-            _ => todo!()
+            // _ => todo!()
         }
     }
     pub fn to_handle(&self, assets: &Res<MiamiAssets>) -> Handle<Image> {
         match self {
             MiamiEntity::Player => assets.character.clone(),
-            MiamiEntity::Endoskeleton => assets.endoskeleton.clone(),
             MiamiEntity::Bonnie => assets.bonnie.clone(),
-            _ => todo!()
+            MiamiEntity::NewBonnie => assets.new_bonnie.clone(),
+            MiamiEntity::Chicka => assets.chica.clone(),
+            MiamiEntity::NewChicka => assets.new_chica.clone(),
+            MiamiEntity::Endoskeleton => assets.endoskeleton.clone(),
+            MiamiEntity::CopperEndoskeleton => assets.copper_endoskeleton.clone(),
+            MiamiEntity::GoldenEndoskeleton => assets.golden_endoskeleton.clone(),
+            MiamiEntity::Freddy => assets.freddy.clone(),
+            // _ => todo!()
         }
     }
     pub fn to_chaser(&self, start: Vec2) -> ChaserAi {
@@ -76,6 +93,7 @@ impl MiamiEntity {
                 attention_range: 100.0,
                 origin_point: start,
                 max_seek_time: 1.0,
+                max_stay_time: 10.0,
                 ..Default::default()
             },  
             MiamiEntity::Bonnie => ChaserAi{
@@ -83,15 +101,24 @@ impl MiamiEntity {
                 attention_range: 100.0,
                 origin_point: start,
                 max_seek_time: 20.0,
+                max_stay_time: 10.0,   
                 ..Default::default()
             },
-            _ => todo!()
+            _ => ChaserAi{ // TODO!
+                seek_range: 300.0,
+                attention_range: 100.0,
+                origin_point: start,
+                max_seek_time: 20.0,
+                max_stay_time: 10.0,   
+                ..Default::default()
+            }
         }
     }
 }
 
 impl CharacterController {
     fn from_type(entity_type: &MiamiEntity) -> Self {
+        let e = entity_type.clone();
         match entity_type {
             MiamiEntity::Player => Self {
                 speed: 120.0,
@@ -101,24 +128,23 @@ impl CharacterController {
                 prev_hp: 1200.0,
                 blood_rects: blood_rects(),
                 blood_color: red_blood(),
-                character: MiamiEntity::Player,
+                character: e,
                 front_body_rect: front_body_rect(),
                 back_body_rect: back_body_rect(),
                 ..Default::default()
             },
             MiamiEntity::Endoskeleton => Self {
-                speed: 10.0, 
-                run_speed: 10.0, 
+                speed: 100.0, 
+                run_speed: 100.0, 
                 walk_speed: 60.0,
                 hp: 100.,
                 prev_hp: 100.,
                 blood_rects: blood_rects(),
                 blood_color: oil_blood(),
-                character: MiamiEntity::Endoskeleton,
+                character: e,
                 front_body_rect: front_body_rect(),
                 back_body_rect: back_body_rect(),
                 ..Default::default()
-
             },
             MiamiEntity::Bonnie => Self {
                 speed: 100.0,
@@ -128,13 +154,89 @@ impl CharacterController {
                 prev_hp: 300.,
                 blood_rects: blood_rects(),
                 blood_color: oil_blood(),
-                character: MiamiEntity::Bonnie,
+                character: e,
                 front_body_rect: front_body_rect(),
                 back_body_rect: back_body_rect(),
                 ..Default::default()
-
             },
-            _ => todo!()
+            MiamiEntity::NewBonnie => Self {
+                speed: 100.0,
+                run_speed: 100.0,
+                walk_speed: 30.0,
+                hp: 300.,
+                prev_hp: 300.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: e,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
+                ..Default::default()
+            },
+            MiamiEntity::Chicka => Self {
+                speed: 100.0,
+                run_speed: 100.0,
+                walk_speed: 30.0,
+                hp: 300.,
+                prev_hp: 300.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: e,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
+                ..Default::default()
+            },
+            MiamiEntity::NewChicka => Self {
+                speed: 100.0,
+                run_speed: 100.0,
+                walk_speed: 30.0,
+                hp: 300.,
+                prev_hp: 300.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: e,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
+                ..Default::default()
+            },
+            MiamiEntity::CopperEndoskeleton => Self {
+                speed: 100.0,
+                run_speed: 100.0,
+                walk_speed: 30.0,
+                hp: 300.,
+                prev_hp: 300.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: e,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
+                ..Default::default()
+            },
+            MiamiEntity::Freddy => Self {
+                speed: 100.0,
+                run_speed: 100.0,
+                walk_speed: 30.0,
+                hp: 300.,
+                prev_hp: 300.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: e,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
+                ..Default::default()
+            },
+            _ => Self {
+                speed: 100.0,
+                run_speed: 100.0,
+                walk_speed: 30.0,
+                hp: 300.,
+                prev_hp: 300.,
+                blood_rects: blood_rects(),
+                blood_color: oil_blood(),
+                character: e,
+                front_body_rect: front_body_rect(),
+                back_body_rect: back_body_rect(),
+                ..Default::default()
+            },
         }
         
     }
@@ -145,21 +247,19 @@ pub struct CharacterFoot {
     pub t: f32,
 }
 
-pub fn on_entity_spawnpoint(
-    point: On<Add, MiamiEntitySpawner>,
-    q: Query<(&MiamiEntitySpawner, &Transform)>,
-    mut cmd: Commands,
-    assets: Res<MiamiAssets>,
-    state: Res<State<AppState>>,
-    mut camera_controller: ResMut<CameraController>,
-){
-    if state.get() != &STATE {return;}
-    let Ok((spawner, transform)) = q.get(point.entity) else {return;};
-    let char = spawner.entity_type.to_character();
-
+pub fn spawn_entity(
+    cmd: &mut Commands,
+    entity_type: MiamiEntity,
+    assets: &Res<MiamiAssets>,
+    camera_controller: &mut ResMut<CameraController>,
+    mut transform : Transform,
+    look_dir : Vec2
+) {
+    transform.translation.z = -2.0;
+    let char = entity_type.to_character();
     let foot1 = cmd.spawn((
         Sprite {
-            image: spawner.entity_type.to_handle(&assets),
+            image: entity_type.to_handle(assets),
             rect: Some(char.foot_rect.clone()),
             ..Default::default()
         },
@@ -168,7 +268,7 @@ pub fn on_entity_spawnpoint(
     )).id();
     let foot2 = cmd.spawn((
         Sprite {
-            image: spawner.entity_type.to_handle(&assets),
+            image: entity_type.to_handle(assets),
             rect: Some(char.foot_rect.clone()),
             flip_x: true,
             ..Default::default()
@@ -181,7 +281,7 @@ pub fn on_entity_spawnpoint(
     let sprite = cmd.spawn((
         ShadowInit,
         Sprite {
-            image: spawner.entity_type.to_handle(&assets),
+            image: entity_type.to_handle(&assets),
             rect: Some(char.default_rect.clone()),
             ..Default::default()
         },
@@ -198,9 +298,9 @@ pub fn on_entity_spawnpoint(
     
     cmd.entity(pivot).add_children(&[foot1, foot2]);
     
-    let mut controller = CharacterController::from_type(&spawner.entity_type);
+    let mut controller = CharacterController::from_type(&entity_type);
     
-    controller.look_dir = spawner.look_dir;
+    controller.look_dir = look_dir;
 
     cmd.entity(pivot).add_child(sprite);
     let mut c = cmd.spawn((
@@ -218,21 +318,20 @@ pub fn on_entity_spawnpoint(
         CharacterComponents{sprite, pivot},
     ));
     let id;
-    if let MiamiEntity::Player = spawner.entity_type {
-        
+    if let MiamiEntity::Player = entity_type {
         id = c.insert(
             (
                 transform.clone(),
                 Focusable,
                 Player,
-                super::player::PlayerDisabled,
+                // super::player::PlayerDisabled, // ! ########
                 Name::new("Player"),
                 miami_player_layers()
             )
         ).id();
         camera_controller.focused_entities.push_front(id);
     } else {
-        let chaser = spawner.entity_type.to_chaser(transform.translation.truncate());
+        let chaser = entity_type.to_chaser(transform.translation.truncate());
         let caster = ShapeCaster::new(
             Collider::circle(1.0),
             Vector::ZERO,
@@ -250,7 +349,15 @@ pub fn on_entity_spawnpoint(
             caster,
             chaser,
         )).id();
-        let weapon = WeaponType::EnemyFists.to_weapon();
+
+        let weapon;
+        match entity_type {
+            MiamiEntity::NewBonnie => {weapon = WeaponType::BonniePlay.to_weapon();},
+            MiamiEntity::NewChicka => {weapon = WeaponType::ChickaThrow.to_weapon();},
+            MiamiEntity::Freddy => {weapon = WeaponType::FazStar.to_weapon();},
+            _ => weapon = WeaponType::EnemyFists.to_weapon()
+        }
+
         let sprite = cmd.spawn((
             Sprite {
                 image: assets.weapons.clone(),
@@ -273,7 +380,26 @@ pub fn on_entity_spawnpoint(
             ArmedCharacter(weapon),
         ).add_child(weapon);
     }
+    if entity_type == MiamiEntity::NewBonnie 
+    || entity_type == MiamiEntity::NewChicka
+    || entity_type == MiamiEntity::Freddy 
+    {
+        cmd.entity(id).insert((InvincibleCharacter, BossFightWait));
+    }
     cmd.entity(id).add_child(pivot);
+}
+
+pub fn on_entity_spawnpoint(
+    point: On<Add, MiamiEntitySpawner>,
+    q: Query<(&MiamiEntitySpawner, &Transform)>,
+    mut cmd: Commands,
+    assets: Res<MiamiAssets>,
+    state: Res<State<AppState>>,
+    mut camera_controller: ResMut<CameraController>,
+){
+    if state.get() != &STATE {return;}
+    let Ok((spawner, transform)) = q.get(point.entity) else {return;};
+    spawn_entity(&mut cmd, spawner.entity_type.clone(), &assets, &mut camera_controller, transform.clone(), spawner.look_dir);
 }
 
 
@@ -348,6 +474,9 @@ pub struct ChaserAi {
     pub origin_point: Vec2,
     pub seek_time: f32,
     pub max_seek_time: f32,
+
+    pub stay_time: f32,
+    pub max_stay_time: f32,
 }
 
 
@@ -389,19 +518,30 @@ pub struct Path {
 }
 
 pub fn update_chasers(
-    mut entities: Query<(Entity, &mut CharacterController, &mut ChaserAi, &GlobalTransform, &ShapeHits, &mut ShapeCaster), Without<DummyEntity>>,
+    mut entities: Query<
+        (
+            Entity, &mut CharacterController, &mut ChaserAi, 
+            &GlobalTransform, &ShapeHits, &mut ShapeCaster
+        ), 
+        (
+            Without<DummyEntity>, Without<BossFightWait>, Without<BossFightStandAi>
+        )>,
     player: Query<(Entity, &GlobalTransform), With<Player>>,
     navmeshes: Res<Assets<NavMesh>>,
     navmesh: Query<&ManagedNavMesh>,
     mut cmd: Commands,
+    time: Res<Time>,
 ) {
+    let dt = time.dt();
+    let mut rand = rand::rng();
     let Some(mesh) = navmesh.iter().last() else {return;};
     let Some(navmesh) = navmeshes.get(mesh) else {return;};
     let Some((player, pt)) = player.iter().next() else {return;};
     for (e, mut controller, mut chaser, gt, hits, mut caster) in entities.iter_mut() {
         let d = pt.translation() - gt.translation();
         let nd = d.normalize_or_zero();
-        caster.direction = Dir2::from_xy(nd.x, nd.y).expect("Not a dir");
+        let Ok(dir) = Dir2::from_xy(nd.x, nd.y) else {continue;};
+        caster.direction = dir;
         let mut last_seen = None;
         let mut max_dist = caster.max_distance;
         let mut t = gt.translation();
@@ -450,6 +590,27 @@ pub fn update_chasers(
                     next: remaining
                 }
             );
+        } else if chaser.stay_time >= chaser.max_stay_time {
+            // info!("Seeking!");
+            let mut pos = t + Vec3::new(rand.random_range(-CHASER_RANDOM_RADIUS..CHASER_RANDOM_RADIUS), rand.random_range(-CHASER_RANDOM_RADIUS..CHASER_RANDOM_RADIUS), 0.0);
+            pos.z = 0.0;
+            let Some(path) = navmesh.transformed_path(t, pos) else {
+                continue;
+            };
+            chaser.last_seen = Some(pos.truncate());
+            let Some((f, r)) = path.path.split_first() else {continue;};
+            let mut remaining = r.to_vec();
+            chaser.stay_time = 0.0;
+            remaining.reverse();
+            controller.speed = controller.walk_speed;
+            cmd.entity(e).insert(
+                Path {
+                    current: *f,
+                    next: remaining
+                }
+            ).remove::<CharacterInPlace>();
+        } else {
+            chaser.stay_time += dt;
         }
     }
 }
@@ -457,7 +618,6 @@ pub fn update_chasers(
 
 #[derive(Component)]
 pub struct CharacterInPlace;
-
 
 pub fn chase(
     mut commands: Commands,

@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="9" nextobjectid="34">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="18" tileheight="18" infinite="1" nextlayerid="13" nextobjectid="91">
  <tileset firstgid="1" source="miami.tsx"/>
  <layer id="2" name="floor" width="30" height="20">
   <data encoding="base64" compression="zstd">
+   <chunk x="48" y="-48" width="16" height="16">
+   KLUv/WAAA6UAACgACAAoAAQAAQemAgMSHpAQkzo2
+  </chunk>
+   <chunk x="64" y="-48" width="16" height="16">
+   KLUv/WAAAz0BAFAAKAAAAAgHCAgoCoCwdh59QCVgDuitTDSwCUMwfZWwK7HSJZIzAQ==
+  </chunk>
+   <chunk x="80" y="-48" width="16" height="16">
+   KLUv/WAAA9UAADgAKAAAAAgIBgA9B6aCwIQjJBcww0qnRHJs
+  </chunk>
+   <chunk x="48" y="-32" width="16" height="16">
+   KLUv/WAAA70AACgAKAAIAAUAAaBCj4GpwICEByQEkmMD
+  </chunk>
+   <chunk x="64" y="-32" width="16" height="16">
+   KLUv/WAAA00BAEAIAAAAKAAAABao8PUMsMMWAxB48f//O68ZPSQKcjyf4znW/PzsMpEB
+  </chunk>
+   <chunk x="80" y="-32" width="16" height="16">
+   KLUv/WAAAwUBAFAIAAAAKAAAACgABwA9uAotBqYCgIBxJn6FRMAE4woX
+  </chunk>
    <chunk x="0" y="0" width="16" height="16">
    KLUv/WAAA7UAABgABgcGgNA+HaTYJcqHoAYMOxID1eU=
   </chunk>
@@ -10,7 +28,10 @@
    KLUv/WAAA9UAACgABgcnBweAsD6AIVCgsYf6h6ASkHchH8rR
   </chunk>
    <chunk x="32" y="0" width="16" height="16">
-   KLUv/WAAA4UAABAABwQAfQgpBCXs6uNJ5dg=
+   KLUv/WAAA/UAAEAABwgAAAAoKAcAB6YEAMER5Q0BDFZI3dWMJ5UTAg==
+  </chunk>
+   <chunk x="48" y="0" width="16" height="16">
+   KLUv/WAAA9UAADgACAAAACgoBgAdGAmABo5gHqCDlVJ5Ujk2
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
    KLUv/WAAA/UAADAAAAAABwYIgHAtHmmg9g1BBejYmQDpQ8hgHZYcCQ==
@@ -19,7 +40,16 @@
    KLUv/WAAAwUBADgHAAAAJwcGCYAQuw59OFUfEGDpAMoeDkNIg0bQYNCl
   </chunk>
    <chunk x="32" y="16" width="16" height="16">
-   KLUv/WAAA8UAACgHAAAAJwYAfUCFEqDCXl9/CFQEJZh2RA==
+   KLUv/WAAA30BAFgHAAAAKAAAAAgIJw6AgK02JUAFYFDGgWWgDAEMyu91aWAoAM4R5RBAtELKtNsB
+  </chunk>
+   <chunk x="48" y="16" width="16" height="16">
+   KLUv/WAAA+0AAFAoAAAACAAAAAgABgBVB6aCoAQ4BX9VBqDBkYUL
+  </chunk>
+   <chunk x="32" y="32" width="16" height="16">
+   KLUv/WAAA40AADAAKAAAAAgDAL1BBayQSu3Y
+  </chunk>
+   <chunk x="48" y="32" width="16" height="16">
+   KLUv/WAAA40AAEAoAAAACAAAAAIA0UEFjixc
   </chunk>
   </data>
  </layer>
@@ -28,14 +58,35 @@
    <property name="sh" type="class" propertytype="game::dev_games::miami::map::TilemapShadow"/>
   </properties>
   <data encoding="base64" compression="zstd">
+   <chunk x="48" y="-48" width="16" height="16">
+   KLUv/WAAA4UDAIQDAKEAAADhAAMBAADEAOMAAADkAAQBAwHiAAAAowEBAwGkwQAAAAIBAADDAAMBAOMAowAAAAAAAAAVoLAoJ8w5AAMK6Tq7I9SB9CWBIOkgmZ0e5wy1uh3Se+4FDuzYs7JOGZAeSgNLd/Ln/9PImU0=
+  </chunk>
+   <chunk x="64" y="-48" width="16" height="16">
+   KLUv/WAAA7UCABQC4QAAAOLh4gEBAgEBoaIAAwEAACEBAADkAMEAwgCh4wABFKCw0taaAbCCFNjCOjCUj2SP6Tgp9xuuToTpOh1ymOoeACLrGe7Ak9SORoQbjV2ynAkS
+  </chunk>
+   <chunk x="80" y="-48" width="16" height="16">
+   KLUv/WAAA/0DAKQC4gAAAOGiAAIBAAABAcMAAADkAOMDAaEEASHBwqSiAMOjxMIAoQMBAOQAJKDg1oUxYAIkIqUeDYmpA5ID6UuIQXaJNKysXc1fTAbX0SwGij9ZidNyJrAE4vqRY5LudNaZ66juBhi52tkBH2R5R/cw47A0x/tbMzClkFlPzB0=
+  </chunk>
+   <chunk x="48" y="-32" width="16" height="16">
+   KLUv/WAAAx0CANAA4wAAAMQAAAACAQAEAQCkAAAA4sHDAwHkAA8AfUABEFBwYIF4wfHD5V3DzhAqcmGS/UwmCE7BGozfDGEFAqdD5Ng=
+  </chunk>
+   <chunk x="64" y="-32" width="16" height="16">
+   KLUv/WAAA90CALQCAKEAAADiAAAAogCh4wAAACEBAADkAAMBwQAAAAIBAADCAMEA4uGi4QEBwhSgsJrlOcACtC3sfYQ6kkuOiMGFDI694TbhMW3hybiE/xQh5GwP4WM0UCLU0wM=
+  </chunk>
+   <chunk x="80" y="-32" width="16" height="16">
+   KLUv/WAAA40DAGQDAAIBAADDAAAABAEAAwEAAOQA4QAAAKMAxAAAAAEBAADCAOPiAAAAouMAIQIDAeMA4uECAQEBFqCAFKYxN6CCE54ddSi+3/nCNGDeX3xdGxxteU+2O8l1OhqOWLHDmimGvSIZg72WNnz+nG2ckRgR
+  </chunk>
    <chunk x="0" y="0" width="16" height="16">
    KLUv/WAAA9UEALQDAKEAAADi4QMBAADEAAAAAgEBwwABBOMAAADkAAMB4wDkowAAAKSi4gHCAAAAwQDBAKGiwQAAAMIAAAAqoBCTacsBgAIzNrUdL+mVs5hmHGwpkZEnWi7Zew/yE+pEjCtmCDcJK6OcXRHwgJwBAjVEpg6VZCkL06H6KiqB3AbkRQUJx8E8IEjAi4MFzJjZDimwvL3fGlCh+gk=
   </chunk>
    <chunk x="16" y="0" width="16" height="16">
-   KLUv/WAAA70DABQDAOHiogABAQAAAsMAAADkAOMDAQAABAHjAOKhowAAAKTCAAAAwQDEwQDjAAAA5AAAABug8LLSDiACTUpk9ABwGZgRcQPEEQDD94zvyx3ZhyzN8HO818TRlLpPsC8EvsxjwNLfADUfSnN6Hg8el+60nTHgQRkY
+   KLUv/WAAA8UDACQDAOHiogABAQAAAsMAAADkAOMDAQAABAHjAKShowAAACEBwgAAAMEAxMEA4wAAAOQAAAAcoPCykg4gAm1KZPQAcBmYkXADxBEAo/eM78uds4cgn/HlOz/z4nAjXeIJUA/Q2AdDwg1Q8EH64TE+vNig4/bGiAdlcg==
   </chunk>
    <chunk x="32" y="0" width="16" height="16">
-   KLUv/WAAA30BAKAA4eKiAAEBAAACAcMAAADkAOMDAQoAAUIOQWLHHdi9tYLBuG8QbMWwXSb8qNwV
+   KLUv/WAAAxUCAPAA4gAAAOHi4SEBAQEAAALDAAAAxAAB4wAAAOQAAwEPoMDUJDvwgqtuh9D3FKfPk8C1BpONLLYSWUvVp/HhzovK5w==
+  </chunk>
+   <chunk x="48" y="0" width="16" height="16">
+   KLUv/WAAAyUCAAQCAOEAAADioiEBxAAAAMIBAQIBwwAAAAQBAAMB4wAAAOQNADuJ3oAlbNxpK/WAYzvWhtC9O9SG0Amg4QWBXaa8qBwb
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
    KLUv/WAAA3UEAJQDoQAAAKIAwQAAAMMAAAAEAQMBAADkAKQAAADiAAAA4eKjAKGkAgEAAAEBxADCAwHjAOMAwQACAQEBJaAQS2PLAWCCMliqAz2E6nLcJMfAq3sD5LyExZiGQ+RWB1G+IZI+g6YilyAbUSDcJmBX4fU1QjO0m8dOZAvpxXh5zPksQ7gnjoFDrP0rfi8K3wE=
@@ -44,7 +95,16 @@
    KLUv/WAAA10EAKQDAKEAAACiAAMBAAAEAQDjAOIAouGj5AAAAAEBAAACAQAAwgAAAMEAwwADAaQA5OMA4aTiAgEBAgEBACWgwcm2tPUOkIJTQsUDPqjbWL/ojg1L7uM2g/s0TmcbnFDDZvdTh0gwfhROwMu3o2tlGxvu2IEDRvG20DVogDgc9x0ePgTRWOQsH1vqdwc=
   </chunk>
    <chunk x="32" y="16" width="16" height="16">
-   KLUv/WAAAx0DANQCAOMAAAAEAQADAeQA4uEAAACiAAAAoQAAAKMAAgEAAAEBwgAAAMEAAADD4QEBEwBhuApPy4GjlfHAVMCCp30wtPEdWBkxuFAAGqChSWeFFYcAdZfd8GAMDA0bgoQNTiNxVw==
+   KLUv/WAAA6UEAFQDAOMAAAAEAaEAAADiAAAAogADASHBAAAAAgEAAMLkAOLhowABAcMAwQCh4+EBAcOhAwEBAwEpoPCS03JgAiMTzHoNYrIhkRAt3cQgPS9YGtR7OPK00KNvMKw2rY8um40nXkOPZ8CmaHm9WdrvoUD/DfjCMro2aXkYvNvGyf7M6SFsGhCBYDhq05bD5JZ4abhNonI=
+  </chunk>
+   <chunk x="48" y="16" width="16" height="16">
+   KLUv/WAAAyUDAIQCAKEAAADiAAAAogMBAAAEAQAhAQAA5OMAwQAAAAEBAADCAwQB4wAEARigQMmSQnEAAwpIJB5DBPMASccgVCp55Xs1RPMgdJLOM17dcOlX8hURBtPOMXYArbJvQQE8Hg0hySM=
+  </chunk>
+   <chunk x="32" y="32" width="16" height="16">
+   KLUv/WAAA10BAKgAAwEAAKQAAADh4sEAAAABAQAAAgEIIGAC+31ZwYY795iGh0N23x3JvAI=
+  </chunk>
+   <chunk x="48" y="32" width="16" height="16">
+   KLUv/WAAA40BALDiAAAA4eKjAAAA5AACAQAAAQEBAcIACgCPcRVXiLBT4ssLK1jB+fpJABBYMffMaQE=
   </chunk>
   </data>
  </layer>
@@ -58,14 +118,35 @@
    </property>
   </properties>
   <data encoding="base64" compression="zstd">
+   <chunk x="48" y="-48" width="16" height="16">
+   KLUv/WAAA2UDAEQDAAEAAABBAGMAAAAkAEMAAABEAGREY0IAAAADYWMEIQAAAGIAAAAjAGMAQwADAAAAAAAAABWgoBilOQcAAwrpOrsj1IEUl7RB4kEqO49zhlpxhySfe4sDO/ZYc+AEJGRpYO3O/sl/Ts78Ag==
+  </chunk>
+   <chunk x="64" y="-48" width="16" height="16">
+   KLUv/WAAA4UCAOhBAAAAQkFCYWJhAQIAYwAAAIEAAABEACEiAAFDYRSgsDBrzbCCFNjCOjAUGFSP6TApVzdcmcjVdcqQc6pLAKgsZjiDJMnmRoQb3Z5sZ4IE
+  </chunk>
+   <chunk x="80" y="-48" width="16" height="16">
+   KLUv/WAAA+UDAJQCQgAAAEECAGIAAABhIwAAAEQAQ2MBZIEhIgQCACNkAAMkIgABZGNERAAkoLCehQ6QAiQiZR4NiakD0gYlXiGDaHY1TJeYvZDMnCMyMYD8YX38BEshro2fJ+sntg6cO3I31Phuzg6CxdXdLovikCROr8UCi6sIkeGE2QE=
+  </chunk>
+   <chunk x="48" y="-32" width="16" height="16">
+   KLUv/WAAAwUCALgAQwAAACQAAABiAGQABAAAAEIhI2NEAA+A8NRqzX1AAWLBsUC8P36Wd5VnCHUuTPqZzAlusHL8DGHtgVOIHAs=
+  </chunk>
+   <chunk x="64" y="-32" width="16" height="16">
+   KLUv/WAAA8UCAJQCAAEAAABCAAAAAgABQwAAAIEAAABEAGMhAAAAYgAAACIAIQBCQQJBYSIUoLDw8hzAArQt7H2EOpJLjojxQgh+L99IMKZROBmX2D91CB9jIXSMAyVCPT4=
+  </chunk>
+   <chunk x="80" y="-32" width="16" height="16">
+   KLUv/WAAA00DAAQDAGIAAAAjAAAAZABjAAAARABBAAAAAyQAAABhAAAAIgBDQgAAAAJDgWJjQ2NCZGJhFqBwbuTysAKLxugBdSjsR56Rzft/73FhqPsaS7i70jU6GyY66TAeDewRwRjttY7DE8fJ/0QiWA==
+  </chunk>
    <chunk x="0" y="0" width="16" height="16">
    KLUv/WAAA30EAHQDAAEAAABCQWMAAAAkAAAAYmEjYWRDAAAARABjQ0RkAwAAAAQCQmEiAAAAIWMhAQIhAAAAIgAAACqgEDtnDZACMza0HX/pyszQI+5cgTzBYolefeh8yIk1rMgWrhML08qsGDR36g21uUMlV2LBdKC2Ug2ILcCLdUTH9TwgiMB1t5ybY+umwPZej29MhTIo
   </chunk>
    <chunk x="16" y="0" width="16" height="16">
-   KLUv/WAAA5UDANQCAEFCAgBhAAAAYiMAAABEAENjAAAAZENCAQMAAAAEIgAAACEkIUMAAABEAAAAG6DwmJIHIAJNSmT0AFyGa0T8APEI4PA94+vyR+aQuxkmHcQ1cU2p/wTzQvDLkAFLgwNUfCgVp+d4fkzoztsZAw/KxA==
+   KLUv/WAAA50DANQCAEFCAgBhAAAAYiMAAABEAENjAAAAZEMEAQMAAACBIgAAACEkIUMAAABEAAAAHKAAV8kDIAJtSmT0AFyGeyT8AHEEwOg54/vyc9Yh9DMS9okvvJi1Pfd9AvQBGsFgoMQBCh+k+vAcnxYT0Hl7Y8CDMiM=
   </chunk>
    <chunk x="32" y="0" width="16" height="16">
-   KLUv/WAAA20BAJAAQUICAGEAAABiIwAAAEQAQ2MKAIApHIJ0jzu1e2DF1XGPIMSKuV3G+FE5IQ==
+   KLUv/WAAA/0BANgAQgAAAEFCQYFhAAAAYiMAAAAkYUMAAABEAGMPoNBY7AHwgqtuDE25Z5x+ngR/5U0aWVxJ1kqVaXS4eFF5HQ==
+  </chunk>
+   <chunk x="48" y="0" width="16" height="16">
+   KLUv/WAAA/UBAOAAQQAAAEICgSQAAAAiYWJhIwAAAGQAY0MAAABEDYBgbrQDkHAIUh93XqnA3V0MocNuDqELoP2C2GV4UbkX
   </chunk>
    <chunk x="0" y="16" width="16" height="16">
    KLUv/WAAAw0EAPQCAQAAAAIAIQAAACMAAABkYwAAAEQABAAAAEIAAABBQgMBBGIAAABhJCJjQ0MhYmEloCA3ajVggjJYqgM9hHo5br1jjNURAHJewmKm4RCx1WyUcoikNGgqcgmykRrCbQJahdfXyM9wudl1wl2eS3TZZYcrwu7fMbCJvX/vT0ThOw==
@@ -74,7 +155,32 @@
    KLUv/WAAA+0DABQDAAEAAAACAGMAAABkAENjQgJBA0QAAABhAAAAYgAAACIAAAAhI2MERENBBEJiYWJhACWgoeGL7R2gglNC5AE/0Oyvn/upwZI/zjj5pzGdkcCODpuhcodLMe4oXIFXr4I1ho6JMyDT4Ni9FR9cBsjJvXHHsXvY7G3STk37
   </chunk>
    <chunk x="32" y="16" width="16" height="16">
-   KLUv/WAAA+0CAJQCAEMAAABkAGNEQkEAAAACAAAAAQAAAANiAAAAYSIAAAAhAAAAI0RBZGETgLBe3Go5YbjqablHqxMosH7aZ2jFQVkMLlSgAw1NopWLDMHcuUBZDAzFIUh1cCJxPg==
+   KLUv/WAAA0UEAOQCAEMAAABkAQAAAEIAAAACAGOBIQAAAGIAAAAiRABCQQNhIyEBQ0FhYUQBRGNhYymg0LbKdKACCyYY9BiI4BAl0uiEpCkP8jUU+YjRouKhu4/sZuOJd+gxBjQ3jVdM0HnDFOm8Ma+WkYPNsBg2b5ZxnefG+BAwHQCBMU7aiGW48+mXJkaSpwM=
+  </chunk>
+   <chunk x="48" y="16" width="16" height="16">
+   KLUv/WAAA/UCADQCAAEAAABCAAAAAmMAAABkAIEAAABEQyEAAABhAAAAImNkQ2QYoEA1SnUAAwpIJB5DBPMASccgVCp5uyMaomkQepLKE69zuCSWfEWEYdo3hgxMVfGNLYHHoyFJrgE=
+  </chunk>
+   <chunk x="32" y="32" width="16" height="16">
+   KLUv/WAAA10BAKgAYwAAAAQAAABBQiEAAABhAAAAYmEIIGAC+31ZwYY795iGh0N23x3JvAI=
+  </chunk>
+   <chunk x="48" y="32" width="16" height="16">
+   KLUv/WAAA3UBAKBCAAAAQUIDAAAARABiAAAAYWEiAAoAj3EVV4jY2e+FhJVM43z9JAAIrJh75rQ=
+  </chunk>
+  </data>
+ </layer>
+ <layer id="11" name="over" width="30" height="20">
+  <data encoding="base64" compression="zstd">
+   <chunk x="48" y="-48" width="16" height="16">
+   KLUv/WAAAyUBAEgAKQkARABkAEQJgNDyAQCgdGAkA9IDMhD3IaSHO+xc4FEdDQ==
+  </chunk>
+   <chunk x="80" y="-48" width="16" height="16">
+   KLUv/WAAAx0BAFAACgAAACljAEMACACtoaGgQAIDEh4uYR9CGgEH7FxlRnVs
+  </chunk>
+   <chunk x="48" y="-32" width="16" height="16">
+   KLUv/WAAA60AACAAKQkABQAJoYI+hBQMd3DnMnA6IQ==
+  </chunk>
+   <chunk x="80" y="-32" width="16" height="16">
+   KLUv/WAAA7UAADAACgAAACkFAC2hgj6EFAIO2LlK59g=
   </chunk>
   </data>
  </layer>
@@ -82,7 +188,7 @@
   <properties>
    <property name="spawner" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner"/>
   </properties>
-  <object id="20" x="163.485" y="273.576">
+  <object id="20" x="180" y="288">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
      <properties>
@@ -96,13 +202,13 @@
    </properties>
    <point/>
   </object>
-  <object id="22" x="162.985" y="254.167">
+  <object id="22" x="162" y="252">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
      <properties>
       <property name="weapon_type" type="class" propertytype="game::dev_games::miami::weapon::WeaponType">
        <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="Axe"/>
+        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="Shotgun"/>
        </properties>
       </property>
      </properties>
@@ -110,7 +216,55 @@
    </properties>
    <point/>
   </object>
-  <object id="23" x="190.076" y="264.53">
+  <object id="23" x="198" y="270">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
+     <properties>
+      <property name="weapon_type" type="class" propertytype="game::dev_games::miami::weapon::WeaponType">
+       <properties>
+        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="Baguette"/>
+       </properties>
+      </property>
+     </properties>
+    </property>
+   </properties>
+   <point/>
+  </object>
+  <object id="73" x="1170" y="-414">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="77" x="1242" y="-414">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
+     <properties>
+      <property name="weapon_type" type="class" propertytype="game::dev_games::miami::weapon::WeaponType">
+       <properties>
+        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="GoldenPistol"/>
+       </properties>
+      </property>
+     </properties>
+    </property>
+   </properties>
+   <point/>
+  </object>
+  <object id="78" x="1404" y="-414">
+   <properties>
+    <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
+     <properties>
+      <property name="weapon_type" type="class" propertytype="game::dev_games::miami::weapon::WeaponType">
+       <properties>
+        <property name=":variant" propertytype="game::dev_games::miami::weapon::WeaponType:::Variant" value="Shotgun"/>
+       </properties>
+      </property>
+     </properties>
+    </property>
+   </properties>
+   <point/>
+  </object>
+  <object id="79" x="1458" y="-414">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::weapon::MiamiWeaponSpawner">
      <properties>
@@ -126,33 +280,19 @@
   </object>
  </objectgroup>
  <objectgroup color="#aa0000" id="7" name="spawners">
-  <object id="31" x="656.773" y="433.682">
-   <properties>
-    <property name="b" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
-     <properties>
-      <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
-       <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Endoskeleton"/>
-       </properties>
-      </property>
-     </properties>
-    </property>
-   </properties>
-   <point/>
-  </object>
-  <object id="19" x="124.75" y="277">
+  <object id="19" x="1332" y="-396">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner"/>
    </properties>
    <point/>
   </object>
-  <object id="26" x="323.417" y="160.667">
+  <object id="80" x="1278" y="-810">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>
       <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
        <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Bonnie"/>
+        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="NewChicka"/>
        </properties>
       </property>
      </properties>
@@ -160,13 +300,13 @@
    </properties>
    <point/>
   </object>
-  <object id="27" x="394.417" y="367.5">
+  <object id="81" x="1386" y="-810">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>
       <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
        <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Bonnie"/>
+        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="NewBonnie"/>
        </properties>
       </property>
      </properties>
@@ -174,13 +314,13 @@
    </properties>
    <point/>
   </object>
-  <object id="28" x="454.417" y="410">
+  <object id="82" x="1332" y="-810">
    <properties>
     <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
      <properties>
       <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
        <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Endoskeleton"/>
+        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Freddy"/>
        </properties>
       </property>
      </properties>
@@ -188,43 +328,111 @@
    </properties>
    <point/>
   </object>
-  <object id="29" x="182.25" y="407.5">
+  <object id="87" x="1119.5" y="-550.5">
    <properties>
-    <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
-     <properties>
-      <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
-       <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Endoskeleton"/>
-       </properties>
-      </property>
-     </properties>
-    </property>
+    <property name="fsf" type="class" propertytype="game::dev_games::miami::bossfight::BossfightSpawner"/>
    </properties>
    <point/>
   </object>
-  <object id="30" x="490.917" y="337.167">
+  <object id="88" x="1122" y="-710">
    <properties>
-    <property name="s" type="class" propertytype="game::dev_games::miami::entity::MiamiEntitySpawner">
-     <properties>
-      <property name="entity_type" type="class" propertytype="game::dev_games::miami::entity::MiamiEntity">
-       <properties>
-        <property name=":variant" propertytype="game::dev_games::miami::entity::MiamiEntity:::Variant" value="Endoskeleton"/>
-       </properties>
-      </property>
-     </properties>
-    </property>
+    <property name="fsf" type="class" propertytype="game::dev_games::miami::bossfight::BossfightSpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="89" x="1545.5" y="-705.5">
+   <properties>
+    <property name="fsf" type="class" propertytype="game::dev_games::miami::bossfight::BossfightSpawner"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="90" x="1546" y="-545.5">
+   <properties>
+    <property name="fsf" type="class" propertytype="game::dev_games::miami::bossfight::BossfightSpawner"/>
    </properties>
    <point/>
   </object>
  </objectgroup>
- <objectgroup color="#aaff7f" id="4" name="h_doors">
-  <object id="5" x="90" y="306">
+ <objectgroup color="#aaff7f" id="9" name="h_doors">
+  <object id="63" x="162" y="342">
+   <properties>
+    <property name="hd" type="class" propertytype="game::dev_games::miami::map::HorizontalDoor"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="64" x="324" y="342">
+   <properties>
+    <property name="hd" type="class" propertytype="game::dev_games::miami::map::HorizontalDoor"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="65" x="162" y="234">
+   <properties>
+    <property name="hd" type="class" propertytype="game::dev_games::miami::map::HorizontalDoor"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="66" x="324" y="234">
+   <properties>
+    <property name="hd" type="class" propertytype="game::dev_games::miami::map::HorizontalDoor"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="67" x="630" y="378">
+   <properties>
+    <property name="hd" type="class" propertytype="game::dev_games::miami::map::HorizontalDoor"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="68" x="1314" y="-378">
+   <properties>
+    <property name="hd" type="class" propertytype="game::dev_games::miami::map::HorizontalDoor"/>
+   </properties>
    <point/>
   </object>
  </objectgroup>
  <objectgroup color="#55aa00" id="5" name="v_doors">
-  <object id="10" x="54" y="270">
+  <object id="44" x="18" y="270">
+   <properties>
+    <property name="vd" type="class" propertytype="game::dev_games::miami::map::VerticalDoor"/>
+   </properties>
    <point/>
   </object>
+  <object id="45" x="270" y="270">
+   <properties>
+    <property name="vd" type="class" propertytype="game::dev_games::miami::map::VerticalDoor"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="46" x="414" y="270">
+   <properties>
+    <property name="vd" type="class" propertytype="game::dev_games::miami::map::VerticalDoor"/>
+   </properties>
+   <point/>
+  </object>
+  <object id="48" x="684" y="396">
+   <properties>
+    <property name="vd" type="class" propertytype="game::dev_games::miami::map::VerticalDoor"/>
+   </properties>
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="10" name="dialogs">
+  <object id="49" x="20.6667" y="-125.333" width="36" height="72">
+   <properties>
+    <property name="dia" type="class" propertytype="game::dev_games::miami::map::EntrypointDialog"/>
+   </properties>
+  </object>
+  <object id="56" x="1242" y="-594" width="180" height="54">
+   <properties>
+    <property name="dia" type="class" propertytype="game::dev_games::miami::map::BossDialog"/>
+   </properties>
+  </object>
+  <object id="57" x="1296" y="-378" width="72" height="36">
+   <properties>
+    <property name="b" type="class" propertytype="game::dev_games::miami::map::BossEntrypointCollider"/>
+   </properties>
+  </object>
+  <object id="62" x="665" y="374" width="36" height="90"/>
  </objectgroup>
 </map>

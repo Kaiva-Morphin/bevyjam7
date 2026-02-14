@@ -6,15 +6,16 @@ pub struct PlayerDisabled;
 
 
 pub fn control_player(
-    player: Single<&mut CharacterController, (With<Player>, Without<PlayerDisabled>)>,
+    player: Single<(&mut CharacterController, Option<&PlayerDisabled>), With<Player>>,
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mouse_input: Res<ButtonInput<MouseButton>>,
 ) {
-    let mut c = player.into_inner();
+    let (mut c, d) = player.into_inner();    
 
     c.input_dir = Vec2::ZERO;
     c.throw = false;
     c.shoot = false;
+    if d.is_some() {return;}
 
     if keyboard_input.pressed(KeyCode::KeyA) {
         c.input_dir.x -= 1.0;

@@ -196,7 +196,7 @@ impl Default for NovelState {
                 Computer MyOnlyLove {
                     => "Bevy editor from another world!"
                 },
-                Computer MyOnlyLove {
+                Computer MyOnlyLove (Transform::from_scale(Vec3::splat(0.1))) {
                     => "What an interesting choice!\nI guess any game engine needs an editor..."
                 },
                 Computer MyOnlyLove {
