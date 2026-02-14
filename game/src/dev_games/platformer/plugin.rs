@@ -1,3 +1,5 @@
+use std::{collections::HashSet, time::Duration};
+
 // use crate::{properties::{AppState, LastScreenshot, LastState}, prelude::*};
 use crate::{hints::{HintAssets, KeyHint}, prelude::*};
 use super::map::*;
@@ -19,8 +21,13 @@ impl Plugin for PlatformerPlugin {
             .add_systems(OnEnter(STATE), (
                 setup,
             ))
-            .add_systems(Update, (tick, swap).run_if(in_state(STATE)))
+            .add_systems(Update, (
+                tick, swap, handle_enemy_collisions,
+                frog_movement, frog_atlas_handler,
+                toster_atlas_handler, toster_movement
+            ).run_if(in_state(STATE)))
             .add_systems(OnExit(STATE), cleanup)
+            .add_systems(OnEnter(STATE), spawn_enemies)
             .register_type::<NextTrigger>()
             .register_type::<StopTrigger>()
             .register_type::<PlatformerSwitchableLayer>()
@@ -58,6 +65,16 @@ pub struct PlatformerAssets {
     character: Handle<Image>,
     #[asset(texture_atlas_layout(tile_size_x = 48, tile_size_y = 64, columns = 2, rows = 4))]
     character_layout: Handle<TextureAtlasLayout>,
+    #[asset(path = "maps/platformer/boneca_ambalabu.png")]
+    frog: Handle<Image>,
+    #[asset(texture_atlas_layout(tile_size_x = 52, tile_size_y = 52, columns = 8, rows = 1))]
+    frog_layout: Handle<TextureAtlasLayout>,
+    #[asset(path = "maps/platformer/ll_cacto_hipopotamo.png")]
+    cactus: Handle<Image>,
+    #[asset(path = "maps/platformer/rhino_tosterino.png")]
+    toster: Handle<Image>,
+    #[asset(texture_atlas_layout(tile_size_x = 72, tile_size_y = 62, columns = 3, rows = 1))]
+    toster_layout: Handle<TextureAtlasLayout>,
     #[asset(path = "sounds/platformer/Three Red Hearts - Penguins vs Rabbits.ogg")]
     bg_music: Handle<AudioSource>,
 }
@@ -319,10 +336,10 @@ pub fn on_collider_spawned(
     }
 }
 
-
 pub fn platformer_player_yellow_layer() ->       CollisionLayers {CollisionLayers::from_bits(0b0100111, 0b0100111)}
 pub fn platformer_player_white_layer() ->        CollisionLayers {CollisionLayers::from_bits(0b0010111, 0b0010111)}
 pub fn platformer_enemy_layer() ->               CollisionLayers {CollisionLayers::from_bits(0b0001001, 0b0001001)}
+pub fn platformer_raycast_layer() ->             CollisionLayers {CollisionLayers::from_bits(0b0000000, 0b0110000)}
 pub fn platformer_yellow_layer() ->              CollisionLayers {CollisionLayers::from_bits(0b0100000, 0b0100000)}
 pub fn platformer_white_layer() ->               CollisionLayers {CollisionLayers::from_bits(0b0010000, 0b0010000)}
 // pub fn platformer_pickup_weapon_layers() ->     CollisionLayers {CollisionLayers::from_bits(0b001000000, 0b001000000)}
@@ -333,3 +350,524 @@ pub fn platformer_white_layer() ->               CollisionLayers {CollisionLayer
 
 pub fn player_color_yellow() -> Color {Color::srgba_u8(255, 185, 0, 255)}
 pub fn player_color_white() -> Color {Color::srgba_u8(255, 255, 255, 255)}
+
+#[derive(Component)]
+pub struct PlatformerEnemy;
+
+#[derive(Component)]
+pub struct Toster {
+    curr_is_left: bool,
+    delay: f32,
+    is_dead: bool,
+}
+
+#[derive(Component, PartialEq)]
+pub enum TosterCaster {
+    Left,
+    Right,
+    Top,
+}
+
+#[derive(Component)]
+pub struct Cactus;
+
+#[derive(Component)]
+pub struct Frog {
+    current_dir: FrogCastDir,
+    delay: f32,
+}
+
+#[derive(Component, PartialEq, Eq, Hash, Clone, Debug)]
+pub enum FrogCastDir {
+    Right,
+    Left,
+    Top,
+    Bottom,
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
+}
+
+impl FrogCastDir {
+    pub fn inverse(&self) -> Self {
+        match self {
+            &FrogCastDir::Bottom => {
+                FrogCastDir::Top
+            }
+            &FrogCastDir::Top => {
+                FrogCastDir::Bottom
+            }
+            &FrogCastDir::Left => {
+                FrogCastDir::Right
+            }
+            &FrogCastDir::Right => {
+                FrogCastDir::Left
+            }
+            _ => {panic!("ONLY REVERSE STRAIGHT DIR")}
+        }
+    }
+    pub fn handle_orange_case(&self, current_dir: FrogCastDir) -> Self {
+        let mut mask;
+        match self {
+            FrogCastDir::TopRight => {
+                mask = Vec2::new(1., 1.)
+            }
+            FrogCastDir::TopLeft => {
+                mask = Vec2::new(-1., 1.)
+            }
+            FrogCastDir::BottomRight => {
+                mask = Vec2::new(1., -1.)
+            }
+            FrogCastDir::BottomLeft => {
+                mask = Vec2::new(-1., -1.)
+            }
+            _ => {panic!("ONLY REVERSE DIAGONAL DIR")}
+        }
+
+        let inverted = current_dir.clone();
+        match inverted {
+            FrogCastDir::Bottom => {
+                mask += Vec2::NEG_Y
+            }
+            FrogCastDir::Top => {
+                mask += Vec2::Y
+            }
+            FrogCastDir::Left => {
+                mask += Vec2::NEG_X
+            }
+            FrogCastDir::Right => {
+                mask += Vec2::X
+            }
+            _ => {panic!("ONLY REVERSE STRAIGHT DIR (IMPOSSIBLE HERE)")}
+        }
+
+        match mask {
+            Vec2::X => {
+                FrogCastDir::Right
+            }
+            Vec2::NEG_X => {
+                FrogCastDir::Left
+            }
+            Vec2::Y => {
+                FrogCastDir::Top
+            }
+            Vec2::NEG_Y => {
+                FrogCastDir::Bottom
+            }
+            _ => {current_dir.clone()}
+        }
+    }
+}
+
+const NORMAL_CAST_DISTANCE: f32 = 12.;
+const DIAGONAL_CAST_DISTANCE: f32 = 12.;
+const CASTER_SCALE: Vec2 = Vec2::splat(0.95);
+
+fn spawn_enemies(
+    // enemy: On<Add, PlatformerEnemy>,
+    mut cmd: Commands,
+    assets: Res<PlatformerAssets>,
+) {
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Name::new("Cactus"),
+        Cactus,
+        Sprite {
+            image: assets.cactus.clone(),
+            color: player_color_yellow(),
+            ..default()
+        },
+        // Transform::from_translation(Vec3::new(1060., 1316.0, 0.)),
+        RigidBody::Static,
+        Collider::capsule(10., 20.), // todo: REMOVE
+        platformer_enemy_layer(),
+    ));
+
+    let mut collider = Collider::rectangle(60., 40.);
+    collider.set_scale(CASTER_SCALE, 10);
+    let caster_layers = platformer_raycast_layer().filters;
+
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Name::new("Toster"),
+        Toster {curr_is_left: true, delay: 0., is_dead: false},
+        Sprite {
+            image: assets.toster.clone(),
+            texture_atlas: Some(TextureAtlas{
+                layout: assets.toster_layout.clone(),
+                index: 0,
+            }),
+            color: player_color_yellow(),
+            ..default()
+        },
+        Transform::from_translation(Vec3::new(950., 1316.0, 0.)),
+        Collider::rectangle(60., 40.),
+        RigidBody::Dynamic,
+        platformer_enemy_layer(),
+        children![
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::X)
+                    .with_max_distance(NORMAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                    TosterCaster::Right,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::NEG_X)
+                    .with_max_distance(NORMAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                    TosterCaster::Left,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::Y)
+                    .with_max_distance(NORMAL_CAST_DISTANCE)
+                    .with_ignore_self(true),
+                    TosterCaster::Top,
+            ),
+        ],
+    ));
+
+    let mut collider = Collider::circle(26.);
+    collider.set_scale(CASTER_SCALE, 10);
+    cmd.spawn((
+        DespawnOnExit(STATE),
+        Name::new("Frog"),
+        Frog {current_dir: FrogCastDir::Left, delay: 0.},
+        Sprite {
+            image: assets.frog.clone(),
+            texture_atlas: Some(TextureAtlas{
+                layout: assets.frog_layout.clone(),
+                index: 0,
+            }),
+            color: player_color_yellow(),
+            ..default()
+        },
+        Transform::from_translation(Vec3::new(835.82, 1398.0, 0.)),
+        Collider::circle(52. / 2.), // todo: REMOVE
+        RigidBody::Dynamic,
+        platformer_enemy_layer(),
+        LinearVelocity(Vec2::ZERO),
+        LockedAxes::ROTATION_LOCKED,
+        children![
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::X)
+                    .with_max_distance(NORMAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::Right,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::NEG_X)
+                    .with_max_distance(NORMAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::Left,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::Y)
+                    .with_max_distance(NORMAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::Top,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::NEG_Y)
+                    .with_max_distance(NORMAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::Bottom,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::new(Vec2::new(1., 1.,)).unwrap())
+                    .with_max_distance(DIAGONAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::TopRight,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::new(Vec2::new(-1., 1.,)).unwrap())
+                    .with_max_distance(DIAGONAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::TopLeft,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::new(Vec2::new(1., -1.,)).unwrap())
+                    .with_max_distance(DIAGONAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::BottomRight,
+            ),
+            (
+                ShapeCaster::new(collider.clone(), Vec2::ZERO, 0., Dir2::new(Vec2::new(-1., -1.,)).unwrap())
+                    .with_max_distance(DIAGONAL_CAST_DISTANCE)
+                    .with_ignore_self(true)
+                    .with_query_filter(SpatialQueryFilter::from_mask(caster_layers)),
+                FrogCastDir::BottomLeft,
+            ),
+        ]
+    ));
+}
+
+fn frog_movement(
+    enemies_q: Query<(&mut Frog, Entity, &Children)>,
+    raycast_q: Query<(&ShapeHits, &FrogCastDir)>,
+    mut linvel: Query<&mut LinearVelocity, With<Frog>>,
+    player_entity: Query<Entity, With<Player>>,
+    time: Res<Time>,
+) {
+    if let Ok(player_entity) = player_entity.single() {
+        for (mut frog, frog_entity, children) in enemies_q {
+            let mut raw_hits = HashSet::new();
+            for caster_entity in children {
+                if let Ok((hits, cast_dir)) = raycast_q.get(*caster_entity) {
+                    for hit in hits {
+                        if hit.entity != frog_entity && hit.entity != player_entity {
+                            raw_hits.insert(cast_dir.clone()); // potential error if collision masks are bad; todo: add collision masks for casters
+                        }
+                    }
+                }
+            }
+            let final_dir;
+            if raw_hits.contains(&FrogCastDir::Left) || raw_hits.contains(&FrogCastDir::Right)
+            || raw_hits.contains(&FrogCastDir::Bottom) || raw_hits.contains(&FrogCastDir::Top) {
+                raw_hits.remove(&FrogCastDir::BottomLeft);
+                raw_hits.remove(&FrogCastDir::BottomRight);
+                raw_hits.remove(&FrogCastDir::TopLeft);
+                raw_hits.remove(&FrogCastDir::TopRight);
+                if raw_hits.len() == 1 {
+                    // std case
+                    let hit_dir = raw_hits.into_iter().collect::<Vec<FrogCastDir>>()[0].clone();
+                    match hit_dir {
+                        FrogCastDir::Bottom => {
+                            final_dir = FrogCastDir::Left;
+                        }
+                        FrogCastDir::Top => {
+                            final_dir = FrogCastDir::Right;
+                        }
+                        FrogCastDir::Right => {
+                            final_dir = FrogCastDir::Bottom;
+                        }
+                        FrogCastDir::Left => {
+                            final_dir = FrogCastDir::Top;
+                        }
+                        _ => {unreachable!()}
+                    }
+                } else if raw_hits.len() == 2 {
+                    // pink case
+                    if !raw_hits.remove(&frog.current_dir) {
+                        warn!("WHOOPS");
+                        return;
+                    }
+                    final_dir = raw_hits.into_iter().collect::<Vec<FrogCastDir>>()[0].inverse();
+                } else {
+                    warn!("UNWANTED COLLISIONS");
+                    return;
+                }
+            } else if raw_hits.len() != 0 {
+                // orange casee
+                println!("ABOBOAB {:?}", raw_hits);
+                assert!(raw_hits.len() == 1, "MULTIPLE DIAGONAL HITS ON ORANGE");
+                let hit_diag_dir = raw_hits.into_iter().collect::<Vec<FrogCastDir>>()[0].clone();
+                final_dir = hit_diag_dir.handle_orange_case(frog.current_dir.clone());
+                // final_dir = FrogCastDir::Left;
+            } else {
+                final_dir = frog.current_dir.clone();
+            }
+            frog.current_dir = final_dir.clone();
+            println!("FIN {:?}", final_dir);
+            const MS: f32 = 6000.;
+            let dir;
+            match final_dir {
+                FrogCastDir::Bottom => {
+                    dir = Vec2::NEG_Y
+                }
+                FrogCastDir::Top => {
+                    dir = Vec2::Y
+                }
+                FrogCastDir::Left => {
+                    dir = Vec2::NEG_X
+                }
+                FrogCastDir::Right => {
+                    dir = Vec2::X
+                }
+                _ => {unreachable!()}
+            }
+            let mut lin_vel = linvel.get_mut(frog_entity).unwrap();
+            *lin_vel = LinearVelocity::from(dir * MS * time.dt());
+        }
+    }
+}
+
+fn frog_atlas_handler(
+    frog_sprite: Query<(&mut Sprite, &mut Frog)>,
+    time: Res<Time>,
+) {
+    for (mut frog_sprite, mut frog) in frog_sprite {
+        if frog.delay > 0.2 {
+            frog.delay = 0.;
+            let atlas = frog_sprite.texture_atlas.as_mut().unwrap();
+            atlas.index = (atlas.index + 1) % 8;
+        } else {
+            frog.delay += time.delta_secs();
+        }
+    }
+}
+
+fn toster_atlas_handler(
+    mut cmd: Commands,
+    toster_sprite: Query<(&mut Sprite, &mut Toster, Entity)>,
+    time: Res<Time>,
+) {
+    for (mut toster_sprite, mut toster, toster_entity) in toster_sprite {
+        if toster.is_dead {
+            cmd.entity(toster_entity).remove::<Toster>().insert(RigidBody::Static).despawn_children();
+            let atlas = toster_sprite.texture_atlas.as_mut().unwrap();
+            atlas.index = 3;
+        } else {
+            if toster.delay > 0.2 {
+                toster.delay = 0.;
+                let atlas = toster_sprite.texture_atlas.as_mut().unwrap();
+                atlas.index = (atlas.index + 1) % 2;
+                if toster.curr_is_left {
+                    toster_sprite.flip_x = false;
+                } else {
+                    toster_sprite.flip_x = true;
+                }
+            } else {
+                toster.delay += time.delta_secs();
+            }
+        }
+    }
+}
+
+fn toster_movement(
+    toster_q: Query<(&mut Toster, Entity, &Children)>,
+    raycast_q: Query<(&ShapeHits, &TosterCaster)>,
+    mut linvel: Query<&mut LinearVelocity, With<Toster>>,
+    player_entity: Query<Entity, With<Player>>,
+    time: Res<Time>,
+) {
+    if let Ok(player_entity) = player_entity.single() {
+        for (mut toster, toster_entity, children) in toster_q {
+            for caster_entity in children {
+                if let Ok((hits, cast_dir)) = raycast_q.get(*caster_entity) {
+                    let mut did_hit = false;
+                    for hit in hits {
+                        if hit.entity != toster_entity && hit.entity != player_entity {
+                            did_hit = true;
+                        }
+                    }
+                    if did_hit {
+                        if *cast_dir == TosterCaster::Left {
+                            if toster.curr_is_left {
+                                toster.curr_is_left = false;
+                            }
+                        } else {
+                            if !toster.curr_is_left {
+                                toster.curr_is_left = true
+                            }
+                        }
+                    }
+                }
+            }
+            const MS: f32 = 6000.;
+            let mut lin_vel = linvel.get_mut(toster_entity).unwrap();
+            let mut dir = Vec2::X;
+            if toster.curr_is_left {
+                dir = Vec2::NEG_X;
+            }
+            *lin_vel = LinearVelocity::from(dir * MS * time.dt());
+        }
+    }
+}
+
+fn handle_enemy_collisions(
+    mut cmd: Commands,
+    mut collision_reader: MessageReader<CollisionStart>,
+    mut toster_q: Query<&mut Toster>,
+    cactus_q: Query<&Cactus>,
+    frog_q: Query<&Frog>,
+    mut screenshot: ResMut<LastScreenshot>,
+    raycast_q: Query<(&ShapeHits, &TosterCaster)>,
+    player_entity: Query<Entity, With<Player>>,
+    // assets: Res<GeometryDashAssets>, // todo: add death sound
+) {
+    let mut defeat = false;
+    'a: for event in collision_reader.read() {
+        if let Ok(_cactus) = cactus_q.get(event.collider2) {
+            defeat = true;
+            break;
+        } else if let Ok(_cactus) = cactus_q.get(event.collider1) {
+            defeat = true;
+            break;
+        }
+
+        if let Ok(_frog) = frog_q.get(event.collider2) {
+            defeat = true;
+            break;
+        } else if let Ok(_frog) = frog_q.get(event.collider1) {
+            defeat = true;
+            break;
+        }
+
+        if let Ok(mut toster) = toster_q.get_mut(event.collider2) {
+            if let Ok(player_entity) = player_entity.single() {
+                for (hits, cast_dir) in raycast_q {
+                    if *cast_dir == TosterCaster::Top {
+                        let mut hit_player = false;
+                        for hit in hits {
+                            if hit.entity == player_entity {
+                                hit_player = true;
+                                break;
+                            }
+                        }
+                        if hit_player {
+                            toster.is_dead = true;
+                        } else {
+                            defeat = true;
+                            break 'a;
+                        }
+                    }
+                }
+            }
+        } else if let Ok(mut toster) = toster_q.get_mut(event.collider1) {
+            if let Ok(player_entity) = player_entity.single() {
+                for (hits, cast_dir) in raycast_q {
+                    if *cast_dir == TosterCaster::Top {
+                        let mut hit_player = false;
+                        for hit in hits {
+                            if hit.entity == player_entity {
+                                hit_player = true;
+                                break;
+                            }
+                        }
+                        if hit_player {
+                            toster.is_dead = true;
+                        } else {
+                            defeat = true;
+                            break 'a;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if defeat {
+        // cmd.spawn((
+        //     DespawnOnEnter(NEXT_STATE),
+        //     AudioPlayer(assets.explosion.clone()),
+        //     PlaybackSettings {
+        //         mode: bevy::audio::PlaybackMode::Once,
+        //         ..default()
+        //     },
+        // ));
+        if screenshot.awaiting == false {
+            cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
+                .observe(await_screenshot_and_translate(AppState::Defeat));
+            screenshot.awaiting = true;
+        }
+    }
+}
