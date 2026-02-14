@@ -42,7 +42,7 @@ pub struct FNAFAssets {
     ur: Handle<AudioSource>,
 
     #[asset(path = "images/fnaf/room.png")]
-    room: Handle<Image>,
+    pub room: Handle<Image>,
     #[asset(path = "images/fnaf/white.png")]
     white_button: Handle<Image>,
     #[asset(path = "images/fnaf/red.png")]
@@ -895,7 +895,7 @@ fn handle_faz(
 ) {
     let mut rng = rand::rng();
     let delta_secs = time.delta_secs();
-    if bear_data.initial_delay > 2. { // todo: set to 20.
+    if bear_data.initial_delay > 15. {
         if bear_data.bear_here {
             if bear_data.bear_until_leaves <= 0. {
                 println!("BEAR LEFT");
