@@ -16,7 +16,7 @@ use super::dialog::*;
 use crate::prelude::*;
 
 pub const STATE: AppState = AppState::Miami;
-pub const NEXT_STATE: AppState = AppState::Novel;
+pub const NEXT_STATE: AppState = AppState::FakeEnd;
 
 
 #[derive(AssetCollection, Resource)]
@@ -122,6 +122,7 @@ impl Plugin for MiamiPlugin {
             .add_systems(OnEnter(FreddyFightStage::PreFreddy), start_freddy_enter_dialog)
             .add_systems(OnEnter(FreddyFightStage::PreFreddy), kill_endoskeletons)
             .add_systems(OnEnter(FreddyFightStage::Freddy), setup_freddy_fight2)
+            .add_systems(OnEnter(FreddyFightStage::Finished), kill_endoskeletons)
             .add_systems(PostUpdate, tick_bonnie_chicka_fight.run_if(in_state(FreddyFightStage::BonnieChicka)))
             .add_systems(PostUpdate, tick_freddy_fight.run_if(in_state(FreddyFightStage::Freddy)))
 
@@ -298,6 +299,7 @@ fn cleanup(
     let Ok(mut t) = camera.single_mut() else {return;};
     t.rotation.z = 0.0;
     t.rotation.y = 0.0;
+    t.translation = Vec3::new(0.0, 0.0, 0.0);
 }
 
 

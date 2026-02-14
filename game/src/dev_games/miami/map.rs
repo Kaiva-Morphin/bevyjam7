@@ -122,6 +122,7 @@ pub fn on_v_door(
         )]
     )).id();
     cmd.spawn((
+        DespawnOnExit(STATE),
         Name::new("DoorJoint"),
         RevoluteJoint::new(origin, door)
         .with_anchor(t.translation.truncate())

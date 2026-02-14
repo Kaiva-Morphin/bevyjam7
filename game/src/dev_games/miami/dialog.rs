@@ -402,7 +402,10 @@ pub fn tick_dialog(
     mut shadow_anim : Query<&mut UiTransform, (With<DialogShadowLabel>, Without<DialogRot>)>,
     mut texts: Query<&mut Text, With<DialogLabel>>,
     mut cmd: Commands,
-    (time, keys, assets): (Res<Time>, Res<ButtonInput<KeyCode>>,  Res<MiamiAssets>),
+
+    (time, keys, assets, last_screenshot): 
+    (Res<Time>, Res<ButtonInput<KeyCode>>,  Res<MiamiAssets>,  Res<LastScreenshot>,),
+    
     disabled_q: Query<Entity, With<PlayerDisabled>>,
     main_q: Query<Entity, (With<BgDialog>, Without<PrevHead>)>,
     top_q: Query<Entity, (With<TopDialog>, Without<PrevHead>)>,
@@ -438,8 +441,11 @@ pub fn tick_dialog(
             if final_dialog.is_some() {
                 cmd.remove_resource::<FinalDialog>();
                 // local_state.set(FreddyFightStage::Freddy);
-                app_state.set(super::plugin::NEXT_STATE);
-                return;
+                if !last_screenshot.awaiting {
+                        cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
+                        .observe(await_screenshot_and_translate(super::plugin::NEXT_STATE));
+                    return;
+                }
             }
             
             

@@ -182,7 +182,7 @@ impl WeaponType {
 
                 damage: 100.0,
                 ttl: 5.0,
-                piercing: 0,
+                piercing: 1,
                 projectile_speed: 500.0,
                 throw_damage: 100.0,
 
@@ -243,7 +243,7 @@ impl WeaponType {
 
                 damage: 100.0,
                 ttl: 5.0,
-                piercing: 0,
+                piercing: 1,
                 projectile_speed: 700.0,
                 throw_damage: 100.0,
 
@@ -273,7 +273,7 @@ impl WeaponType {
 
                 damage: 100.0,
                 ttl: 5.0,
-                piercing: 0,
+                piercing: 1,
                 projectile_speed: 700.0,
                 throw_damage: 100.0,
 
@@ -547,8 +547,7 @@ impl Weapon {
 
                     let rotation = Quat::from_rotation_z(angle);
 
-                    // направление "вперёд" из rotation
-                    let velocity_dir = rotation * Vec3::Y; // или Vec3::X — зависит от спрайта
+                    let velocity_dir = rotation * Vec3::Y;
 
                     let mut t = Transform::from_translation(
                         pos - velocity_dir * 10.0
