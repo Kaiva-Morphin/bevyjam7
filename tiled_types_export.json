@@ -35,7 +35,7 @@
     ]
   },
   {
-    "id": 22,
+    "id": 27,
     "name": "avian2d::collision::collider::layers::LayerMask",
     "type": "class",
     "useAs": [
@@ -82,7 +82,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 23,
+    "id": 28,
     "name": "bevy_color::color::Color",
     "type": "class",
     "useAs": [
@@ -193,7 +193,7 @@
   },
   {
     "id": 10,
-    "name": "game::dev_games::miami::map::TilemapShadow",
+    "name": "game::dev_games::miami::map::BossDialog",
     "type": "class",
     "useAs": [
       "property"
@@ -204,6 +204,61 @@
   },
   {
     "id": 11,
+    "name": "game::dev_games::miami::map::BossEntrypointCollider",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 12,
+    "name": "game::dev_games::miami::map::EntrypointDialog",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 13,
+    "name": "game::dev_games::miami::map::HorizontalDoor",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 14,
+    "name": "game::dev_games::miami::map::TilemapShadow",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 15,
+    "name": "game::dev_games::miami::map::VerticalDoor",
+    "type": "class",
+    "useAs": [
+      "property"
+    ],
+    "color": "#000000",
+    "drawFill": true,
+    "members": []
+  },
+  {
+    "id": 16,
     "name": "game::dev_games::miami::weapon::MiamiWeaponSpawner",
     "type": "class",
     "useAs": [
@@ -221,7 +276,7 @@
     ]
   },
   {
-    "id": 13,
+    "id": 18,
     "name": "game::dev_games::miami::weapon::WeaponType",
     "type": "class",
     "useAs": [
@@ -239,7 +294,7 @@
     ]
   },
   {
-    "id": 12,
+    "id": 17,
     "name": "game::dev_games::miami::weapon::WeaponType:::Variant",
     "type": "enum",
     "storageType": "string",
@@ -252,7 +307,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 15,
+    "id": 20,
     "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer",
     "type": "class",
     "useAs": [
@@ -270,7 +325,7 @@
     ]
   },
   {
-    "id": 14,
+    "id": 19,
     "name": "game::dev_games::platformer::map::PlatformerSwitchableLayer:::Variant",
     "type": "enum",
     "storageType": "string",
@@ -281,7 +336,7 @@
     "valuesAsFlags": false
   },
   {
-    "id": 16,
+    "id": 21,
     "name": "game::dev_games::platformer::plugin::NextTrigger",
     "type": "class",
     "useAs": [
@@ -292,7 +347,7 @@
     "members": []
   },
   {
-    "id": 17,
+    "id": 22,
     "name": "game::dev_games::platformer::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
@@ -303,7 +358,7 @@
     "members": []
   },
   {
-    "id": 18,
+    "id": 23,
     "name": "game::dev_games::platformer::plugin::StopTrigger",
     "type": "class",
     "useAs": [
@@ -314,7 +369,7 @@
     "members": []
   },
   {
-    "id": 19,
+    "id": 24,
     "name": "games::geometry_dash::plugin::CameraCenter",
     "type": "class",
     "useAs": [
@@ -325,7 +380,7 @@
     "members": []
   },
   {
-    "id": 20,
+    "id": 25,
     "name": "games::geometry_dash::plugin::SpawnPoint",
     "type": "class",
     "useAs": [
@@ -336,7 +391,7 @@
     "members": []
   },
   {
-    "id": 24,
+    "id": 29,
     "name": "glam::Vec2",
     "type": "class",
     "useAs": [
@@ -358,7 +413,7 @@
     ]
   },
   {
-    "id": 21,
+    "id": 26,
     "name": "room::MapRoom",
     "type": "class",
     "useAs": [

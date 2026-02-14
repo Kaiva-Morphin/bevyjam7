@@ -181,45 +181,45 @@ impl Default for NovelState {
                     Bal2 (transform = RIGHT.with_scale(Vec3::splat(0.3))),
                     => ("Ballerina Cappuccina") "NOOOOOOOO" (Sip)
                 },
-                Computer Silence {
+                Computer Silence (Transform::from_scale(Vec3::splat(0.15))) {
                     => "Hmm, I guess I should do some work..."
                 },
-                Computer MyOnlyLove {
+                Computer MyOnlyLove (Transform::from_scale(Vec3::splat(0.15))) {
                     Time (transform = Transform::from_xyz(0., 35., 0.).with_scale(Vec3::splat(0.15))),
                     => "Oh yes, it's time for bevy jam!"
                 },
-                Computer MyOnlyLove {
+                Computer MyOnlyLove (Transform::from_scale(Vec3::splat(0.15))) {
                     => "Let's see what's the topic this time"
                 },
-                Computer MyOnlyLove {
+                Computer MyOnlyLove (Transform::from_scale(Vec3::splat(0.15))) {
                     => "..."
                 },
-                Computer MyOnlyLove {
+                Computer MyOnlyLove (Transform::from_scale(Vec3::splat(0.15))) {
                     => "Bevy editor from another world!"
                 },
-                Computer MyOnlyLove {
+                Computer MyOnlyLove (Transform::from_scale(Vec3::splat(0.15))) {
                     => "What an interesting choice!\nI guess any game engine needs an editor..."
                 },
-                Computer MyOnlyLove {
+                Computer MyOnlyLove (Transform::from_scale(Vec3::splat(0.15))) {
                     => "But Rust is hard...\nShould I even study rust?"
                 },
-                Computer Battle {
+                Computer Battle (Transform::from_scale(Vec3::splat(0.15))) {
                     Rust (transform = Transform::from_xyz(115., 30., 0.).with_scale(Vec3::splat(0.25))),
                     Go (transform = Transform::from_xyz(-130., 15., 0.).with_scale(Vec3::splat(0.3)), flip_x = true),
                     => ("Go") "There's no point in rust\nBackend can be done with kotlin or golang"
                 },
-                Computer Battle {
+                Computer Battle (Transform::from_scale(Vec3::splat(0.15))) {
                     Rust (transform = Transform::from_xyz(115., 30., 0.).with_scale(Vec3::splat(0.25))),
                     Go (transform = Transform::from_xyz(-130., 15., 0.).with_scale(Vec3::splat(0.3)), flip_x = true),
                     => ("Rust") "Rust is definitely faster\nGo even has a garbage collector\nKotlin has a ton of legacy code behind it"
                 },
-                Computer Silence {
+                Computer Silence (Transform::from_scale(Vec3::splat(0.15))) {
                     => "So what did YOU choose?"
                 },
-                ComputerWithBevy Silence {
+                ComputerWithBevy Silence (Transform::from_scale(Vec3::splat(0.15))) {
                     => "?"
                 },
-                ComputerWithBevy Silence {
+                ComputerWithBevy Silence (Transform::from_scale(Vec3::splat(0.15))) {
                     => "..."
                 },
             },
@@ -534,7 +534,6 @@ fn tick(
     let pressed = keyboard_input.just_pressed(KeyCode::Space);
     if state.is_finished() {
         if pressed {
-            info!("DONBASS");
             cmd.spawn(bevy::render::view::screenshot::Screenshot::primary_window())
                 .observe(await_screenshot_and_translate(NEXT_STATE));
         }

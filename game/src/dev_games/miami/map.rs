@@ -84,5 +84,5 @@ pub fn on_v_door(
     mut cmd: Commands
 ) {
     let Ok(t) = t.get(ev.entity) else {return;};
-    cmd.spawn()
+    // cmd.spawn()
 }

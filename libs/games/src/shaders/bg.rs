@@ -27,7 +27,7 @@ fn setup(
     commands.spawn((
         Mesh2d(meshes.add(Rectangle::default())),
         MeshMaterial2d(materials.add(BgMaterial {size: Vec4::new(TARGET_WIDTH as f32, TARGET_HEIGHT as f32, 0., 0.)})),
-        Transform::default().with_scale(Vec3::splat(128.)),
+        Transform::from_xyz(0., 0., -100.).with_scale(Vec3::splat(128.)),
         HIGHRES_LAYERS
     ));
 }
